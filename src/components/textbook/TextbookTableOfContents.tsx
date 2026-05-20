@@ -60,7 +60,7 @@ export function TextbookTableOfContents({
               />
             </div>
             <p className="mt-1.5 text-xs text-[var(--muted)]">
-              {completed}/{total} sections read · Quick checks{" "}
+              {completed}/{total} sections read · Chapter quizzes{" "}
               <span className="font-semibold text-[var(--silver)]">
                 {quickChecks.passed}/{quickChecks.total}
               </span>

@@ -60,14 +60,24 @@ export default async function CoursePage({
         </div>
 
         {course.textbookCourse && (
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button href={`/courses/${slug}/read`} variant="forge">
-              Open textbook
-            </Button>
-            <Button href={`/courses/${slug}/quiz`} variant="secondary">
-              Take quiz
-            </Button>
-          </div>
+          <>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href={`/courses/${slug}/read`} variant="forge">
+                Open textbook
+              </Button>
+              <Button href={`/courses/${slug}/quiz`} variant="secondary">
+                Course review quiz
+              </Button>
+              <Button href={`/courses/${slug}/exam`} variant="secondary">
+                Final exam
+              </Button>
+            </div>
+            <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">
+              Complete each chapter&apos;s 5-question quiz (instant feedback), then
+              pass the 10-question course review, then the 20-question final exam
+              (score at the end) to earn course completion.
+            </p>
+          </>
         )}
       </div>
 

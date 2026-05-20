@@ -31,7 +31,7 @@ export function KodaQuizHelp({ context }: { context: KodaLearningContext }) {
               <Loader2 className="h-3.5 w-3.5 animate-spin" /> Getting a clearer explanation…
             </span>
           ) : (
-            "Ask KODA to explain this question"
+            "Get a clearer explanation"
           )}
         </button>
       )}

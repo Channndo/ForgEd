@@ -4,13 +4,9 @@ import { usePathname } from "next/navigation";
 import { Menu, Flame, Zap, Bell, Search } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { titleForPath } from "@/lib/navigation";
-import { useKodaPanel } from "@/components/koda/KodaProvider";
-import { KodaLogo } from "@/components/koda/KodaLogo";
-
 export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
   const { progress, xpBar } = useProgress();
-  const { setOpen } = useKodaPanel();
   const title = titleForPath(pathname);
 
   return (
@@ -62,15 +58,6 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           aria-label="Notifications"
         >
           <Bell className="h-4 w-4" />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="hidden items-center gap-2 rounded-lg border border-[var(--gold)]/30 bg-[var(--gold)]/10 px-3 py-1.5 text-xs font-medium text-[var(--gold)] hover:bg-[var(--gold)]/20 sm:flex"
-        >
-          <KodaLogo size={20} />
-          Ask KODA
         </button>
 
         <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--gold)]/30 bg-gradient-to-br from-[var(--gold-dark)] to-[var(--gold)] text-xs font-bold text-[#050505]">

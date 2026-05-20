@@ -37,6 +37,30 @@ import {
   TECH_TEXTBOOK,
   TECH_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/technology-for-beginners";
+import {
+  LEGAL_TEXTBOOK,
+  LEGAL_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/legal-fundamentals";
+import {
+  BIZLAW_TEXTBOOK,
+  BIZLAW_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/business-law";
+import {
+  CONLAW_TEXTBOOK,
+  CONLAW_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/constitutional-law";
+import {
+  MECH_TEXTBOOK,
+  MECH_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/mechanical-engineering-basics";
+import {
+  EE_TEXTBOOK,
+  EE_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/electrical-engineering-basics";
+import {
+  CE_TEXTBOOK,
+  CE_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/civil-engineering-basics";
 
 const BUNDLES: Record<string, TextbookBundle> = {
   "insurance-fundamentals": {
@@ -83,6 +107,36 @@ const BUNDLES: Record<string, TextbookBundle> = {
     slug: "technology-for-beginners",
     intro: TECH_TEXTBOOK_INTRO,
     chapters: TECH_TEXTBOOK,
+  },
+  "legal-fundamentals": {
+    slug: "legal-fundamentals",
+    intro: LEGAL_TEXTBOOK_INTRO,
+    chapters: LEGAL_TEXTBOOK,
+  },
+  "business-law": {
+    slug: "business-law",
+    intro: BIZLAW_TEXTBOOK_INTRO,
+    chapters: BIZLAW_TEXTBOOK,
+  },
+  "constitutional-law": {
+    slug: "constitutional-law",
+    intro: CONLAW_TEXTBOOK_INTRO,
+    chapters: CONLAW_TEXTBOOK,
+  },
+  "mechanical-engineering-basics": {
+    slug: "mechanical-engineering-basics",
+    intro: MECH_TEXTBOOK_INTRO,
+    chapters: MECH_TEXTBOOK,
+  },
+  "electrical-engineering-basics": {
+    slug: "electrical-engineering-basics",
+    intro: EE_TEXTBOOK_INTRO,
+    chapters: EE_TEXTBOOK,
+  },
+  "civil-engineering-basics": {
+    slug: "civil-engineering-basics",
+    intro: CE_TEXTBOOK_INTRO,
+    chapters: CE_TEXTBOOK,
   },
 };
 

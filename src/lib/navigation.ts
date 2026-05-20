@@ -1,20 +1,11 @@
 import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
-  BookOpen,
-  GraduationCap,
-  Sparkles,
-  Briefcase,
   Library,
-  Shield,
-  Brain,
-  Lock,
-  Monitor,
-  Car,
-  Wallet,
-  MessageSquare,
-  Building2,
-  Smartphone,
+  Route,
+  Briefcase,
+  BarChart3,
+  Users,
 } from "lucide-react";
 
 export interface NavItem {
@@ -24,31 +15,25 @@ export interface NavItem {
   badge?: string;
 }
 
-export const MAIN_NAV: NavItem[] = [
+/** Core platform — scalable ecosystem shell (KODA is FAB-only, not listed here) */
+export const PLATFORM_NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/courses", label: "Course Library", icon: Library },
-  { href: "/courses/insurance-fundamentals", label: "Insurance Fundamentals", icon: Shield, badge: "Featured" },
-  { href: "/assistant", label: "KODA", icon: Sparkles },
-  { href: "/career", label: "Career Path", icon: Briefcase },
-];
-
-export const LEARN_NAV: NavItem[] = [
-  { href: "/courses?category=ai", label: "AI Fundamentals", icon: Brain },
-  { href: "/courses?category=cybersecurity", label: "Cybersecurity", icon: Lock },
-  { href: "/courses?category=it", label: "IT Fundamentals", icon: Monitor },
-  { href: "/courses?category=automotive", label: "Automotive", icon: Car },
-  { href: "/courses?category=financial", label: "Financial Literacy", icon: Wallet },
-  { href: "/courses?category=communication", label: "Communication", icon: MessageSquare },
-  { href: "/courses?category=business", label: "Business", icon: Building2 },
-  { href: "/courses?category=technology", label: "Tech for Beginners", icon: Smartphone },
+  { href: "/paths", label: "Learning Paths", icon: Route },
+  { href: "/career", label: "Career Hub", icon: Briefcase },
+  { href: "/progress", label: "Progress", icon: BarChart3 },
+  { href: "/community", label: "Community", icon: Users },
 ];
 
 export const PAGE_TITLES: Record<string, string> = {
   "/": "Home",
   "/dashboard": "Dashboard",
   "/courses": "Course Library",
-  "/assistant": "KODA",
-  "/career": "Career Path",
+  "/paths": "Learning Paths",
+  "/career": "Career Hub",
+  "/progress": "Progress",
+  "/community": "Community",
+  "/assistant": "AI Tutor",
 };
 
 export function titleForPath(pathname: string): string {
@@ -56,8 +41,9 @@ export function titleForPath(pathname: string): string {
   if (PAGE_TITLES[path]) return PAGE_TITLES[path];
   if (path === "" || path === "/") return "Dashboard";
   if (path.startsWith("/courses/") && path.endsWith("/read")) return "Textbook";
+  if (path.startsWith("/courses/") && path.endsWith("/exam")) return "Final Exam";
+  if (path.startsWith("/courses/") && path.endsWith("/quiz")) return "Course Quiz";
   if (path.startsWith("/courses/") && path.includes("/learn/")) return "Textbook";
-  if (path.endsWith("/quiz")) return "Quiz";
   if (path.startsWith("/courses/")) return "Course";
   return "ForgEd";
 }

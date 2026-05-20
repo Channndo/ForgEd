@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Flame, LayoutDashboard, BookOpen, Sparkles, Briefcase } from "lucide-react";
+import { Flame, LayoutDashboard, BookOpen, Briefcase } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { ForgEdLogo, ForgEdWordmarkText } from "@/components/brand/ForgEdLogo";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/courses", label: "Courses", icon: BookOpen },
-  { href: "/assistant", label: "KODA", icon: Sparkles },
-  { href: "/career", label: "Career", icon: Briefcase },
+  { href: "/career", label: "Career Hub", icon: Briefcase },
 ];
 
 export function Header() {

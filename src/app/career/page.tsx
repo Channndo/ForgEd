@@ -22,9 +22,10 @@ export default function CareerPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <h1 className="text-3xl font-bold">Career progression</h1>
+      <h1 className="font-serif text-3xl font-bold text-[var(--silver)]">Career hub</h1>
       <p className="mt-2 text-[var(--muted)]">
-        Track skills earned on ForgEd and build toward resume-ready milestones.
+        Track skills across every domain and build toward resume-ready milestones — no single
+        industry prioritized.
       </p>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-3">
@@ -50,14 +51,11 @@ export default function CareerPage() {
         {completedSkills.length === 0 && inProgressSkills.length === 0 ? (
           <Card className="mt-4">
             <p className="text-[var(--muted)]">
-              Complete courses to populate your career profile. We recommend starting with{" "}
-              <Link
-                href="/courses/insurance-fundamentals"
-                className="text-[var(--accent)] hover:underline"
-              >
-                Insurance Fundamentals
-              </Link>
-              .
+              Complete courses in any domain to populate your profile. Browse{" "}
+              <Link href="/courses" className="text-[var(--gold)] hover:underline">
+                the course library
+              </Link>{" "}
+              — Finance, Technology, Business, and more are weighted equally.
             </p>
             <Button href="/dashboard" variant="forge" className="mt-4">
               Go to dashboard
@@ -91,10 +89,16 @@ export default function CareerPage() {
         <h3 className="font-semibold">Suggested paths</h3>
         <ul className="mt-4 space-y-3 text-sm text-[var(--muted)]">
           <li>
-            <strong className="text-white">Insurance & financial services</strong> — Insurance Fundamentals → Financial Literacy
+            <strong className="text-white">Finance</strong> — Financial Literacy → Insurance Fundamentals (under Finance)
           </li>
           <li>
-            <strong className="text-white">Technology career</strong> — Technology for Beginners → IT Fundamentals → Cybersecurity
+            <strong className="text-white">Law</strong> — Legal Fundamentals → Business Law → Constitutional Law
+          </li>
+          <li>
+            <strong className="text-white">Engineering</strong> — Mechanical → Electrical → Civil Engineering Basics
+          </li>
+          <li>
+            <strong className="text-white">Technology</strong> — Technology for Beginners → IT Fundamentals → Cybersecurity (under Technology)
           </li>
           <li>
             <strong className="text-white">Business & AI</strong> — Business Foundations → AI Fundamentals → Communication Skills

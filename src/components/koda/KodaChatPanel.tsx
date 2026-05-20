@@ -40,37 +40,56 @@ export function KodaChatPanel() {
     }
   }, [open, pendingPrompt, send, clearPendingPrompt]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open, setOpen]);
+
   return (
     <AnimatePresence>
       {open && (
         <>
-          <motion.div
+          <motion.button
+            type="button"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-[60] cursor-default bg-black/55 backdrop-blur-[2px]"
+            aria-label="Close KODA"
             onClick={() => setOpen(false)}
           />
           <motion.aside
-            initial={{ x: "100%", opacity: 0.8 }}
+            initial={{ x: "100%", opacity: 0.9 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "100%", opacity: 0.8 }}
-            transition={{ type: "spring", damping: 28, stiffness: 320 }}
-            className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col border-l border-[var(--koda-gold)]/15 bg-[var(--background)]/98 shadow-2xl backdrop-blur-xl"
+            exit={{ x: "100%", opacity: 0.9 }}
+            transition={{ type: "spring", damping: 30, stiffness: 340 }}
+            className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col border-l border-[var(--koda-gold)]/20 bg-[#080808]/98 shadow-2xl backdrop-blur-xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="KODA learning assistant"
           >
-            <header className="flex items-center justify-between border-b border-white/5 px-4 py-4">
+            <header className="flex shrink-0 items-center justify-between border-b border-white/5 px-4 py-4">
               <KodaLogoMark />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-lg p-2 text-[var(--muted)] hover:bg-white/5 hover:text-white"
+                className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-[var(--silver)] transition hover:border-[var(--gold)]/30 hover:bg-[var(--gold)]/10 hover:text-white"
                 aria-label="Close KODA"
               >
                 <X className="h-5 w-5" />
               </button>
             </header>
 
-            <p className="px-4 py-2 text-xs text-[var(--muted)] border-b border-white/5">
+            <p className="shrink-0 border-b border-white/5 px-4 py-2 text-xs text-[var(--muted)]">
               {statusNote}
             </p>
 
@@ -106,13 +125,13 @@ export function KodaChatPanel() {
             </div>
 
             {available && messages.length <= 2 && (
-              <div className="flex flex-wrap gap-2 px-4 pb-2">
+              <div className="flex shrink-0 flex-wrap gap-2 px-4 pb-2">
                 {KODA_QUICK_PROMPTS.map((p) => (
                   <button
                     key={p}
                     type="button"
                     onClick={() => void send(p, { useStream: true })}
-                    className="rounded-full border border-[var(--koda-silver)]/20 bg-white/5 px-3 py-1 text-xs text-[var(--muted)] hover:border-[var(--koda-gold)]/40 hover:text-white"
+                    className="rounded-full border border-[var(--koda-silver)]/20 bg-white/5 px-3 py-1 text-xs text-[var(--muted)] transition hover:border-[var(--koda-gold)]/40 hover:text-white"
                   >
                     {p}
                   </button>
@@ -121,7 +140,7 @@ export function KodaChatPanel() {
             )}
 
             <form
-              className="border-t border-white/5 p-4"
+              className="shrink-0 border-t border-white/5 p-4"
               onSubmit={(e) => {
                 e.preventDefault();
                 const t = input.trim();
@@ -136,7 +155,7 @@ export function KodaChatPanel() {
                   onChange={(e) => setInput(e.target.value)}
                   rows={2}
                   placeholder={
-                    available ? "Ask KODA anything about this lesson…" : "KODA offline"
+                    available ? "Ask KODA anything about your learning…" : "KODA offline"
                   }
                   disabled={!available || loading}
                   className="flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[var(--koda-gold)]/40 disabled:opacity-50"

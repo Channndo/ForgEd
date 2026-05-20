@@ -25,6 +25,8 @@ export const DEFAULT_PROGRESS: UserProgress = {
   earnedBadges: [],
   courseProgress: {},
   chapterQuickChecks: {},
+  courseReviewQuizPassed: [],
+  finalExamPassed: [],
 };
 
 function todayKey(): string {
@@ -206,6 +208,77 @@ export function countChapterQuickChecksPassed(
     (n) => n >= 1 && n <= totalChapters
   ).length;
   return { passed, total: totalChapters };
+}
+
+export function isCourseReviewQuizPassed(courseId: string): boolean {
+  const data = readProgress();
+  return (data.courseReviewQuizPassed ?? []).includes(courseId);
+}
+
+export function markCourseReviewQuizPassed(
+  courseId: string,
+  xpAmount = 75
+): UserProgress {
+  let data = updateStreak(readProgress());
+  const list = data.courseReviewQuizPassed ?? [];
+  if (!list.includes(courseId)) {
+    data.courseReviewQuizPassed = [...list, courseId];
+    data.xp += xpAmount;
+  }
+  writeProgress(data);
+  return data;
+}
+
+export function isFinalExamPassed(courseId: string): boolean {
+  const data = readProgress();
+  return (data.finalExamPassed ?? []).includes(courseId);
+}
+
+export function markFinalExamPassed(
+  courseId: string,
+  xpAmount: number
+): UserProgress {
+  let data = updateStreak(readProgress());
+  const list = data.finalExamPassed ?? [];
+  if (!list.includes(courseId)) {
+    data.finalExamPassed = [...list, courseId];
+    data.xp += Math.round(xpAmount / 2);
+  }
+  writeProgress(data);
+  return data;
+}
+
+/** Course completion requires passing the final exam */
+export function passFinalExamAndCompleteCourse(
+  courseId: string,
+  score: number,
+  total: number,
+  xpAmount: number
+): UserProgress {
+  let data = updateStreak(readProgress());
+  data.quizScores[`${courseId}-exam`] = {
+    score,
+    total,
+    at: new Date().toISOString(),
+  };
+  if (isPassingScore(score, total)) {
+    const exams = data.finalExamPassed ?? [];
+    if (!exams.includes(courseId)) {
+      data.finalExamPassed = [...exams, courseId];
+      data.xp += Math.round(xpAmount / 2);
+    }
+    if (!data.completedCourses.includes(courseId)) {
+      data.completedCourses.push(courseId);
+      data.xp += xpAmount;
+      data.courseProgress[courseId] = 100;
+      if (courseId === "insurance-fundamentals") {
+        data = awardBadge(data, "insurance-complete");
+      }
+    }
+    data = awardBadge(data, "quiz-pass");
+  }
+  writeProgress(data);
+  return data;
 }
 
 export function categoriesStarted(courseCategories: string[]): boolean {

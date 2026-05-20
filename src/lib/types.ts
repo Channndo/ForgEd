@@ -7,7 +7,9 @@ export type CourseCategory =
   | "financial"
   | "communication"
   | "business"
-  | "technology";
+  | "technology"
+  | "law"
+  | "engineering";
 
 export type Difficulty = "beginner" | "intermediate" | "advanced";
 
@@ -66,6 +68,10 @@ export interface UserProgress {
   quizScores: Record<string, { score: number; total: number; at: string }>;
   earnedBadges: string[];
   courseProgress: Record<string, number>;
-  /** courseId → chapter numbers with passed quick checks */
+  /** courseId → chapter numbers with passed chapter quizzes (5 questions) */
   chapterQuickChecks?: Record<string, number[]>;
+  /** courseIds that passed the 10-question course review quiz */
+  courseReviewQuizPassed?: string[];
+  /** courseIds that passed the 20-question final exam (unlocks course completion) */
+  finalExamPassed?: string[];
 }

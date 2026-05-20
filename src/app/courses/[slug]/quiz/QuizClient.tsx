@@ -9,7 +9,8 @@ import {
   pickQuizSessionForCourse,
 } from "@/lib/courses/textbook/quizUtils";
 import { QuizEngine } from "@/components/quiz/QuizEngine";
-import { completeCourse, recordQuiz } from "@/lib/progress";
+import { markCourseReviewQuizPassed, recordQuiz } from "@/lib/progress";
+import { COURSE_REVIEW_QUIZ_LENGTH } from "@/lib/quizTypes";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { isPassingScore } from "@/lib/quizTypes";
 
@@ -62,7 +63,7 @@ export default function QuizClient() {
     if (!course) return;
     recordQuiz(`${course.id}-quiz`, score, total, course.xpReward / 4);
     if (isPassingScore(score, total)) {
-      completeCourse(course.id, course.xpReward);
+      markCourseReviewQuizPassed(course.id, course.xpReward / 4);
     }
     refresh();
   }
@@ -77,11 +78,12 @@ export default function QuizClient() {
           ← {course.title}
         </Link>
         <h1 className="mt-4 font-serif text-2xl font-bold text-[var(--silver)]">
-          Course quiz
+          Course review quiz
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          {questions.length} questions — one per chapter, drawn from {bankSize} in the
-          question bank.
+          {COURSE_REVIEW_QUIZ_LENGTH} random questions from {bankSize} in the bank.
+          Immediate feedback after each answer. Pass with 70% to unlock the final
+          exam.
         </p>
       </div>
 

@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from "react";
 import type { QuizQuestion } from "@/lib/quizTypes";
-import { CHAPTER_QUICK_CHECK_LENGTH, isPassingScore } from "@/lib/quizTypes";
-import { pickChapterQuickCheck } from "@/lib/courses/textbook/quizUtils";
+import { CHAPTER_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
+import { pickChapterQuiz } from "@/lib/courses/textbook/quizUtils";
 import {
   isChapterQuickCheckPassed,
   markChapterQuickCheckPassed,
@@ -52,7 +52,7 @@ export function ChapterQuickCheck({
   const currentRevealed = current ? Boolean(revealed[current.id]) : false;
 
   const start = useCallback(() => {
-    setQuestions(pickChapterQuickCheck(courseSlug, chapterNumber));
+    setQuestions(pickChapterQuiz(courseSlug, chapterNumber));
     setIndex(0);
     setAnswers({});
     setRevealed({});
@@ -114,12 +114,12 @@ export function ChapterQuickCheck({
               id={`quick-check-${chapterNumber}`}
               className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/90"
             >
-              Quick check · ~2 min
+              Chapter quiz · ~5 min
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">
               {alreadyPassed
                 ? "Passed — saved to your progress. Retake anytime."
-                : `${CHAPTER_QUICK_CHECK_LENGTH} questions on this chapter`}
+                : `${CHAPTER_QUIZ_LENGTH} random questions — instant feedback after each answer`}
             </p>
           </div>
           <span
@@ -137,7 +137,7 @@ export function ChapterQuickCheck({
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/90">
-                Chapter {chapterNumber} quick check
+                Chapter {chapterNumber} quiz
               </p>
               <p className="mt-1 text-xs text-[var(--muted)]">{chapterTitle}</p>
             </div>

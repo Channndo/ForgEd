@@ -50,6 +50,16 @@ export const CATEGORY_META: Record<
     description: "Digital confidence from day one",
     color: "from-white/8 to-[var(--silver)]/10",
   },
+  law: {
+    label: "Law",
+    description: "Legal systems, business law, and constitutional literacy",
+    color: "from-[var(--silver)]/12 to-[var(--gold)]/8",
+  },
+  engineering: {
+    label: "Engineering",
+    description: "Mechanical, electrical, and civil engineering foundations",
+    color: "from-[var(--gold-dark)]/14 to-white/6",
+  },
 };
 
 function textbookCourse(
@@ -90,7 +100,7 @@ export const COURSES: Course[] = [
       { id: "claims", name: "Claims Process" },
       { id: "agency-ops", name: "Agency Operations" },
     ],
-    { featured: true, difficulty: "beginner" }
+    { difficulty: "beginner" }
   ),
   textbookCourse(
     "ai-fundamentals",
@@ -103,7 +113,6 @@ export const COURSES: Course[] = [
       { id: "ai-ethics", name: "AI Ethics & Safety" },
       { id: "ai-work", name: "AI at Work" },
     ],
-    { featured: true }
   ),
   textbookCourse(
     "cybersecurity-basics",
@@ -116,7 +125,6 @@ export const COURSES: Course[] = [
       { id: "phishing", name: "Social Engineering" },
       { id: "ir", name: "Incident Response" },
     ],
-    { featured: true }
   ),
   textbookCourse(
     "it-fundamentals",
@@ -188,8 +196,79 @@ export const COURSES: Course[] = [
       { id: "privacy", name: "Privacy & Security" },
       { id: "cloud-user", name: "Cloud & Accounts" },
       { id: "citizenship", name: "Digital Citizenship" },
-    ],
-    { featured: true }
+    ]
+  ),
+  textbookCourse(
+    "legal-fundamentals",
+    "Legal Fundamentals",
+    "law",
+    "Ten-chapter textbook on legal systems, courts, civil and criminal law, legal reasoning, and pathways into legal study and work.",
+    [
+      { id: "legal-systems", name: "Legal Systems" },
+      { id: "courts", name: "Courts & Procedure" },
+      { id: "civil-criminal", name: "Civil vs. Criminal" },
+      { id: "legal-careers", name: "Legal Careers" },
+    ]
+  ),
+  textbookCourse(
+    "business-law",
+    "Business Law",
+    "law",
+    "Ten-chapter textbook on contracts, torts, business entities, employment law, intellectual property, and regulatory compliance.",
+    [
+      { id: "contracts", name: "Contracts" },
+      { id: "torts", name: "Torts & Liability" },
+      { id: "entities", name: "Business Entities" },
+      { id: "compliance", name: "Compliance" },
+    ]
+  ),
+  textbookCourse(
+    "constitutional-law",
+    "Constitutional Law",
+    "law",
+    "Ten-chapter textbook on constitutional structure, rights, due process, equal protection, and contemporary constitutional debates.",
+    [
+      { id: "structure", name: "Government Structure" },
+      { id: "rights", name: "Constitutional Rights" },
+      { id: "due-process", name: "Due Process" },
+      { id: "civic", name: "Civic Participation" },
+    ]
+  ),
+  textbookCourse(
+    "mechanical-engineering-basics",
+    "Mechanical Engineering Basics",
+    "engineering",
+    "Ten-chapter textbook on statics, dynamics, materials, thermodynamics, fluids, machine elements, manufacturing, and design.",
+    [
+      { id: "statics", name: "Statics" },
+      { id: "materials", name: "Materials" },
+      { id: "thermo", name: "Thermodynamics" },
+      { id: "design", name: "Design Process" },
+    ]
+  ),
+  textbookCourse(
+    "electrical-engineering-basics",
+    "Electrical Engineering Basics",
+    "engineering",
+    "Ten-chapter textbook on DC/AC circuits, electronics, digital logic, power systems, controls, and electrical safety.",
+    [
+      { id: "circuits", name: "Circuit Analysis" },
+      { id: "electronics", name: "Electronics" },
+      { id: "power", name: "Power Systems" },
+      { id: "safety", name: "Electrical Safety" },
+    ]
+  ),
+  textbookCourse(
+    "civil-engineering-basics",
+    "Civil Engineering Basics",
+    "engineering",
+    "Ten-chapter textbook on structural analysis, geotechnical, water resources, transportation, environmental systems, and construction.",
+    [
+      { id: "structures", name: "Structures" },
+      { id: "geotech", name: "Geotechnical" },
+      { id: "water", name: "Water Resources" },
+      { id: "transport", name: "Transportation" },
+    ]
   ),
 ];
 
@@ -197,8 +276,9 @@ export function getCourseBySlug(slug: string): Course | undefined {
   return COURSES.find((c) => c.slug === slug);
 }
 
+/** All catalog courses — no featured priority */
 export function getFeaturedCourses(): Course[] {
-  return COURSES.filter((c) => c.featured);
+  return [...COURSES];
 }
 
 export function getCoursesByCategory(category: CourseCategory): Course[] {

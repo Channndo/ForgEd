@@ -33,7 +33,7 @@ const lora = Lora({
 export const metadata: Metadata = {
   title: "ForgEd — Learn Skills That Matter.",
   description:
-    "Free AI-powered education platform. Learn skills in technology, business, insurance, cybersecurity, and future careers.",
+    "Free AI-powered education platform. Learn across technology, business, finance, trades, healthcare, and more.",
   icons: {
     icon: withBasePath("/forged-icon.png"),
     apple: withBasePath("/forged-icon.png"),

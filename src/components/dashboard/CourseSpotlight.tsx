@@ -4,17 +4,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { COURSES, CATEGORY_META } from "@/lib/courses/catalog";
+import { COURSES } from "@/lib/courses/catalog";
+import { buildBalancedCourseRotation } from "@/lib/ecosystem/domains";
+import { getDomainById, domainForCourse } from "@/lib/ecosystem/domains";
 import { Button } from "@/components/ui/Button";
 
-const ROTATE_MS = 5500;
+const ROTATE_MS = 6000;
 
 export function CourseSpotlight() {
-  const courses = useMemo(() => COURSES, []);
+  const courses = useMemo(() => buildBalancedCourseRotation(COURSES), []);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
   const course = courses[index];
+  const domain = course ? getDomainById(domainForCourse(course.category)) : null;
 
   const next = useCallback(() => {
     setIndex((i) => (i + 1) % courses.length);
@@ -32,8 +35,6 @@ export function CourseSpotlight() {
 
   if (!course) return null;
 
-  const categoryLabel = CATEGORY_META[course.category]?.label ?? course.category;
-
   return (
     <div
       className="mt-6"
@@ -41,20 +42,20 @@ export function CourseSpotlight() {
       onMouseLeave={() => setPaused(false)}
     >
       <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
-        Suggested course
+        Suggested for you · rotates across all domains
       </p>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-        <div className="relative min-h-[88px] flex-1 overflow-hidden rounded-xl border border-[var(--gold)]/25 bg-black/40 p-4">
+        <div className="relative min-h-[96px] flex-1 overflow-hidden rounded-xl border border-[var(--gold)]/20 bg-black/40 p-4 transition hover:border-[var(--gold)]/35">
           <AnimatePresence mode="wait">
             <motion.div
               key={course.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.28 }}
             >
               <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--gold)]">
-                {categoryLabel}
+                {domain?.label ?? "Learning"}
               </span>
               <p className="mt-1 font-serif text-lg font-semibold text-[var(--silver)]">
                 {course.title}
@@ -72,16 +73,16 @@ export function CourseSpotlight() {
             <button
               type="button"
               onClick={prev}
-              className="rounded-lg border border-white/10 bg-black/60 p-1.5 text-[var(--muted)] hover:text-white"
-              aria-label="Previous course"
+              className="rounded-lg border border-white/10 bg-black/60 p-1.5 text-[var(--muted)] transition hover:border-[var(--gold)]/25 hover:text-white"
+              aria-label="Previous suggestion"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               type="button"
               onClick={next}
-              className="rounded-lg border border-white/10 bg-black/60 p-1.5 text-[var(--muted)] hover:text-white"
-              aria-label="Next course"
+              className="rounded-lg border border-white/10 bg-black/60 p-1.5 text-[var(--muted)] transition hover:border-[var(--gold)]/25 hover:text-white"
+              aria-label="Next suggestion"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -90,10 +91,13 @@ export function CourseSpotlight() {
 
         <div className="flex flex-col gap-2 sm:w-48">
           <Button href={`/courses/${course.slug}/read`} variant="forge" className="h-full min-h-[44px]">
-            Open textbook <ArrowRight className="h-4 w-4" />
+            Start learning <ArrowRight className="h-4 w-4" />
           </Button>
-          <Button href="/courses" variant="secondary">
-            Browse library
+          <Button
+            href={`/courses?domain=${domain?.id ?? "technology"}`}
+            variant="secondary"
+          >
+            Browse {domain?.label ?? "courses"}
           </Button>
         </div>
       </div>
@@ -105,7 +109,7 @@ export function CourseSpotlight() {
             type="button"
             onClick={() => setIndex(i)}
             title={c.title}
-            className={`rounded-full transition-all ${
+            className={`rounded-full transition-all duration-200 ${
               i === index
                 ? "h-2 w-6 bg-[var(--gold)]"
                 : "h-2 w-2 bg-white/20 hover:bg-white/40"
@@ -114,12 +118,6 @@ export function CourseSpotlight() {
             aria-current={i === index ? "true" : undefined}
           />
         ))}
-        <Link
-          href={`/courses/${course.slug}/read`}
-          className="ml-auto text-xs text-[var(--gold)] hover:underline"
-        >
-          Read {course.title} →
-        </Link>
       </div>
     </div>
   );

@@ -1,14 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
+import Image from "next/image";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-16 sm:px-6 sm:pt-24">
-      <div className="pointer-events-none absolute inset-0 grid-bg opacity-60" />
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-[var(--accent)]/20 blur-[120px] animate-pulse-glow" />
+    <section className="relative overflow-hidden px-4 pb-20 pt-12 sm:px-6 sm:pt-20">
+      <div className="pointer-events-none absolute inset-0 grid-bg opacity-50" />
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-[var(--gold)]/10 blur-[120px] animate-pulse-glow" />
 
       <div className="relative mx-auto max-w-4xl text-center">
         <motion.div
@@ -16,15 +18,21 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-[var(--muted)]">
-            <Sparkles className="h-3.5 w-3.5 text-[var(--forge)]" />
-            Omnistrata · Education Reforged
-          </span>
-          <h1 className="mt-8 text-4xl font-bold tracking-tight sm:text-6xl text-gradient">
-            Train for Tomorrow.
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-[var(--muted)] sm:text-xl">
-            ForgEd is a free AI-powered platform to build skills in technology, business, insurance, cybersecurity, and the careers of the future — at your own pace.
+          <div className="mx-auto flex justify-center">
+            <Image
+              src="/forged-wordmark.png"
+              alt="ForgEd — Learn Skills That Matter."
+              width={320}
+              height={180}
+              className="h-auto w-full max-w-[min(100%,320px)] object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+              priority
+            />
+          </div>
+
+          <ForgEdTagline className="mt-6" />
+
+          <p className="mx-auto mt-8 max-w-2xl text-lg text-[var(--muted)] sm:text-xl">
+            A free AI-powered platform to build skills in technology, business, insurance, cybersecurity, and the careers of the future — at your own pace.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button href="/dashboard" variant="forge">

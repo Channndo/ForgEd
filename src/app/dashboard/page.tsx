@@ -21,7 +21,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Your dashboard</h1>
+          <h1 className="font-serif text-3xl font-bold text-[var(--silver)]">Your dashboard</h1>
           <p className="mt-1 text-[var(--muted)]">Track XP, streaks, and learning momentum.</p>
         </div>
         <Button href="/courses" variant="forge">Continue learning</Button>

@@ -37,7 +37,7 @@ export function KodaFloatingButton() {
     <button
       type="button"
       onClick={toggle}
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-[var(--koda-gold)]/40 bg-[#0a0c12]/90 shadow-lg backdrop-blur-md transition hover:scale-105 hover:shadow-[0_0_32px_rgba(201,169,98,0.2)]"
+      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-[var(--koda-gold)]/40 bg-[var(--background)]/95 shadow-lg backdrop-blur-md transition hover:scale-105 hover:shadow-[0_0_32px_rgba(212,175,55,0.25)]"
       aria-label="Open KODA"
     >
       <KodaLogo size={36} />

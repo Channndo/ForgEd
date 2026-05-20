@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Flame, LayoutDashboard, BookOpen, Sparkles, Briefcase } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import { ForgEdLogo, ForgEdWordmarkText } from "@/components/brand/ForgEdLogo";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -17,15 +18,11 @@ export function Header() {
   const { progress, xpBar } = useProgress();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/5 glass">
+    <header className="sticky top-0 z-50 border-b border-[var(--gold)]/10 glass">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--accent)] to-[var(--forge)] text-sm font-bold text-white glow-accent">
-            F
-          </span>
-          <span className="text-lg font-semibold tracking-tight">
-            Forg<span className="text-[var(--forge)]">Ed</span>
-          </span>
+        <Link href="/" className="flex items-center gap-3 group">
+          <ForgEdLogo variant="icon" priority />
+          <ForgEdWordmarkText className="hidden sm:inline" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -37,8 +34,8 @@ export function Header() {
                 href={href}
                 className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
                   active
-                    ? "bg-white/10 text-white"
-                    : "text-[var(--muted)] hover:bg-white/5 hover:text-white"
+                    ? "bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20"
+                    : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--silver)]"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -50,21 +47,23 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           <div className="hidden items-center gap-2 sm:flex">
-            <Flame className="h-4 w-4 text-[var(--forge)]" />
-            <span className="text-sm font-medium">{progress.streak} day streak</span>
+            <Flame className="h-4 w-4 text-[var(--gold)]" />
+            <span className="text-sm font-medium text-[var(--silver)]">
+              {progress.streak} day streak
+            </span>
           </div>
           <div className="flex flex-col items-end gap-0.5">
             <span className="text-xs text-[var(--muted)]">Level {xpBar.level}</span>
             <div className="h-1.5 w-24 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--forge)] transition-all"
+                className="h-full rounded-full bg-gradient-to-r from-[var(--silver)] to-[var(--gold)] transition-all"
                 style={{ width: `${xpBar.percent}%` }}
               />
             </div>
           </div>
           <Link
             href="/dashboard"
-            className="rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            className="rounded-lg border border-[var(--gold)]/30 bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold)] px-3 py-2 text-sm font-medium text-[#121212] hover:opacity-90 transition-opacity shadow-[0_0_20px_var(--accent-glow)]"
           >
             My Path
           </Link>

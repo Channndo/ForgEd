@@ -56,7 +56,7 @@ export function KodaChatPanel() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0.8 }}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
-            className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col border-l border-[var(--koda-silver)]/15 bg-[#0a0c12]/95 shadow-2xl backdrop-blur-xl"
+            className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col border-l border-[var(--koda-gold)]/15 bg-[var(--background)]/98 shadow-2xl backdrop-blur-xl"
           >
             <header className="flex items-center justify-between border-b border-white/5 px-4 py-4">
               <KodaLogoMark />

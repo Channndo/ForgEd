@@ -11,7 +11,7 @@ export function Card({
 }) {
   return (
     <div
-      className={`glass rounded-2xl p-6 ${glow ? "glow-accent" : ""} ${className}`}
+      className={`glass rounded-2xl p-6 ${glow ? "glow-gold border-[var(--gold)]/25" : ""} ${className}`}
     >
       {children}
     </div>

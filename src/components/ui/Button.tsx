@@ -5,12 +5,12 @@ type Variant = "primary" | "secondary" | "ghost" | "forge";
 
 const styles: Record<Variant, string> = {
   primary:
-    "bg-[var(--accent)] text-white hover:opacity-90 glow-accent",
+    "border border-[var(--gold)]/40 bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold)] text-[#121212] hover:opacity-90 glow-gold",
   secondary:
-    "bg-white/10 text-white hover:bg-white/15 border border-white/10",
-  ghost: "text-[var(--muted)] hover:text-white hover:bg-white/5",
+    "bg-white/5 text-[var(--silver)] hover:bg-white/10 border border-[var(--silver)]/20",
+  ghost: "text-[var(--muted)] hover:text-[var(--silver)] hover:bg-white/5",
   forge:
-    "bg-gradient-to-r from-[var(--forge)] to-[var(--accent)] text-white hover:opacity-90 glow-forge",
+    "border border-[var(--gold)]/50 bg-gradient-to-r from-[var(--gold-dark)] via-[var(--gold)] to-[#e8c96a] text-[#121212] font-semibold hover:opacity-95 glow-gold",
 };
 
 export function Button({

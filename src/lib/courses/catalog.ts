@@ -7,47 +7,47 @@ export const CATEGORY_META: Record<
   insurance: {
     label: "Insurance",
     description: "Risk, coverage, and industry literacy",
-    color: "from-cyan-500/20 to-blue-600/20",
+    color: "from-[var(--gold)]/15 to-[var(--silver)]/5",
   },
   ai: {
     label: "AI Fundamentals",
     description: "Practical AI for everyday work",
-    color: "from-violet-500/20 to-purple-600/20",
+    color: "from-[var(--silver)]/15 to-[var(--gold)]/10",
   },
   cybersecurity: {
     label: "Cybersecurity",
     description: "Protect yourself and your organization",
-    color: "from-emerald-500/20 to-teal-600/20",
+    color: "from-[var(--gold-dark)]/15 to-[var(--gold)]/5",
   },
   it: {
     label: "IT Fundamentals",
     description: "Devices, networks, and support basics",
-    color: "from-sky-500/20 to-indigo-600/20",
+    color: "from-[var(--silver)]/12 to-white/5",
   },
   automotive: {
     label: "Automotive",
     description: "Vehicles, safety, and modern mobility",
-    color: "from-orange-500/20 to-amber-600/20",
+    color: "from-[var(--gold)]/12 to-[var(--gold-dark)]/8",
   },
   financial: {
     label: "Financial Literacy",
     description: "Budgets, credit, and smart money habits",
-    color: "from-green-500/20 to-lime-600/20",
+    color: "from-[var(--gold-dark)]/12 to-[var(--silver)]/8",
   },
   communication: {
     label: "Communication",
     description: "Professional speaking and writing",
-    color: "from-pink-500/20 to-rose-600/20",
+    color: "from-[var(--silver)]/15 to-[var(--gold)]/8",
   },
   business: {
     label: "Business",
     description: "Operations, sales, and entrepreneurship",
-    color: "from-yellow-500/20 to-orange-600/20",
+    color: "from-[var(--gold)]/18 to-[var(--silver)]/6",
   },
   technology: {
     label: "Technology for Beginners",
     description: "Digital confidence from day one",
-    color: "from-slate-500/20 to-zinc-600/20",
+    color: "from-white/8 to-[var(--silver)]/10",
   },
 };
 

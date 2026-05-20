@@ -50,6 +50,18 @@ import {
   CONLAW_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/constitutional-law";
 import {
+  CONTRACTS_TEXTBOOK,
+  CONTRACTS_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/contracts-law";
+import {
+  CRIM_TEXTBOOK,
+  CRIM_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/criminal-law-fundamentals";
+import {
+  TORTS_TEXTBOOK,
+  TORTS_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/torts-law";
+import {
   MECH_TEXTBOOK,
   MECH_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/mechanical-engineering-basics";
@@ -61,6 +73,46 @@ import {
   CE_TEXTBOOK,
   CE_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/civil-engineering-basics";
+import {
+  CHE_TEXTBOOK,
+  CHE_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/chemical-engineering-basics";
+import {
+  IE_TEXTBOOK,
+  IE_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/industrial-engineering-basics";
+import {
+  AERO_TEXTBOOK,
+  AERO_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/aerospace-engineering-basics";
+import {
+  HVAC_TEXTBOOK,
+  HVAC_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/hvac-fundamentals";
+import {
+  SCI_TEXTBOOK,
+  SCI_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/science-fundamentals";
+import {
+  HLTH_TEXTBOOK,
+  HLTH_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/healthcare-fundamentals";
+import {
+  CREA_TEXTBOOK,
+  CREA_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/creative-media-fundamentals";
+import {
+  PDEV_TEXTBOOK,
+  PDEV_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/personal-development-fundamentals";
+import {
+  TEACH_TEXTBOOK,
+  TEACH_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/teaching-fundamentals";
+import {
+  ENTR_TEXTBOOK,
+  ENTR_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/entrepreneurship-fundamentals";
 
 const BUNDLES: Record<string, TextbookBundle> = {
   "insurance-fundamentals": {
@@ -123,6 +175,21 @@ const BUNDLES: Record<string, TextbookBundle> = {
     intro: CONLAW_TEXTBOOK_INTRO,
     chapters: CONLAW_TEXTBOOK,
   },
+  "contracts-law": {
+    slug: "contracts-law",
+    intro: CONTRACTS_TEXTBOOK_INTRO,
+    chapters: CONTRACTS_TEXTBOOK,
+  },
+  "criminal-law-fundamentals": {
+    slug: "criminal-law-fundamentals",
+    intro: CRIM_TEXTBOOK_INTRO,
+    chapters: CRIM_TEXTBOOK,
+  },
+  "torts-law": {
+    slug: "torts-law",
+    intro: TORTS_TEXTBOOK_INTRO,
+    chapters: TORTS_TEXTBOOK,
+  },
   "mechanical-engineering-basics": {
     slug: "mechanical-engineering-basics",
     intro: MECH_TEXTBOOK_INTRO,
@@ -137,6 +204,56 @@ const BUNDLES: Record<string, TextbookBundle> = {
     slug: "civil-engineering-basics",
     intro: CE_TEXTBOOK_INTRO,
     chapters: CE_TEXTBOOK,
+  },
+  "chemical-engineering-basics": {
+    slug: "chemical-engineering-basics",
+    intro: CHE_TEXTBOOK_INTRO,
+    chapters: CHE_TEXTBOOK,
+  },
+  "industrial-engineering-basics": {
+    slug: "industrial-engineering-basics",
+    intro: IE_TEXTBOOK_INTRO,
+    chapters: IE_TEXTBOOK,
+  },
+  "aerospace-engineering-basics": {
+    slug: "aerospace-engineering-basics",
+    intro: AERO_TEXTBOOK_INTRO,
+    chapters: AERO_TEXTBOOK,
+  },
+  "hvac-fundamentals": {
+    slug: "hvac-fundamentals",
+    intro: HVAC_TEXTBOOK_INTRO,
+    chapters: HVAC_TEXTBOOK,
+  },
+  "science-fundamentals": {
+    slug: "science-fundamentals",
+    intro: SCI_TEXTBOOK_INTRO,
+    chapters: SCI_TEXTBOOK,
+  },
+  "healthcare-fundamentals": {
+    slug: "healthcare-fundamentals",
+    intro: HLTH_TEXTBOOK_INTRO,
+    chapters: HLTH_TEXTBOOK,
+  },
+  "creative-media-fundamentals": {
+    slug: "creative-media-fundamentals",
+    intro: CREA_TEXTBOOK_INTRO,
+    chapters: CREA_TEXTBOOK,
+  },
+  "personal-development-fundamentals": {
+    slug: "personal-development-fundamentals",
+    intro: PDEV_TEXTBOOK_INTRO,
+    chapters: PDEV_TEXTBOOK,
+  },
+  "teaching-fundamentals": {
+    slug: "teaching-fundamentals",
+    intro: TEACH_TEXTBOOK_INTRO,
+    chapters: TEACH_TEXTBOOK,
+  },
+  "entrepreneurship-fundamentals": {
+    slug: "entrepreneurship-fundamentals",
+    intro: ENTR_TEXTBOOK_INTRO,
+    chapters: ENTR_TEXTBOOK,
   },
 };
 

@@ -26,9 +26,11 @@ import {
 } from "lucide-react";
 import { ForgEdLogo, ForgEdWordmarkText } from "@/components/brand/ForgEdLogo";
 import { PLATFORM_NAV } from "@/lib/navigation";
+import { COURSES } from "@/lib/courses/catalog";
 import {
   FUTURE_DOMAINS,
   LEARNING_DOMAINS,
+  filterCoursesByDomain,
   type LearningDomainId,
 } from "@/lib/ecosystem/domains";
 
@@ -105,7 +107,7 @@ function SidebarInner({
         />
       )}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-full flex-col border-r border-white/[0.06] bg-[#050505] transition-all duration-300 ease-out lg:sticky lg:z-30 ${
+        className={`fixed left-0 top-0 z-50 flex h-dvh max-h-dvh flex-col border-r border-white/[0.06] bg-[#050505] transition-all duration-300 ease-out lg:sticky lg:z-30 ${
           collapsed ? "w-[72px]" : "w-[272px]"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
@@ -124,7 +126,7 @@ function SidebarInner({
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 py-4 scrollbar-thin">
+        <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-4 scrollbar-thin">
           <p
             className={`mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted)] ${collapsed ? "sr-only" : ""}`}
           >
@@ -161,7 +163,7 @@ function SidebarInner({
                 const Icon = DOMAIN_ICONS[domain.id];
                 const isOpen = expanded.has(domain.id);
                 const isDomainActive = activeDomain === domain.id;
-                const hasCourses = domain.status === "active";
+                const domainCourses = filterCoursesByDomain(COURSES, domain.id);
 
                 return (
                   <div key={domain.id} className="rounded-lg">
@@ -174,9 +176,9 @@ function SidebarInner({
                       <span className="flex-1 truncate text-left font-medium">
                         {domain.label}
                       </span>
-                      {domain.status === "coming-soon" && (
-                        <span className="rounded bg-white/5 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[var(--muted)]">
-                          Soon
+                      {!collapsed && domainCourses.length > 0 && (
+                        <span className="rounded bg-white/5 px-1.5 py-0.5 text-[9px] tabular-nums text-[var(--muted)]">
+                          {domainCourses.length}
                         </span>
                       )}
                       <ChevronDown
@@ -188,22 +190,36 @@ function SidebarInner({
                       className={`grid transition-all duration-200 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
                     >
                       <div className="overflow-hidden">
-                        <ul className="mb-1 ml-3 space-y-0.5 border-l border-white/[0.06] pl-3 py-1">
-                          {domain.subtopics.slice(0, 6).map((topic) => (
-                            <li key={topic}>
-                              <span className="block py-1 text-xs text-[var(--muted)]">
-                                {topic}
-                              </span>
-                            </li>
-                          ))}
-                          {hasCourses ? (
+                        <ul className="mb-1 ml-3 max-h-[min(280px,40vh)] space-y-0.5 overflow-y-auto overscroll-contain border-l border-white/[0.06] pl-3 py-1 scrollbar-thin">
+                          {domainCourses.map((course) => {
+                            const coursePath = `/courses/${course.slug}`;
+                            const courseActive =
+                              pathname === coursePath ||
+                              pathname.startsWith(`${coursePath}/`);
+                            return (
+                              <li key={course.slug}>
+                                <Link
+                                  href={coursePath}
+                                  onClick={onMobileClose}
+                                  className={`block py-1.5 text-xs leading-snug transition-colors ${
+                                    courseActive
+                                      ? "font-medium text-[var(--gold)]"
+                                      : "text-[var(--muted)] hover:text-[var(--silver)]"
+                                  }`}
+                                >
+                                  {course.title}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                          {domainCourses.length > 0 ? (
                             <li>
                               <Link
                                 href={`/courses?domain=${domain.id}`}
                                 onClick={onMobileClose}
-                                className="mt-1 block py-1.5 text-xs font-medium text-[var(--gold)] hover:underline"
+                                className="mt-1 block py-1.5 text-xs font-medium text-[var(--gold)]/90 hover:text-[var(--gold)] hover:underline"
                               >
-                                Browse {domain.label} courses →
+                                Browse {domain.label} →
                               </Link>
                             </li>
                           ) : (
@@ -242,7 +258,7 @@ function SidebarInner({
             </div>
           ) : (
             <div className="space-y-1 px-1">
-              {LEARNING_DOMAINS.filter((d) => d.status === "active").map((domain) => {
+              {LEARNING_DOMAINS.map((domain) => {
                 const Icon = DOMAIN_ICONS[domain.id];
                 return (
                   <Link

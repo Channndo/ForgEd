@@ -8,6 +8,7 @@ export interface QuizQuestion {
 
 /** Questions drawn randomly from a 150-question subject bank */
 export const QUIZ_BANK_SIZE = 150;
+export const SECTION_QUIZ_LENGTH = 2;
 export const CHAPTER_QUIZ_LENGTH = 5;
 export const COURSE_REVIEW_QUIZ_LENGTH = 10;
 export const FINAL_EXAM_LENGTH = 20;

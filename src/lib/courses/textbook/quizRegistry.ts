@@ -13,9 +13,22 @@ import { TECHNOLOGY_FOR_BEGINNERS_BANK } from "./banks/technology-for-beginners"
 import { LEGAL_FUNDAMENTALS_BANK } from "./banks/legal-fundamentals";
 import { BUSINESS_LAW_BANK } from "./banks/business-law";
 import { CONSTITUTIONAL_LAW_BANK } from "./banks/constitutional-law";
+import { CONTRACTS_LAW_BANK } from "./banks/contracts-law";
+import { CRIMINAL_LAW_FUNDAMENTALS_BANK } from "./banks/criminal-law-fundamentals";
+import { TORTS_LAW_BANK } from "./banks/torts-law";
 import { MECHANICAL_ENGINEERING_BASICS_BANK } from "./banks/mechanical-engineering-basics";
 import { ELECTRICAL_ENGINEERING_BASICS_BANK } from "./banks/electrical-engineering-basics";
 import { CIVIL_ENGINEERING_BASICS_BANK } from "./banks/civil-engineering-basics";
+import { CHEMICAL_ENGINEERING_BASICS_BANK } from "./banks/chemical-engineering-basics";
+import { INDUSTRIAL_ENGINEERING_BASICS_BANK } from "./banks/industrial-engineering-basics";
+import { AEROSPACE_ENGINEERING_BASICS_BANK } from "./banks/aerospace-engineering-basics";
+import { HVAC_FUNDAMENTALS_BANK } from "./banks/hvac-fundamentals";
+import { SCIENCE_FUNDAMENTALS_BANK } from "./banks/science-fundamentals";
+import { HEALTHCARE_FUNDAMENTALS_BANK } from "./banks/healthcare-fundamentals";
+import { CREATIVE_MEDIA_FUNDAMENTALS_BANK } from "./banks/creative-media-fundamentals";
+import { PERSONAL_DEVELOPMENT_FUNDAMENTALS_BANK } from "./banks/personal-development-fundamentals";
+import { TEACHING_FUNDAMENTALS_BANK } from "./banks/teaching-fundamentals";
+import { ENTREPRENEURSHIP_FUNDAMENTALS_BANK } from "./banks/entrepreneurship-fundamentals";
 
 function buildInsuranceBank(): QuizQuestion[] {
   const merged = [...INSURANCE_QUIZ_BANK, ...INSURANCE_SUPPLEMENT];
@@ -35,9 +48,22 @@ const BANKS: Record<string, QuizQuestion[]> = {
   "legal-fundamentals": LEGAL_FUNDAMENTALS_BANK,
   "business-law": BUSINESS_LAW_BANK,
   "constitutional-law": CONSTITUTIONAL_LAW_BANK,
+  "contracts-law": CONTRACTS_LAW_BANK,
+  "criminal-law-fundamentals": CRIMINAL_LAW_FUNDAMENTALS_BANK,
+  "torts-law": TORTS_LAW_BANK,
   "mechanical-engineering-basics": MECHANICAL_ENGINEERING_BASICS_BANK,
   "electrical-engineering-basics": ELECTRICAL_ENGINEERING_BASICS_BANK,
   "civil-engineering-basics": CIVIL_ENGINEERING_BASICS_BANK,
+  "chemical-engineering-basics": CHEMICAL_ENGINEERING_BASICS_BANK,
+  "industrial-engineering-basics": INDUSTRIAL_ENGINEERING_BASICS_BANK,
+  "aerospace-engineering-basics": AEROSPACE_ENGINEERING_BASICS_BANK,
+  "hvac-fundamentals": HVAC_FUNDAMENTALS_BANK,
+  "science-fundamentals": SCIENCE_FUNDAMENTALS_BANK,
+  "healthcare-fundamentals": HEALTHCARE_FUNDAMENTALS_BANK,
+  "creative-media-fundamentals": CREATIVE_MEDIA_FUNDAMENTALS_BANK,
+  "personal-development-fundamentals": PERSONAL_DEVELOPMENT_FUNDAMENTALS_BANK,
+  "teaching-fundamentals": TEACHING_FUNDAMENTALS_BANK,
+  "entrepreneurship-fundamentals": ENTREPRENEURSHIP_FUNDAMENTALS_BANK,
 };
 
 export function getQuizBank(slug: string): QuizQuestion[] {

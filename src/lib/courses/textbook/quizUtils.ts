@@ -3,6 +3,7 @@ import {
   CHAPTER_QUIZ_LENGTH,
   COURSE_REVIEW_QUIZ_LENGTH,
   FINAL_EXAM_LENGTH,
+  SECTION_QUIZ_LENGTH,
 } from "@/lib/quizTypes";
 import {
   getQuizBankSize,
@@ -12,6 +13,14 @@ import {
 } from "./quizRegistry";
 
 export { shuffleQuestions, getQuizBankSize, questionsForChapter };
+
+export function pickSectionQuiz(slug: string, chapterNumber: number): QuizQuestion[] {
+  const pool = questionsForChapter(slug, chapterNumber);
+  if (pool.length >= SECTION_QUIZ_LENGTH) {
+    return shuffleQuestions(pool).slice(0, SECTION_QUIZ_LENGTH);
+  }
+  return pickRandomQuestions(slug, SECTION_QUIZ_LENGTH, { chapterNumber });
+}
 
 export function pickChapterQuiz(slug: string, chapterNumber: number): QuizQuestion[] {
   const pool = questionsForChapter(slug, chapterNumber);

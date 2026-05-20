@@ -60,6 +60,41 @@ export const CATEGORY_META: Record<
     description: "Mechanical, electrical, and civil engineering foundations",
     color: "from-[var(--gold-dark)]/14 to-white/6",
   },
+  "skilled-trades": {
+    label: "Skilled Trades",
+    description: "HVAC, electrical, plumbing, and trade fundamentals",
+    color: "from-[var(--gold)]/12 to-[var(--silver)]/6",
+  },
+  science: {
+    label: "Science",
+    description: "Foundational biology, chemistry, physics, and lab skills",
+    color: "from-white/8 to-[var(--silver)]/10",
+  },
+  healthcare: {
+    label: "Healthcare",
+    description: "Clinical basics, billing, and healthcare careers",
+    color: "from-[var(--gold-dark)]/12 to-[var(--gold)]/6",
+  },
+  creative: {
+    label: "Creative",
+    description: "Design, video, audio, writing, and creative careers",
+    color: "from-[var(--silver)]/14 to-[var(--gold)]/8",
+  },
+  "personal-development": {
+    label: "Personal Development",
+    description: "Habits, goals, mindset, and life skills",
+    color: "from-[var(--gold)]/10 to-white/5",
+  },
+  education: {
+    label: "Education",
+    description: "Teaching, tutoring, and learning science",
+    color: "from-[var(--silver)]/12 to-[var(--gold)]/6",
+  },
+  entrepreneurship: {
+    label: "Entrepreneurship",
+    description: "Startups, product, finance, and go-to-market",
+    color: "from-[var(--gold-dark)]/14 to-[var(--silver)]/8",
+  },
 };
 
 function textbookCourse(
@@ -202,7 +237,7 @@ export const COURSES: Course[] = [
     "legal-fundamentals",
     "Legal Fundamentals",
     "law",
-    "Ten-chapter textbook on legal systems, courts, civil and criminal law, legal reasoning, and pathways into legal study and work.",
+    "Twenty-chapter textbook on legal systems, courts, civil and criminal law, property, contracts, torts, evidence, ethics, and legal careers.",
     [
       { id: "legal-systems", name: "Legal Systems" },
       { id: "courts", name: "Courts & Procedure" },
@@ -214,7 +249,7 @@ export const COURSES: Course[] = [
     "business-law",
     "Business Law",
     "law",
-    "Ten-chapter textbook on contracts, torts, business entities, employment law, intellectual property, and regulatory compliance.",
+    "Twenty-chapter textbook on contracts, torts, entities, employment, IP, antitrust, compliance, bankruptcy, and business risk.",
     [
       { id: "contracts", name: "Contracts" },
       { id: "torts", name: "Torts & Liability" },
@@ -226,7 +261,7 @@ export const COURSES: Course[] = [
     "constitutional-law",
     "Constitutional Law",
     "law",
-    "Ten-chapter textbook on constitutional structure, rights, due process, equal protection, and contemporary constitutional debates.",
+    "Twenty-chapter textbook on constitutional structure, separation of powers, rights, criminal procedure, voting, and civic participation.",
     [
       { id: "structure", name: "Government Structure" },
       { id: "rights", name: "Constitutional Rights" },
@@ -235,10 +270,46 @@ export const COURSES: Course[] = [
     ]
   ),
   textbookCourse(
+    "contracts-law",
+    "Contracts Law",
+    "law",
+    "Twenty-chapter textbook on contract formation, interpretation, breach, remedies, sales law, electronic contracts, and drafting.",
+    [
+      { id: "formation", name: "Contract Formation" },
+      { id: "breach", name: "Breach & Remedies" },
+      { id: "sales-ucc", name: "Sales & UCC" },
+      { id: "drafting", name: "Contract Drafting" },
+    ]
+  ),
+  textbookCourse(
+    "criminal-law-fundamentals",
+    "Criminal Law Fundamentals",
+    "law",
+    "Twenty-chapter textbook on elements of crime, defenses, sentencing, procedure, cybercrime, and the criminal justice system.",
+    [
+      { id: "elements", name: "Elements of Crime" },
+      { id: "defenses", name: "Criminal Defenses" },
+      { id: "procedure", name: "Criminal Procedure" },
+      { id: "justice-system", name: "Criminal Justice" },
+    ]
+  ),
+  textbookCourse(
+    "torts-law",
+    "Torts Law",
+    "law",
+    "Twenty-chapter textbook on intentional torts, negligence, strict liability, products liability, defamation, and tort reform.",
+    [
+      { id: "negligence", name: "Negligence" },
+      { id: "strict-liability", name: "Strict Liability" },
+      { id: "defamation", name: "Defamation & Privacy" },
+      { id: "products", name: "Products Liability" },
+    ]
+  ),
+  textbookCourse(
     "mechanical-engineering-basics",
     "Mechanical Engineering Basics",
     "engineering",
-    "Ten-chapter textbook on statics, dynamics, materials, thermodynamics, fluids, machine elements, manufacturing, and design.",
+    "Fifteen-chapter textbook on statics, dynamics, materials, thermodynamics, fluids, heat transfer, CAD, vibrations, and design.",
     [
       { id: "statics", name: "Statics" },
       { id: "materials", name: "Materials" },
@@ -250,7 +321,7 @@ export const COURSES: Course[] = [
     "electrical-engineering-basics",
     "Electrical Engineering Basics",
     "engineering",
-    "Ten-chapter textbook on DC/AC circuits, electronics, digital logic, power systems, controls, and electrical safety.",
+    "Fifteen-chapter textbook on DC/AC circuits, electronics, embedded systems, power, renewables, controls, and electrical safety.",
     [
       { id: "circuits", name: "Circuit Analysis" },
       { id: "electronics", name: "Electronics" },
@@ -262,12 +333,132 @@ export const COURSES: Course[] = [
     "civil-engineering-basics",
     "Civil Engineering Basics",
     "engineering",
-    "Ten-chapter textbook on structural analysis, geotechnical, water resources, transportation, environmental systems, and construction.",
+    "Fifteen-chapter textbook on structures, geotechnical, foundations, water, transportation, urban planning, and sustainable infrastructure.",
     [
       { id: "structures", name: "Structures" },
       { id: "geotech", name: "Geotechnical" },
       { id: "water", name: "Water Resources" },
       { id: "transport", name: "Transportation" },
+    ]
+  ),
+  textbookCourse(
+    "chemical-engineering-basics",
+    "Chemical Engineering Basics",
+    "engineering",
+    "Fifteen-chapter textbook on material and energy balances, transport phenomena, reactions, separations, process control, and plant design.",
+    [
+      { id: "balances", name: "Material & Energy Balances" },
+      { id: "transport", name: "Transport Phenomena" },
+      { id: "reactions", name: "Reaction Engineering" },
+      { id: "separations", name: "Separation Processes" },
+    ]
+  ),
+  textbookCourse(
+    "industrial-engineering-basics",
+    "Industrial Engineering Basics",
+    "engineering",
+    "Fifteen-chapter textbook on operations research, lean, quality, supply chain, ergonomics, scheduling, and automation.",
+    [
+      { id: "or", name: "Operations Research" },
+      { id: "lean", name: "Lean & Quality" },
+      { id: "supply-chain", name: "Supply Chain" },
+      { id: "ergonomics", name: "Ergonomics" },
+    ]
+  ),
+  textbookCourse(
+    "aerospace-engineering-basics",
+    "Aerospace Engineering Basics",
+    "engineering",
+    "Fifteen-chapter textbook on aerodynamics, flight mechanics, propulsion, structures, avionics, orbital mechanics, and aircraft design.",
+    [
+      { id: "aerodynamics", name: "Aerodynamics" },
+      { id: "propulsion", name: "Propulsion" },
+      { id: "structures", name: "Aerospace Structures" },
+      { id: "orbital", name: "Orbital Mechanics" },
+    ]
+  ),
+  textbookCourse(
+    "hvac-fundamentals",
+    "HVAC Fundamentals",
+    "skilled-trades",
+    "Ten-chapter textbook on heating, cooling, airflow, controls, installation, maintenance, efficiency, codes, and HVAC careers.",
+    [
+      { id: "heating", name: "Heating Systems" },
+      { id: "cooling", name: "Cooling & Refrigeration" },
+      { id: "airflow", name: "Airflow" },
+      { id: "hvac-service", name: "HVAC Service" },
+    ]
+  ),
+  textbookCourse(
+    "science-fundamentals",
+    "Science Fundamentals",
+    "science",
+    "Ten-chapter textbook on the scientific method, biology, chemistry, physics, earth science, lab skills, and science careers.",
+    [
+      { id: "scientific-method", name: "Scientific Method" },
+      { id: "biology", name: "Biology" },
+      { id: "chemistry", name: "Chemistry" },
+      { id: "physics", name: "Physics" },
+    ]
+  ),
+  textbookCourse(
+    "healthcare-fundamentals",
+    "Healthcare Fundamentals",
+    "healthcare",
+    "Ten-chapter textbook on healthcare systems, patient care, terminology, billing, pharmacy, public health, and HIPAA.",
+    [
+      { id: "health-systems", name: "Healthcare Systems" },
+      { id: "patient-care", name: "Patient Care" },
+      { id: "billing", name: "Billing & Coding" },
+      { id: "health-careers", name: "Healthcare Careers" },
+    ]
+  ),
+  textbookCourse(
+    "creative-media-fundamentals",
+    "Creative Media Fundamentals",
+    "creative",
+    "Ten-chapter textbook on design, visual tools, photography, video, audio, writing, branding, and creative careers.",
+    [
+      { id: "design", name: "Design Principles" },
+      { id: "video", name: "Video Editing" },
+      { id: "audio", name: "Audio Basics" },
+      { id: "portfolio", name: "Portfolios" },
+    ]
+  ),
+  textbookCourse(
+    "personal-development-fundamentals",
+    "Personal Development Fundamentals",
+    "personal-development",
+    "Ten-chapter textbook on mindset, goals, habits, time management, resilience, career growth, and life design.",
+    [
+      { id: "mindset", name: "Growth Mindset" },
+      { id: "goals", name: "Goal Setting" },
+      { id: "habits", name: "Habits" },
+      { id: "resilience", name: "Resilience" },
+    ]
+  ),
+  textbookCourse(
+    "teaching-fundamentals",
+    "Teaching Fundamentals",
+    "education",
+    "Ten-chapter textbook on learning theory, lesson planning, classroom management, assessment, differentiation, and EdTech.",
+    [
+      { id: "pedagogy", name: "Learning Theory" },
+      { id: "lessons", name: "Lesson Planning" },
+      { id: "classroom", name: "Classroom Management" },
+      { id: "assessment-ed", name: "Assessment" },
+    ]
+  ),
+  textbookCourse(
+    "entrepreneurship-fundamentals",
+    "Entrepreneurship Fundamentals",
+    "entrepreneurship",
+    "Ten-chapter textbook on entrepreneurial mindset, validation, business models, marketing, finance, legal basics, and scaling.",
+    [
+      { id: "ideation", name: "Ideation" },
+      { id: "models", name: "Business Models" },
+      { id: "startup-finance", name: "Startup Finance" },
+      { id: "scaling", name: "Scaling" },
     ]
   ),
 ];

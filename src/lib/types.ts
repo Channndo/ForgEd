@@ -9,7 +9,14 @@ export type CourseCategory =
   | "business"
   | "technology"
   | "law"
-  | "engineering";
+  | "engineering"
+  | "skilled-trades"
+  | "science"
+  | "healthcare"
+  | "creative"
+  | "personal-development"
+  | "education"
+  | "entrepreneurship";
 
 export type Difficulty = "beginner" | "intermediate" | "advanced";
 
@@ -70,6 +77,8 @@ export interface UserProgress {
   courseProgress: Record<string, number>;
   /** courseId → chapter numbers with passed chapter quizzes (5 questions) */
   chapterQuickChecks?: Record<string, number[]>;
+  /** courseId → lesson ids (chapterId-sectionId) with passed section quizzes */
+  sectionQuizzesPassed?: Record<string, string[]>;
   /** courseIds that passed the 10-question course review quiz */
   courseReviewQuizPassed?: string[];
   /** courseIds that passed the 20-question final exam (unlocks course completion) */

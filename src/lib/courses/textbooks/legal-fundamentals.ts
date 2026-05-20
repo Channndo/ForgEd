@@ -3,10 +3,10 @@ import { chapter, section } from "@/lib/courses/textbook/factory";
 
 export const LEGAL_TEXTBOOK_INTRO: TextbookIntro = {
   title: "Legal Fundamentals",
-  subtitle: "ForgEd deep-dive — legal systems, courts, civil and criminal law, reasoning, and professional pathways",
+  subtitle: "ForgEd deep-dive — legal fundamentals",
   paragraphs: [
-    "This ForgEd digital textbook presents Legal Fundamentals at academic survey depth — structured chapters, cited frameworks, and rigorous prose suitable for self-paced study before certifications, college prep, or workplace upskilling.",
-    "Each chapter includes learning objectives, section-level explanations, and assessments aligned to a 150-question subject bank. Read sequentially or jump via the table of contents; progress, chapter quizzes, and final exams are tracked in your ForgEd profile.",
+    "This ForgEd digital textbook presents Legal Fundamentals at academic survey depth — twenty chapters, cited frameworks, and rigorous prose suitable for self-paced study before certifications, college prep, or workplace upskilling.",
+    "Each chapter includes learning objectives, section-level explanations, and assessments aligned to a subject question bank. Read sequentially or jump via the table of contents; progress, chapter quizzes, and final exams are tracked in your ForgEd profile.",
     "Material is general education, not legal advice or professional engineering sign-off. Always verify current codes, statutes, standards, and organizational policies when applying concepts in the field.",
   ],
 };
@@ -269,66 +269,386 @@ export const LEGAL_TEXTBOOK: TextbookChapter[] = [
     ]
   ),
   chapter(
-    "law-technology",
+    "property-law",
     9,
-    "Law, Technology, and Emerging Issues",
+    "Property Law Essentials",
     [
       section(
-        "law-technology-s1",
-        "9.1 Law, Technology, and Emerging Issues — core concepts (1)",
-        ["9.1 Law, Technology, and Emerging Issues — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and emerging issues in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and emerging issues appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and emerging issues interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "property-law-s1",
+        "9.1 Property Law Essentials — core concepts (1)",
+        ["9.1 Property Law Essentials — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply property law essentials in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When property law essentials appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, property law essentials interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
-        "law-technology-s2",
-        "9.2 Law, Technology, and Emerging Issues — core concepts (2)",
-        ["9.2 Law, Technology, and Emerging Issues — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and emerging issues in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and emerging issues appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and emerging issues interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "property-law-s2",
+        "9.2 Property Law Essentials — core concepts (2)",
+        ["9.2 Property Law Essentials — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply property law essentials in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When property law essentials appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, property law essentials interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
-        "law-technology-s3",
-        "9.3 Law, Technology, and Emerging Issues — core concepts (3)",
-        ["9.3 Law, Technology, and Emerging Issues — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and emerging issues in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and emerging issues appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and emerging issues interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "property-law-s3",
+        "9.3 Property Law Essentials — core concepts (3)",
+        ["9.3 Property Law Essentials — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply property law essentials in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When property law essentials appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, property law essentials interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
-        "law-technology-s4",
-        "9.4 Law, Technology, and Emerging Issues — core concepts (4)",
-        ["9.4 Law, Technology, and Emerging Issues — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and emerging issues in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and emerging issues appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and emerging issues interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "property-law-s4",
+        "9.4 Property Law Essentials — core concepts (4)",
+        ["9.4 Property Law Essentials — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply property law essentials in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When property law essentials appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, property law essentials interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
-        "law-technology-s5",
-        "9.5 Law, Technology, and Emerging Issues — core concepts (5)",
-        ["9.5 Law, Technology, and Emerging Issues — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and emerging issues in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and emerging issues appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and emerging issues interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "property-law-s5",
+        "9.5 Property Law Essentials — core concepts (5)",
+        ["9.5 Property Law Essentials — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply property law essentials in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When property law essentials appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, property law essentials interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "contracts-overview",
+    10,
+    "Contracts: Formation and Enforceability",
+    [
+      section(
+        "contracts-overview-s1",
+        "10.1 Contracts: Formation and Enforceability — core concepts (1)",
+        ["10.1 Contracts: Formation and Enforceability — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply contracts: formation and enforceability in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When contracts: formation and enforceability appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, contracts: formation and enforceability interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "contracts-overview-s2",
+        "10.2 Contracts: Formation and Enforceability — core concepts (2)",
+        ["10.2 Contracts: Formation and Enforceability — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply contracts: formation and enforceability in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When contracts: formation and enforceability appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, contracts: formation and enforceability interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "contracts-overview-s3",
+        "10.3 Contracts: Formation and Enforceability — core concepts (3)",
+        ["10.3 Contracts: Formation and Enforceability — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply contracts: formation and enforceability in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When contracts: formation and enforceability appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, contracts: formation and enforceability interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "contracts-overview-s4",
+        "10.4 Contracts: Formation and Enforceability — core concepts (4)",
+        ["10.4 Contracts: Formation and Enforceability — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply contracts: formation and enforceability in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When contracts: formation and enforceability appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, contracts: formation and enforceability interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "contracts-overview-s5",
+        "10.5 Contracts: Formation and Enforceability — core concepts (5)",
+        ["10.5 Contracts: Formation and Enforceability — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply contracts: formation and enforceability in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When contracts: formation and enforceability appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, contracts: formation and enforceability interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "torts-overview",
+    11,
+    "Torts and Civil Wrongs",
+    [
+      section(
+        "torts-overview-s1",
+        "11.1 Torts and Civil Wrongs — core concepts (1)",
+        ["11.1 Torts and Civil Wrongs — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply torts and civil wrongs in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When torts and civil wrongs appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, torts and civil wrongs interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "torts-overview-s2",
+        "11.2 Torts and Civil Wrongs — core concepts (2)",
+        ["11.2 Torts and Civil Wrongs — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply torts and civil wrongs in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When torts and civil wrongs appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, torts and civil wrongs interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "torts-overview-s3",
+        "11.3 Torts and Civil Wrongs — core concepts (3)",
+        ["11.3 Torts and Civil Wrongs — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply torts and civil wrongs in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When torts and civil wrongs appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, torts and civil wrongs interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "torts-overview-s4",
+        "11.4 Torts and Civil Wrongs — core concepts (4)",
+        ["11.4 Torts and Civil Wrongs — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply torts and civil wrongs in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When torts and civil wrongs appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, torts and civil wrongs interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "torts-overview-s5",
+        "11.5 Torts and Civil Wrongs — core concepts (5)",
+        ["11.5 Torts and Civil Wrongs — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply torts and civil wrongs in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When torts and civil wrongs appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, torts and civil wrongs interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "administrative-law",
+    12,
+    "Administrative Law and Agencies",
+    [
+      section(
+        "administrative-law-s1",
+        "12.1 Administrative Law and Agencies — core concepts (1)",
+        ["12.1 Administrative Law and Agencies — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply administrative law and agencies in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When administrative law and agencies appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, administrative law and agencies interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "administrative-law-s2",
+        "12.2 Administrative Law and Agencies — core concepts (2)",
+        ["12.2 Administrative Law and Agencies — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply administrative law and agencies in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When administrative law and agencies appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, administrative law and agencies interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "administrative-law-s3",
+        "12.3 Administrative Law and Agencies — core concepts (3)",
+        ["12.3 Administrative Law and Agencies — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply administrative law and agencies in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When administrative law and agencies appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, administrative law and agencies interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "administrative-law-s4",
+        "12.4 Administrative Law and Agencies — core concepts (4)",
+        ["12.4 Administrative Law and Agencies — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply administrative law and agencies in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When administrative law and agencies appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, administrative law and agencies interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "administrative-law-s5",
+        "12.5 Administrative Law and Agencies — core concepts (5)",
+        ["12.5 Administrative Law and Agencies — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply administrative law and agencies in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When administrative law and agencies appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, administrative law and agencies interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "evidence-basics",
+    13,
+    "Evidence and Fact-Finding",
+    [
+      section(
+        "evidence-basics-s1",
+        "13.1 Evidence and Fact-Finding — core concepts (1)",
+        ["13.1 Evidence and Fact-Finding — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply evidence and fact-finding in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When evidence and fact-finding appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, evidence and fact-finding interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "evidence-basics-s2",
+        "13.2 Evidence and Fact-Finding — core concepts (2)",
+        ["13.2 Evidence and Fact-Finding — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply evidence and fact-finding in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When evidence and fact-finding appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, evidence and fact-finding interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "evidence-basics-s3",
+        "13.3 Evidence and Fact-Finding — core concepts (3)",
+        ["13.3 Evidence and Fact-Finding — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply evidence and fact-finding in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When evidence and fact-finding appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, evidence and fact-finding interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "evidence-basics-s4",
+        "13.4 Evidence and Fact-Finding — core concepts (4)",
+        ["13.4 Evidence and Fact-Finding — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply evidence and fact-finding in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When evidence and fact-finding appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, evidence and fact-finding interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "evidence-basics-s5",
+        "13.5 Evidence and Fact-Finding — core concepts (5)",
+        ["13.5 Evidence and Fact-Finding — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply evidence and fact-finding in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When evidence and fact-finding appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, evidence and fact-finding interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "legal-research",
+    14,
+    "Legal Research and Writing",
+    [
+      section(
+        "legal-research-s1",
+        "14.1 Legal Research and Writing — core concepts (1)",
+        ["14.1 Legal Research and Writing — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal research and writing in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal research and writing appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal research and writing interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "legal-research-s2",
+        "14.2 Legal Research and Writing — core concepts (2)",
+        ["14.2 Legal Research and Writing — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal research and writing in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal research and writing appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal research and writing interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "legal-research-s3",
+        "14.3 Legal Research and Writing — core concepts (3)",
+        ["14.3 Legal Research and Writing — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal research and writing in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal research and writing appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal research and writing interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "legal-research-s4",
+        "14.4 Legal Research and Writing — core concepts (4)",
+        ["14.4 Legal Research and Writing — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal research and writing in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal research and writing appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal research and writing interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "legal-research-s5",
+        "14.5 Legal Research and Writing — core concepts (5)",
+        ["14.5 Legal Research and Writing — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal research and writing in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal research and writing appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal research and writing interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "ethics-professionalism",
+    15,
+    "Legal Ethics and Professionalism",
+    [
+      section(
+        "ethics-professionalism-s1",
+        "15.1 Legal Ethics and Professionalism — core concepts (1)",
+        ["15.1 Legal Ethics and Professionalism — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal ethics and professionalism in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal ethics and professionalism appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal ethics and professionalism interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "ethics-professionalism-s2",
+        "15.2 Legal Ethics and Professionalism — core concepts (2)",
+        ["15.2 Legal Ethics and Professionalism — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal ethics and professionalism in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal ethics and professionalism appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal ethics and professionalism interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "ethics-professionalism-s3",
+        "15.3 Legal Ethics and Professionalism — core concepts (3)",
+        ["15.3 Legal Ethics and Professionalism — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal ethics and professionalism in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal ethics and professionalism appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal ethics and professionalism interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "ethics-professionalism-s4",
+        "15.4 Legal Ethics and Professionalism — core concepts (4)",
+        ["15.4 Legal Ethics and Professionalism — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal ethics and professionalism in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal ethics and professionalism appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal ethics and professionalism interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "ethics-professionalism-s5",
+        "15.5 Legal Ethics and Professionalism — core concepts (5)",
+        ["15.5 Legal Ethics and Professionalism — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply legal ethics and professionalism in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When legal ethics and professionalism appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, legal ethics and professionalism interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "international-law",
+    16,
+    "International and Comparative Law",
+    [
+      section(
+        "international-law-s1",
+        "16.1 International and Comparative Law — core concepts (1)",
+        ["16.1 International and Comparative Law — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply international and comparative law in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When international and comparative law appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, international and comparative law interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "international-law-s2",
+        "16.2 International and Comparative Law — core concepts (2)",
+        ["16.2 International and Comparative Law — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply international and comparative law in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When international and comparative law appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, international and comparative law interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "international-law-s3",
+        "16.3 International and Comparative Law — core concepts (3)",
+        ["16.3 International and Comparative Law — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply international and comparative law in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When international and comparative law appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, international and comparative law interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "international-law-s4",
+        "16.4 International and Comparative Law — core concepts (4)",
+        ["16.4 International and Comparative Law — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply international and comparative law in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When international and comparative law appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, international and comparative law interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "international-law-s5",
+        "16.5 International and Comparative Law — core concepts (5)",
+        ["16.5 International and Comparative Law — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply international and comparative law in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When international and comparative law appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, international and comparative law interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "business-law-intro",
+    17,
+    "Business Transactions and Regulation",
+    [
+      section(
+        "business-law-intro-s1",
+        "17.1 Business Transactions and Regulation — core concepts (1)",
+        ["17.1 Business Transactions and Regulation — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply business transactions and regulation in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When business transactions and regulation appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, business transactions and regulation interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "business-law-intro-s2",
+        "17.2 Business Transactions and Regulation — core concepts (2)",
+        ["17.2 Business Transactions and Regulation — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply business transactions and regulation in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When business transactions and regulation appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, business transactions and regulation interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "business-law-intro-s3",
+        "17.3 Business Transactions and Regulation — core concepts (3)",
+        ["17.3 Business Transactions and Regulation — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply business transactions and regulation in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When business transactions and regulation appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, business transactions and regulation interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "business-law-intro-s4",
+        "17.4 Business Transactions and Regulation — core concepts (4)",
+        ["17.4 Business Transactions and Regulation — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply business transactions and regulation in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When business transactions and regulation appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, business transactions and regulation interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "business-law-intro-s5",
+        "17.5 Business Transactions and Regulation — core concepts (5)",
+        ["17.5 Business Transactions and Regulation — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply business transactions and regulation in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When business transactions and regulation appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, business transactions and regulation interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "family-law",
+    18,
+    "Family Law Overview",
+    [
+      section(
+        "family-law-s1",
+        "18.1 Family Law Overview — core concepts (1)",
+        ["18.1 Family Law Overview — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply family law overview in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When family law overview appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, family law overview interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "family-law-s2",
+        "18.2 Family Law Overview — core concepts (2)",
+        ["18.2 Family Law Overview — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply family law overview in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When family law overview appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, family law overview interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "family-law-s3",
+        "18.3 Family Law Overview — core concepts (3)",
+        ["18.3 Family Law Overview — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply family law overview in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When family law overview appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, family law overview interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "family-law-s4",
+        "18.4 Family Law Overview — core concepts (4)",
+        ["18.4 Family Law Overview — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply family law overview in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When family law overview appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, family law overview interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "family-law-s5",
+        "18.5 Family Law Overview — core concepts (5)",
+        ["18.5 Family Law Overview — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply family law overview in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When family law overview appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, family law overview interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      )
+    ]
+  ),
+  chapter(
+    "technology-law",
+    19,
+    "Law, Technology, and Privacy",
+    [
+      section(
+        "technology-law-s1",
+        "19.1 Law, Technology, and Privacy — core concepts (1)",
+        ["19.1 Law, Technology, and Privacy — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and privacy in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and privacy appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and privacy interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "technology-law-s2",
+        "19.2 Law, Technology, and Privacy — core concepts (2)",
+        ["19.2 Law, Technology, and Privacy — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and privacy in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and privacy appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and privacy interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "technology-law-s3",
+        "19.3 Law, Technology, and Privacy — core concepts (3)",
+        ["19.3 Law, Technology, and Privacy — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and privacy in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and privacy appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and privacy interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "technology-law-s4",
+        "19.4 Law, Technology, and Privacy — core concepts (4)",
+        ["19.4 Law, Technology, and Privacy — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and privacy in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and privacy appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and privacy interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+      ),
+      section(
+        "technology-law-s5",
+        "19.5 Law, Technology, and Privacy — core concepts (5)",
+        ["19.5 Law, Technology, and Privacy — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply law, technology, and privacy in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When law, technology, and privacy appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, law, technology, and privacy interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       )
     ]
   ),
   chapter(
     "law-careers",
-    10,
+    20,
     "Studying Law and Career Pathways",
     [
       section(
         "law-careers-s1",
-        "10.1 Studying Law and Career Pathways — core concepts (1)",
-        ["10.1 Studying Law and Career Pathways — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "20.1 Studying Law and Career Pathways — core concepts (1)",
+        ["20.1 Studying Law and Career Pathways — core concepts (1) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
         "law-careers-s2",
-        "10.2 Studying Law and Career Pathways — core concepts (2)",
-        ["10.2 Studying Law and Career Pathways — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "20.2 Studying Law and Career Pathways — core concepts (2)",
+        ["20.2 Studying Law and Career Pathways — core concepts (2) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
         "law-careers-s3",
-        "10.3 Studying Law and Career Pathways — core concepts (3)",
-        ["10.3 Studying Law and Career Pathways — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "20.3 Studying Law and Career Pathways — core concepts (3)",
+        ["20.3 Studying Law and Career Pathways — core concepts (3) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
         "law-careers-s4",
-        "10.4 Studying Law and Career Pathways — core concepts (4)",
-        ["10.4 Studying Law and Career Pathways — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "20.4 Studying Law and Career Pathways — core concepts (4)",
+        ["20.4 Studying Law and Career Pathways — core concepts (4) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       ),
       section(
         "law-careers-s5",
-        "10.5 Studying Law and Career Pathways — core concepts (5)",
-        ["10.5 Studying Law and Career Pathways — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
+        "20.5 Studying Law and Career Pathways — core concepts (5)",
+        ["20.5 Studying Law and Career Pathways — core concepts (5) is a core topic in Legal Fundamentals. Learners should connect definitions to how professionals apply studying law and career pathways in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.","The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When studying law and career pathways appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.","In professional settings, studying law and career pathways interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning."]
       )
     ]
   )

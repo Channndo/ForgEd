@@ -25,6 +25,7 @@ export const DEFAULT_PROGRESS: UserProgress = {
   earnedBadges: [],
   courseProgress: {},
   chapterQuickChecks: {},
+  sectionQuizzesPassed: {},
   courseReviewQuizPassed: [],
   finalExamPassed: [],
 };
@@ -194,6 +195,39 @@ export function markChapterQuickCheckPassed(
   if (!list.includes(chapterNum)) {
     data.chapterQuickChecks[courseId] = [...list, chapterNum].sort((a, b) => a - b);
     data.xp += xpAmount;
+  }
+  writeProgress(data);
+  return data;
+}
+
+export function isSectionQuizPassed(
+  courseId: string,
+  lessonId: string
+): boolean {
+  const data = readProgress();
+  return (data.sectionQuizzesPassed?.[courseId] ?? []).includes(lessonId);
+}
+
+export function markSectionQuizPassed(
+  courseId: string,
+  lessonId: string,
+  opts?: { courseSlug?: string; moduleId?: string; xpAmount?: number }
+): UserProgress {
+  let data = updateStreak(readProgress());
+  if (!data.sectionQuizzesPassed) data.sectionQuizzesPassed = {};
+  const list = data.sectionQuizzesPassed[courseId] ?? [];
+  if (!list.includes(lessonId)) {
+    data.sectionQuizzesPassed[courseId] = [...list, lessonId];
+    data.xp += opts?.xpAmount ?? 10;
+    if (!data.completedLessons.includes(lessonId)) {
+      data.completedLessons.push(lessonId);
+    }
+    if (opts?.courseSlug && opts?.moduleId) {
+      data = maybeCompleteModule(data, opts.courseSlug, opts.moduleId);
+    }
+    if (opts?.courseSlug) {
+      data = syncCourseProgressFromLessons(data);
+    }
   }
   writeProgress(data);
   return data;

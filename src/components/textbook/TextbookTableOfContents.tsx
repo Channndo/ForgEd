@@ -7,8 +7,15 @@ import {
   computeCourseProgressPercent,
   countCompletedLessons,
 } from "@/lib/courseProgress";
-import { countChapterQuickChecksPassed } from "@/lib/progress";
+import {
+  countSectionQuizzesPassed,
+  isChapterUnlocked,
+  isSectionUnlocked,
+  sectionLessonId,
+} from "@/lib/courses/textbook/gating";
+import { isSectionQuizPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import { Lock } from "lucide-react";
 
 export function TextbookTableOfContents({
   chapters,
@@ -26,7 +33,7 @@ export function TextbookTableOfContents({
   const { progress } = useProgress();
   const pct = computeCourseProgressPercent(progress, courseId);
   const { completed, total } = countCompletedLessons(progress, slug);
-  const quickChecks = countChapterQuickChecksPassed(courseId, chapters.length);
+  const sectionQuizzes = countSectionQuizzesPassed(progress, courseId, chapters);
 
   return (
     <nav
@@ -60,60 +67,91 @@ export function TextbookTableOfContents({
               />
             </div>
             <p className="mt-1.5 text-xs text-[var(--muted)]">
-              {completed}/{total} sections read · Chapter quizzes{" "}
+              Section quizzes{" "}
               <span className="font-semibold text-[var(--silver)]">
-                {quickChecks.passed}/{quickChecks.total}
+                {sectionQuizzes.passed}/{sectionQuizzes.total}
               </span>
+              {" "}· {completed}/{total} sections
             </p>
           </div>
         </div>
 
         <ol className="mt-2 space-y-1 overflow-y-auto pr-1 lg:flex-1">
-          {chapters.map((ch) => {
+          {chapters.map((ch, chapterIndex) => {
             const isChapterActive = activeChapterId === ch.id;
             const meta = getChapterMeta(slug, ch.id);
+            const chapterOpen = isChapterUnlocked(
+              progress,
+              courseId,
+              chapters,
+              chapterIndex
+            );
+
             return (
               <li key={ch.id}>
-                <a
-                  href={`#${ch.id}`}
-                  className={`block rounded-lg px-2.5 py-2 transition ${
-                    isChapterActive
-                      ? "textbook-toc-active -ml-px"
-                      : "text-[var(--muted)] hover:bg-white/[0.04] hover:text-[var(--silver)]"
-                  }`}
-                >
-                  <span className="font-mono text-[10px] text-[var(--gold)]/70">
-                    Ch. {ch.number}
-                    {meta ? ` · ${meta.readMinutes}m` : ""}
+                {chapterOpen ? (
+                  <a
+                    href={`#${ch.sections[0]?.id ?? ch.id}`}
+                    className={`block rounded-lg px-2.5 py-2 transition ${
+                      isChapterActive
+                        ? "textbook-toc-active -ml-px"
+                        : "text-[var(--muted)] hover:bg-white/[0.04] hover:text-[var(--silver)]"
+                    }`}
+                  >
+                    <span className="font-mono text-[10px] text-[var(--gold)]/70">
+                      Ch. {ch.number}
+                      {meta ? ` · ${meta.readMinutes}m` : ""}
+                    </span>
+                    <span className="mt-0.5 block text-sm leading-snug">{ch.title}</span>
+                  </a>
+                ) : (
+                  <span className="flex items-start gap-2 rounded-lg px-2.5 py-2 text-[var(--muted)]/60">
+                    <Lock className="mt-0.5 h-3 w-3 shrink-0" />
+                    <span>
+                      <span className="font-mono text-[10px]">Ch. {ch.number}</span>
+                      <span className="mt-0.5 block text-sm leading-snug">{ch.title}</span>
+                    </span>
                   </span>
-                  <span className="mt-0.5 flex items-center gap-1.5 text-sm leading-snug">
-                    {ch.title}
-                    {(progress.chapterQuickChecks?.[courseId] ?? []).includes(
-                      ch.number
-                    ) && (
-                      <span className="text-[var(--success)]" title="Quick check passed">
-                        ✓
-                      </span>
-                    )}
-                  </span>
-                </a>
-                {isChapterActive && (
+                )}
+                {isChapterActive && chapterOpen && (
                   <ul className="mb-2 ml-3 mt-0.5 space-y-0.5 border-l border-white/[0.06] pl-3">
-                    {ch.sections.map((sec) => {
+                    {ch.sections.map((sec, sectionIndex) => {
                       const sectionLabel = sec.title.replace(/^\d+\.\d+\s*/, "");
                       const isSectionActive = activeSectionId === sec.id;
+                      const lessonId = sectionLessonId(ch.id, sec.id);
+                      const secOpen = isSectionUnlocked(
+                        progress,
+                        courseId,
+                        chapters,
+                        chapterIndex,
+                        sectionIndex
+                      );
+                      const passed = isSectionQuizPassed(courseId, lessonId);
+
                       return (
                         <li key={sec.id}>
-                          <a
-                            href={`#${sec.id}`}
-                            className={`block rounded py-1 pl-1 text-xs leading-snug transition ${
-                              isSectionActive
-                                ? "font-medium text-[var(--gold)]"
-                                : "text-[var(--muted)] hover:text-[var(--silver)]"
-                            }`}
-                          >
-                            {sectionLabel}
-                          </a>
+                          {secOpen ? (
+                            <a
+                              href={`#${sec.id}`}
+                              className={`flex items-center gap-1.5 rounded py-1 pl-1 text-xs leading-snug transition ${
+                                isSectionActive
+                                  ? "font-medium text-[var(--gold)]"
+                                  : "text-[var(--muted)] hover:text-[var(--silver)]"
+                              }`}
+                            >
+                              {sectionLabel}
+                              {passed && (
+                                <span className="text-[var(--success)]" title="Section quiz passed">
+                                  ✓
+                                </span>
+                              )}
+                            </a>
+                          ) : (
+                            <span className="flex items-center gap-1 py-1 pl-1 text-xs text-[var(--muted)]/50">
+                              <Lock className="h-2.5 w-2.5" />
+                              {sectionLabel}
+                            </span>
+                          )}
                         </li>
                       );
                     })}
@@ -126,15 +164,14 @@ export function TextbookTableOfContents({
 
         <div className="mt-5 hidden border-t border-white/[0.06] pt-4 text-xs leading-relaxed text-[var(--muted)] lg:block">
           <p>
-            Scroll the full textbook or jump to a chapter. When you finish a section, use{" "}
-            <strong className="text-[var(--silver)]">Mark section read</strong> at the bottom to
-            track progress.
+            Read each section in order and pass its quiz before the next section unlocks. You cannot
+            skip ahead.
           </p>
           <Link
             href={`/courses/${slug}/quiz`}
             className="mt-2 inline-block font-medium text-[var(--gold)] hover:underline"
           >
-            Take course quiz →
+            Course review quiz →
           </Link>
         </div>
       </div>

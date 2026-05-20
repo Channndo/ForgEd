@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { getCourseBySlug } from "@/lib/courses/catalog";
 import { getTextbookBundle } from "@/lib/courses/textbook/registry";
@@ -16,6 +16,12 @@ import { TextbookStickyProgress } from "@/components/textbook/TextbookStickyProg
 import { TextbookTableOfContents } from "@/components/textbook/TextbookTableOfContents";
 import { TextbookMobileChapterSelect } from "@/components/textbook/TextbookMobileChapterSelect";
 import { useTextbookScrollSpy } from "@/components/textbook/useTextbookScrollSpy";
+import {
+  findSectionBySectionId,
+  firstLockedSectionAnchor,
+  isChapterUnlocked,
+  isSectionUnlocked,
+} from "@/lib/courses/textbook/gating";
 import { Button } from "@/components/ui/Button";
 
 export default function TextbookReadClient() {
@@ -31,13 +37,71 @@ export default function TextbookReadClient() {
 
   const activeChapter = chapters.find((c) => c.id === activeChapterId);
 
-  useEffect(() => {
+  const scrollToHash = useCallback(
+    (hash: string, behavior: ScrollBehavior = "smooth") => {
+      if (!hash) return;
+      document.getElementById(hash)?.scrollIntoView({ behavior });
+    },
+    []
+  );
+
+  const enforceSequentialAccess = useCallback(() => {
+    if (!course || chapters.length === 0) return;
     const hash = window.location.hash.replace("#", "");
     if (!hash) return;
-    setTimeout(() => {
-      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  }, []);
+
+    const chapterOnlyIndex = chapters.findIndex((c) => c.id === hash);
+    if (chapterOnlyIndex >= 0) {
+      if (!isChapterUnlocked(progress, course.id, chapters, chapterOnlyIndex)) {
+        const locked = firstLockedSectionAnchor(progress, course.id, chapters);
+        if (locked) {
+          history.replaceState(null, "", `#${locked.sectionId}`);
+          scrollToHash(locked.sectionId);
+        }
+        return;
+      }
+      const firstSec = chapters[chapterOnlyIndex].sections[0]?.id;
+      if (firstSec) scrollToHash(firstSec);
+      return;
+    }
+
+    const located = findSectionBySectionId(chapters, hash);
+    if (located) {
+      const allowed = isSectionUnlocked(
+        progress,
+        course.id,
+        chapters,
+        located.chapterIndex,
+        located.sectionIndex
+      );
+      if (!allowed) {
+        const locked = firstLockedSectionAnchor(progress, course.id, chapters);
+        if (locked) {
+          const el =
+            document.getElementById(locked.sectionId) ??
+            document.getElementById(locked.chapterId);
+          if (el) {
+            history.replaceState(null, "", `#${el.id}`);
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        }
+        return;
+      }
+    }
+
+    scrollToHash(hash);
+  }, [course, chapters, progress, scrollToHash]);
+
+  useEffect(() => {
+    const t = setTimeout(() => enforceSequentialAccess(), 80);
+    return () => clearTimeout(t);
+  }, [enforceSequentialAccess]);
+
+  useEffect(() => {
+    const onHash = () => enforceSequentialAccess();
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, [enforceSequentialAccess]);
 
   if (!course || !bundle) {
     return (
@@ -84,14 +148,17 @@ export default function TextbookReadClient() {
           />
 
           <div className="min-w-0 flex-1 max-w-3xl">
-            <TextbookMobileChapterSelect chapters={chapters} />
+            <TextbookMobileChapterSelect chapters={chapters} courseId={course.id} />
             {chapters.map((chapter, i) => (
               <TextbookChapterArticle
                 key={chapter.id}
                 chapter={chapter}
+                chapterIndex={i}
+                chapters={chapters}
                 prev={i > 0 ? chapters[i - 1] : undefined}
                 next={i < chapters.length - 1 ? chapters[i + 1] : undefined}
                 courseSlug={slug}
+                courseId={course.id}
               />
             ))}
 

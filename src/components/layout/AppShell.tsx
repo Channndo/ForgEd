@@ -12,7 +12,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isTextbookReader = /\/courses\/[^/]+\/read\/?$/.test(pathname ?? "");
 
   return (
-    <div className="flex min-h-screen bg-[var(--background)]">
+    <div className="flex h-dvh overflow-hidden bg-[var(--background)]">
       <Sidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
@@ -20,9 +20,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         onMobileClose={() => setMobileOpen(false)}
       />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <TopBar onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 overflow-visible">
+        <main
+          className={`min-h-0 flex-1 ${isTextbookReader ? "overflow-hidden" : "overflow-y-auto"}`}
+        >
           {isTextbookReader ? (
             <div className="w-full">{children}</div>
           ) : (

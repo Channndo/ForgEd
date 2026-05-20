@@ -5,7 +5,7 @@ import { Menu, Flame, Zap, Bell, Search } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { titleForPath } from "@/lib/navigation";
 import { useKodaPanel } from "@/components/koda/KodaProvider";
-import { Sparkles } from "lucide-react";
+import { KodaLogo } from "@/components/koda/KodaLogo";
 
 export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
@@ -69,7 +69,7 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           onClick={() => setOpen(true)}
           className="hidden items-center gap-2 rounded-lg border border-[var(--gold)]/30 bg-[var(--gold)]/10 px-3 py-1.5 text-xs font-medium text-[var(--gold)] hover:bg-[var(--gold)]/20 sm:flex"
         >
-          <Sparkles className="h-3.5 w-3.5" />
+          <KodaLogo size={20} />
           Ask KODA
         </button>
 

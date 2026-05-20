@@ -8,7 +8,6 @@ import {
   Flame,
   Target,
   Zap,
-  ArrowRight,
   TrendingUp,
 } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
@@ -18,6 +17,7 @@ import { BADGES } from "@/lib/badges";
 import { COURSES, getFeaturedCourses } from "@/lib/courses/catalog";
 import { withBasePath } from "@/lib/basePath";
 import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
+import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 
 export default function DashboardPage() {
   const { progress, xpBar } = useProgress();
@@ -47,14 +47,7 @@ export default function DashboardPage() {
             <p className="mt-4 max-w-xl text-sm text-[var(--muted)] sm:text-base">
               Your learning command center — track progress, launch courses, and get help from KODA.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button href="/courses/insurance-fundamentals" variant="forge">
-                Start Insurance Fundamentals <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button href="/courses" variant="secondary">
-                Browse library
-              </Button>
-            </div>
+            <CourseSpotlight />
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 lg:gap-4">
             <StatChip icon={Zap} label="XP" value={String(progress.xp)} />
@@ -79,11 +72,11 @@ export default function DashboardPage() {
             {inProgress.length === 0 ? (
               <Card>
                 <p className="text-sm text-[var(--muted)]">
-                  No active courses yet. Start with{" "}
-                  <Link href="/courses/insurance-fundamentals" className="text-[var(--gold)]">
-                    Insurance Fundamentals
-                  </Link>{" "}
-                  — our most in-depth path.
+                  No active courses yet. Pick a suggested course above or{" "}
+                  <Link href="/courses" className="text-[var(--gold)] hover:underline">
+                    browse the library
+                  </Link>
+                  .
                 </p>
               </Card>
             ) : (

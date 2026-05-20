@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Loader2 } from "lucide-react";
 import { useKoda } from "@/hooks/useKoda";
 import { useKodaPanel } from "./KodaProvider";
-import { KodaLogoMark } from "./KodaLogo";
+import { KodaLogo, KodaLogoMark } from "./KodaLogo";
 import { KODA_QUICK_PROMPTS } from "@/lib/koda/config";
 
 export function KodaChatPanel() {
@@ -78,13 +78,18 @@ export function KodaChatPanel() {
               {messages.map((m, i) => (
                 <div
                   key={`${i}-${m.role}`}
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex gap-2 ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
+                  {m.role === "assistant" && (
+                    <div className="mt-0.5 shrink-0">
+                      <KodaLogo size={28} />
+                    </div>
+                  )}
                   <div
-                    className={`max-w-[90%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                       m.role === "user"
                         ? "bg-[var(--koda-gold)]/15 text-white border border-[var(--koda-gold)]/25"
-                        : "glass text-[var(--foreground)]"
+                        : "glass text-[var(--foreground)] border border-[var(--koda-gold)]/10"
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{m.content}</p>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
 import { ForgEdLogo, ForgEdWordmarkText } from "@/components/brand/ForgEdLogo";
+import { KodaLogo } from "@/components/koda/KodaLogo";
 import { MAIN_NAV, LEARN_NAV } from "@/lib/navigation";
 
 export function Sidebar({
@@ -28,6 +29,7 @@ export function Sidebar({
   const navLink = (item: (typeof MAIN_NAV)[0]) => {
     const active = isActive(item.href);
     const Icon = item.icon;
+    const isKoda = item.href === "/assistant";
     return (
       <Link
         key={item.href}
@@ -40,7 +42,11 @@ export function Sidebar({
             : "text-[var(--muted)] hover:bg-white/5 hover:text-[var(--silver)] border border-transparent"
         }`}
       >
-        <Icon className={`h-4 w-4 shrink-0 ${active ? "text-[var(--gold)]" : ""}`} />
+        {isKoda ? (
+          <KodaLogo size={20} />
+        ) : (
+          <Icon className={`h-4 w-4 shrink-0 ${active ? "text-[var(--gold)]" : ""}`} />
+        )}
         {!collapsed && (
           <>
             <span className="flex-1 truncate">{item.label}</span>

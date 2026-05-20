@@ -89,8 +89,8 @@ export function CourseSpotlight() {
         </div>
 
         <div className="flex flex-col gap-2 sm:w-48">
-          <Button href={`/courses/${course.slug}`} variant="forge" className="h-full min-h-[44px]">
-            Start this course <ArrowRight className="h-4 w-4" />
+          <Button href={`/courses/${course.slug}/read`} variant="forge" className="h-full min-h-[44px]">
+            Open textbook <ArrowRight className="h-4 w-4" />
           </Button>
           <Button href="/courses" variant="secondary">
             Browse library
@@ -115,10 +115,10 @@ export function CourseSpotlight() {
           />
         ))}
         <Link
-          href={`/courses/${course.slug}`}
+          href={`/courses/${course.slug}/read`}
           className="ml-auto text-xs text-[var(--gold)] hover:underline"
         >
-          View {course.title} →
+          Read {course.title} →
         </Link>
       </div>
     </div>

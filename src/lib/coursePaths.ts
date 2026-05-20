@@ -1,12 +1,14 @@
 import { COURSES } from "@/lib/courses/catalog";
-import { getInsuranceModules } from "@/lib/courses/insurance";
+import {
+  getTextbookModules,
+  isTextbookCourse,
+} from "@/lib/courses/textbook/registry";
 import type { CourseModule } from "@/lib/types";
 
 export function getModulesForSlug(slug: string): CourseModule[] {
+  if (isTextbookCourse(slug)) return getTextbookModules(slug);
   const course = COURSES.find((c) => c.slug === slug);
-  if (!course) return [];
-  if (course.textbookCourse) return getInsuranceModules();
-  return course.modules;
+  return course?.modules ?? [];
 }
 
 export function getAllCourseSlugs(): string[] {
@@ -20,9 +22,7 @@ export function getAllLessonParams(): {
 }[] {
   const paths: { slug: string; moduleId: string; lessonId: string }[] = [];
   for (const course of COURSES) {
-    const modules = course.textbookCourse
-      ? getInsuranceModules()
-      : course.modules;
+    const modules = getModulesForSlug(course.slug);
     for (const mod of modules) {
       for (const lesson of mod.lessons) {
         paths.push({

@@ -1,4 +1,5 @@
 import type { Course, CourseCategory } from "@/lib/types";
+import { getTextbookChapterCount } from "@/lib/courses/textbook/registry";
 
 export const CATEGORY_META: Record<
   CourseCategory,
@@ -51,44 +52,15 @@ export const CATEGORY_META: Record<
   },
 };
 
-function placeholderModules(
-  prefix: string,
-  topics: string[]
-): Course["modules"] {
-  return topics.map((title, i) => ({
-    id: `${prefix}-m${i + 1}`,
-    title,
-    description: `Learn core concepts in ${title.toLowerCase()}.`,
-    keyConcepts: ["Foundations", "Real-world application", "Next steps"],
-    lessons: [
-      {
-        id: `${prefix}-m${i + 1}-l1`,
-        title: "Introduction",
-        content: `Welcome to ${title}. This module introduces essential ideas in plain language with practical examples you can use immediately.`,
-        example: "Think of each lesson as a building block toward job-ready confidence.",
-      },
-      {
-        id: `${prefix}-m${i + 1}-l2`,
-        title: "Key concepts",
-        content: "We break complex topics into simple steps: what it is, why it matters, and how to apply it in daily life or work.",
-      },
-      {
-        id: `${prefix}-m${i + 1}-l3`,
-        title: "Practice & recap",
-        content: "Review what you learned, complete the module quiz, and earn XP toward your next level.",
-      },
-    ],
-  }));
-}
-
-function buildCourse(
+function textbookCourse(
   id: string,
   title: string,
   category: CourseCategory,
   description: string,
-  moduleTopics: string[],
+  skills: { id: string; name: string }[],
   opts?: Partial<Course>
 ): Course {
+  const chapters = getTextbookChapterCount(id);
   return {
     id,
     slug: id,
@@ -96,93 +68,127 @@ function buildCourse(
     description,
     category,
     difficulty: "beginner",
-    estimatedHours: moduleTopics.length * 0.75,
-    xpReward: moduleTopics.length * 80,
-    skills: [{ id: `${id}-skill`, name: title }],
-    modules: placeholderModules(id, moduleTopics),
+    estimatedHours: Math.max(10, chapters * 1.2),
+    xpReward: chapters * 100,
+    skills,
+    modules: [],
+    textbookCourse: true,
     ...opts,
   };
 }
 
 export const COURSES: Course[] = [
-  {
-    id: "insurance-fundamentals",
-    slug: "insurance-fundamentals",
-    title: "Insurance Fundamentals",
-    description:
-      "An in-depth journey through insurance history, regulation, life & health, claims, buying wisely, and agency operations — expanded from industry-leading educational content.",
-    category: "insurance",
-    difficulty: "beginner",
-    estimatedHours: 14,
-    xpReward: 1200,
-    featured: true,
-    textbookCourse: true,
-    skills: [
+  textbookCourse(
+    "insurance-fundamentals",
+    "Insurance Fundamentals",
+    "insurance",
+    "A rigorous digital textbook on insurance history, regulation, life & health, claims, buying wisely, and agency operations — CoverIQ Facts depth, expanded for ForgEd.",
+    [
       { id: "risk-transfer", name: "Risk Transfer" },
       { id: "regulation", name: "Insurance Regulation" },
       { id: "life-health", name: "Life & Health" },
       { id: "claims", name: "Claims Process" },
       { id: "agency-ops", name: "Agency Operations" },
     ],
-    modules: [],
-  },
-  buildCourse(
+    { featured: true, difficulty: "beginner" }
+  ),
+  textbookCourse(
     "ai-fundamentals",
     "AI Fundamentals",
     "ai",
-    "Understand what AI is, how models work, and how to use tools responsibly in work and life.",
-    ["What is AI?", "Prompting basics", "Ethics & safety", "AI at work"],
-    { featured: true, difficulty: "beginner", xpReward: 400 }
+    "Ten-chapter digital textbook: computation and intelligence, ML, neural networks, LLMs, ethics, and workplace AI — academic depth, not hype.",
+    [
+      { id: "ml-basics", name: "Machine Learning" },
+      { id: "llms", name: "Large Language Models" },
+      { id: "ai-ethics", name: "AI Ethics & Safety" },
+      { id: "ai-work", name: "AI at Work" },
+    ],
+    { featured: true }
   ),
-  buildCourse(
+  textbookCourse(
     "cybersecurity-basics",
     "Cybersecurity Basics",
     "cybersecurity",
-    "Passwords, phishing, device security, and protecting personal data.",
-    ["Threat landscape", "Passwords & MFA", "Phishing awareness", "Secure habits"],
+    "Ten-chapter textbook on the CIA triad, threats, authentication, networks, cryptography, social engineering, incident response, and compliance.",
+    [
+      { id: "cia", name: "CIA Triad" },
+      { id: "mfa", name: "Authentication & MFA" },
+      { id: "phishing", name: "Social Engineering" },
+      { id: "ir", name: "Incident Response" },
+    ],
     { featured: true }
   ),
-  buildCourse(
+  textbookCourse(
     "it-fundamentals",
     "IT Fundamentals",
     "it",
-    "Computers, networks, troubleshooting, and cloud basics for beginners.",
-    ["Hardware & OS", "Networks", "Troubleshooting", "Cloud intro"]
+    "Ten-chapter textbook: hardware, operating systems, networking, cloud, troubleshooting, and IT careers — structured like a first-year IT survey course.",
+    [
+      { id: "hardware", name: "Hardware" },
+      { id: "networking", name: "Networking" },
+      { id: "cloud", name: "Cloud Basics" },
+      { id: "troubleshoot", name: "Troubleshooting" },
+    ]
   ),
-  buildCourse(
+  textbookCourse(
     "automotive-basics",
     "Automotive Basics",
     "automotive",
-    "Vehicle systems, maintenance, buying, and modern automotive technology.",
-    ["Vehicle systems", "Maintenance", "Buying & financing", "EV & future tech"]
+    "Ten-chapter textbook on vehicle systems, maintenance, safety, buying and financing, insurance, and electric/autonomous technology.",
+    [
+      { id: "powertrain", name: "Powertrain" },
+      { id: "safety", name: "Vehicle Safety" },
+      { id: "ev", name: "EV & Hybrid" },
+      { id: "buying", name: "Buying & Finance" },
+    ]
   ),
-  buildCourse(
+  textbookCourse(
     "financial-literacy",
     "Financial Literacy",
     "financial",
-    "Budgeting, credit, saving, and making informed financial decisions.",
-    ["Budgeting", "Credit scores", "Saving & investing intro", "Avoiding scams"]
+    "Ten-chapter textbook on money, budgeting, credit, debt, saving, investing, taxes, and fraud — household economics in academic prose.",
+    [
+      { id: "budgeting", name: "Budgeting" },
+      { id: "credit", name: "Credit & Scores" },
+      { id: "investing", name: "Investing Basics" },
+      { id: "planning", name: "Financial Planning" },
+    ]
   ),
-  buildCourse(
+  textbookCourse(
     "communication-skills",
     "Communication Skills",
     "communication",
-    "Professional email, presentations, listening, and workplace communication.",
-    ["Active listening", "Email & writing", "Presentations", "Difficult conversations"]
+    "Ten-chapter textbook on theory, listening, writing, persuasion, presentations, conflict, and digital professionalism.",
+    [
+      { id: "listening", name: "Active Listening" },
+      { id: "writing", name: "Professional Writing" },
+      { id: "presentations", name: "Presentations" },
+      { id: "conflict", name: "Conflict Communication" },
+    ]
   ),
-  buildCourse(
+  textbookCourse(
     "business-foundations",
     "Business Foundations",
     "business",
-    "How businesses operate, basic finance, customers, and growth mindset.",
-    ["Business models", "Customers & value", "Basic finance", "Growth basics"]
+    "Ten-chapter textbook on value creation, strategy, marketing, operations, accounting, HR, entrepreneurship, and governance.",
+    [
+      { id: "strategy", name: "Strategy" },
+      { id: "marketing", name: "Marketing" },
+      { id: "finance", name: "Business Finance" },
+      { id: "entrepreneurship", name: "Entrepreneurship" },
+    ]
   ),
-  buildCourse(
+  textbookCourse(
     "technology-for-beginners",
     "Technology for Beginners",
     "technology",
-    "Digital literacy from smartphones to apps, privacy, and online safety.",
-    ["Devices & apps", "Internet basics", "Privacy settings", "Staying current"],
+    "Ten-chapter textbook on devices, apps, internet, privacy, accessibility, and digital citizenship for first-time learners.",
+    [
+      { id: "devices", name: "Devices & Apps" },
+      { id: "privacy", name: "Privacy & Security" },
+      { id: "cloud-user", name: "Cloud & Accounts" },
+      { id: "citizenship", name: "Digital Citizenship" },
+    ],
     { featured: true }
   ),
 ];

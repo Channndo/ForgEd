@@ -20,7 +20,7 @@ const REASONS = [
   {
     icon: Users,
     title: "Future-ready architecture",
-    text: "AI assistant placeholders and modular courses prepare ForgEd for deep integrations across Omnistrata.",
+    text: "KODA, your learning assistant, and full digital textbooks help you go deeper on every topic.",
   },
 ];
 

@@ -1,32 +1,11 @@
-export interface TextbookLaw {
-  name: string;
-  year?: string;
-  summary: string;
-}
-
-/** External references for learners who want to verify or go deeper. */
-export interface TextbookCitation {
-  source: string;
-  url?: string;
-  note?: string;
-}
-
-export interface TextbookSection {
-  id: string;
-  title: string;
-  paragraphs: string[];
-  laws?: TextbookLaw[];
-  bulletPoints?: string[];
-  citations?: TextbookCitation[];
-}
-
-export interface TextbookChapter {
-  id: string;
-  number: number;
-  title: string;
-  subtitle?: string;
-  sections: TextbookSection[];
-}
+export type {
+  TextbookLaw,
+  TextbookCitation,
+  TextbookSection,
+  TextbookChapter,
+  TextbookIntro,
+} from "@/lib/courses/textbook/types";
+import type { TextbookChapter } from "@/lib/courses/textbook/types";
 
 export const TEXTBOOK_INTRO = {
   title: "Insurance Fundamentals",

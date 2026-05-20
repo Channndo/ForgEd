@@ -105,3 +105,171 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   z-index: 0;
 }
+
+/* CoverIQ Facts–style digital textbook (ForgEd gold theme) */
+.font-textbook {
+  font-family: var(--font-textbook), Georgia, "Times New Roman", serif;
+}
+
+.textbook-page {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgb(212 175 55 / 0.08);
+  background: linear-gradient(
+    to bottom,
+    rgb(18 18 18 / 0.95),
+    rgb(10 10 10 / 0.98) 50%,
+    rgb(5 5 5)
+  );
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.04) inset,
+    0 32px 64px -24px rgb(0 0 0 / 0.65),
+    0 0 80px -40px rgb(212 175 55 / 0.06);
+}
+
+.textbook-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 27px,
+    rgb(148 163 184 / 0.02) 27px,
+    rgb(148 163 184 / 0.02) 28px
+  );
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.textbook-chapter-num {
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: 5.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: rgb(212 175 55 / 0.12);
+}
+
+@media (min-width: 640px) {
+  .textbook-chapter-num {
+    font-size: 7rem;
+  }
+}
+
+.textbook-dropcap::first-letter {
+  float: left;
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: 3.25rem;
+  line-height: 0.85;
+  padding-right: 0.5rem;
+  padding-top: 0.15rem;
+  font-weight: 700;
+  color: rgb(212 175 55 / 0.95);
+}
+
+.textbook-section-rule {
+  height: 1px;
+  width: 4rem;
+  background: linear-gradient(to right, rgb(212 175 55 / 0.55), transparent);
+}
+
+.textbook-prose {
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--muted);
+  font-family: var(--font-textbook), Georgia, serif;
+}
+
+.textbook-prose-muted {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+  font-family: var(--font-textbook), Georgia, serif;
+}
+
+.textbook-callout {
+  border-radius: 0.75rem;
+  border-left: 4px solid rgb(212 175 55 / 0.45);
+  background: rgb(212 175 55 / 0.06);
+  padding: 1rem 1.25rem;
+}
+
+.textbook-objectives li::marker {
+  color: rgb(212 175 55 / 0.7);
+}
+
+.textbook-law-table caption {
+  margin-bottom: 0.75rem;
+  text-align: left;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+.textbook-timeline {
+  position: relative;
+  margin-left: 0.5rem;
+  border-left: 1px solid rgb(212 175 55 / 0.2);
+  padding-left: 1.5rem;
+}
+
+.textbook-timeline-item {
+  position: relative;
+  padding-bottom: 1.25rem;
+}
+
+.textbook-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.textbook-timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -1.6rem;
+  top: 0.45rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgb(212 175 55 / 0.85);
+  box-shadow: 0 0 0 3px rgb(212 175 55 / 0.15);
+}
+
+.textbook-reading-bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(to right, var(--gold-dark), var(--gold));
+  transition: width 0.3s ease;
+}
+
+.textbook-toc-active {
+  margin-left: -1px;
+  border-left: 2px solid var(--gold);
+  background: rgb(212 175 55 / 0.1);
+  padding-left: 10px;
+  color: var(--gold);
+}
+
+.textbook-section-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 640px) {
+  .textbook-section-padding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .textbook-section-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 7rem;
+  }
+}

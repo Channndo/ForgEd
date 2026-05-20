@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Cinzel } from "next/font/google";
+import { Geist, Geist_Mono, Cinzel, Lora } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
 import { ProgressProvider } from "@/components/providers/ProgressProvider";
@@ -23,6 +23,13 @@ const cinzel = Cinzel({
   weight: ["400", "500", "600", "700"],
 });
 
+const lora = Lora({
+  variable: "--font-textbook",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
   title: "ForgEd — Learn Skills That Matter.",
   description:
@@ -41,9 +48,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} h-full`}
+      className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} ${lora.variable}`}
     >
-      <body className="h-full overflow-hidden antialiased bg-[#050505]">
+      <body className="min-h-screen overflow-y-auto antialiased bg-[#050505]">
         <ProgressProvider>
           <KodaProvider>
             <AppShell>{children}</AppShell>

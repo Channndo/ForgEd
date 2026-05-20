@@ -55,7 +55,8 @@ export function titleForPath(pathname: string): string {
   const path = pathname.replace(/\/$/, "") || "/";
   if (PAGE_TITLES[path]) return PAGE_TITLES[path];
   if (path === "" || path === "/") return "Dashboard";
-  if (path.startsWith("/courses/") && path.includes("/learn/")) return "Lesson";
+  if (path.startsWith("/courses/") && path.endsWith("/read")) return "Textbook";
+  if (path.startsWith("/courses/") && path.includes("/learn/")) return "Textbook";
   if (path.endsWith("/quiz")) return "Quiz";
   if (path.startsWith("/courses/")) return "Course";
   return "ForgEd";

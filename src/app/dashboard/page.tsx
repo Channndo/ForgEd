@@ -15,6 +15,10 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { BADGES } from "@/lib/badges";
 import { COURSES, getFeaturedCourses } from "@/lib/courses/catalog";
+import {
+  countCompletedLessons,
+  computeCourseProgressPercent,
+} from "@/lib/courseProgress";
 import { withBasePath } from "@/lib/basePath";
 import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
 import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
@@ -23,11 +27,16 @@ export default function DashboardPage() {
   const { progress, xpBar } = useProgress();
   const featured = getFeaturedCourses();
 
-  const inProgress = COURSES.filter(
-    (c) =>
-      (progress.courseProgress[c.id] ?? 0) > 0 &&
-      !progress.completedCourses.includes(c.id)
+  const totalLessons = COURSES.reduce(
+    (n, c) => n + countCompletedLessons(progress, c.slug).total,
+    0
   );
+  const completedLessons = progress.completedLessons.length;
+
+  const inProgress = COURSES.filter((c) => {
+    const pct = computeCourseProgressPercent(progress, c.id);
+    return pct > 0 && !progress.completedCourses.includes(c.id);
+  });
 
   return (
     <div className="space-y-8">
@@ -53,7 +62,11 @@ export default function DashboardPage() {
             <StatChip icon={Zap} label="XP" value={String(progress.xp)} />
             <StatChip icon={Target} label="Level" value={String(xpBar.level)} />
             <StatChip icon={Flame} label="Streak" value={`${progress.streak}d`} />
-            <StatChip icon={BookOpen} label="Done" value={String(progress.completedCourses.length)} />
+            <StatChip
+              icon={BookOpen}
+              label="Sections"
+              value={`${completedLessons}/${totalLessons}`}
+            />
           </div>
         </div>
       </section>
@@ -88,11 +101,15 @@ export default function DashboardPage() {
                       <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
                         <div
                           className="h-full bg-gradient-to-r from-[var(--silver)] to-[var(--gold)]"
-                          style={{ width: `${progress.courseProgress[c.id] ?? 0}%` }}
+                          style={{
+                            width: `${computeCourseProgressPercent(progress, c.id)}%`,
+                          }}
                         />
                       </div>
                       <p className="mt-1 text-xs text-[var(--muted)]">
-                        {progress.courseProgress[c.id] ?? 0}% complete
+                        {countCompletedLessons(progress, c.slug).completed}/
+                        {countCompletedLessons(progress, c.slug).total} sections ·{" "}
+                        {computeCourseProgressPercent(progress, c.id)}%
                       </p>
                     </Card>
                   </Link>

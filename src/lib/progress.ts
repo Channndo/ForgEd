@@ -4,6 +4,12 @@ import type { UserProgress } from "./types";
 import { getBadge } from "./badges";
 import { levelFromXp } from "./xp";
 import { isPassingScore } from "./quizTypes";
+import {
+  courseIdForLesson,
+  maybeCompleteModule,
+  syncCourseProgressFromLessons,
+} from "./courseProgress";
+import { COURSES } from "./courses/catalog";
 
 const STORAGE_KEY = "forged_progress_v1";
 
@@ -36,7 +42,9 @@ export function readProgress(): UserProgress {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_PROGRESS;
     const parsed = JSON.parse(raw) as UserProgress;
-    return { ...DEFAULT_PROGRESS, ...parsed };
+    const data = { ...DEFAULT_PROGRESS, ...parsed };
+    data.level = levelFromXp(data.xp);
+    return syncCourseProgressFromLessons(data);
   } catch {
     return DEFAULT_PROGRESS;
   }
@@ -78,7 +86,8 @@ export function addXp(amount: number): UserProgress {
 
 export function completeLesson(
   lessonId: string,
-  xpAmount = 15
+  xpAmount = 15,
+  opts?: { courseSlug?: string; moduleId?: string }
 ): UserProgress {
   let data = updateStreak(readProgress());
   if (!data.completedLessons.includes(lessonId)) {
@@ -88,6 +97,16 @@ export function completeLesson(
       data = awardBadge(data, "first-lesson");
     }
   }
+  const courseId = courseIdForLesson(lessonId);
+  const course = courseId
+    ? COURSES.find((c) => c.id === courseId)
+    : undefined;
+  const slug = opts?.courseSlug ?? course?.slug;
+  const moduleId = opts?.moduleId;
+  if (slug && moduleId) {
+    data = maybeCompleteModule(data, slug, moduleId);
+  }
+  data = syncCourseProgressFromLessons(data);
   writeProgress(data);
   return data;
 }
@@ -141,21 +160,14 @@ export function completeCourse(
   return data;
 }
 
-export function setCourseProgress(courseId: string, percent: number): UserProgress {
-  const data = updateStreak(readProgress());
-  data.courseProgress[courseId] = Math.min(100, Math.max(0, percent));
-  writeProgress(data);
-  return data;
-}
-
-export function markInsuranceChapter(chapterNum: number): UserProgress {
+export function markTextbookChapter(
+  courseId: string,
+  chapterNum: number
+): UserProgress {
   let data = updateStreak(readProgress());
-  if (chapterNum === 1) data = awardBadge(data, "insurance-ch1");
-  const pct = Math.round((chapterNum / 13) * 100);
-  data.courseProgress["insurance-fundamentals"] = Math.max(
-    data.courseProgress["insurance-fundamentals"] ?? 0,
-    pct
-  );
+  if (courseId === "insurance-fundamentals" && chapterNum === 1) {
+    data = awardBadge(data, "insurance-ch1");
+  }
   writeProgress(data);
   return data;
 }

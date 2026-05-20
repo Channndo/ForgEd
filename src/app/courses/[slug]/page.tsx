@@ -21,8 +21,6 @@ export default async function CoursePage({
   if (!course) notFound();
 
   const modules = getModulesForSlug(slug);
-  const firstModule = modules[0];
-  const firstLesson = firstModule?.lessons[0];
 
   return (
     <div className="space-y-8">
@@ -31,7 +29,8 @@ export default async function CoursePage({
           ← Course library
         </Link>
         <span className="mt-4 inline-block rounded-full border border-[var(--gold)]/20 bg-[var(--gold)]/10 px-3 py-0.5 text-xs capitalize text-[var(--gold)]">
-          {course.difficulty} · {modules.length} modules
+          {course.difficulty} · {modules.length}{" "}
+          {course.textbookCourse ? "chapters" : "modules"}
         </span>
         <h1 className="mt-3 font-serif text-3xl font-bold text-[var(--silver)]">
           {course.title}
@@ -47,7 +46,7 @@ export default async function CoursePage({
           </span>
         </div>
 
-        <CourseProgressClient courseId={course.id} />
+        <CourseProgressClient courseId={course.id} slug={slug} />
 
         <div className="mt-4 flex flex-wrap gap-2">
           {course.skills.map((s) => (
@@ -60,13 +59,10 @@ export default async function CoursePage({
           ))}
         </div>
 
-        {firstLesson && (
+        {course.textbookCourse && (
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button
-              href={`/courses/${slug}/learn/${firstModule.id}/${firstLesson.id}`}
-              variant="forge"
-            >
-              Start course
+            <Button href={`/courses/${slug}/read`} variant="forge">
+              Open textbook
             </Button>
             <Button href={`/courses/${slug}/quiz`} variant="secondary">
               Take quiz
@@ -90,19 +86,14 @@ export default async function CoursePage({
 
         <div className="lg:col-span-2">
           <h2 className="mb-4 font-serif text-xl font-semibold text-[var(--silver)]">
-            Modules
+            {course.textbookCourse ? "Chapters" : "Modules"}
           </h2>
           <ol className="space-y-2">
             {modules.map((mod, i) => {
-              const lesson = mod.lessons[0];
               return (
                 <li key={mod.id}>
                   <Link
-                    href={
-                      lesson
-                        ? `/courses/${slug}/learn/${mod.id}/${lesson.id}`
-                        : "#"
-                    }
+                    href={`/courses/${slug}/read#${mod.id}`}
                     className="flex items-start gap-4 rounded-xl border border-white/[0.06] bg-[#0a0a0a] p-4 transition hover:border-[var(--gold)]/25 hover:bg-white/[0.02]"
                   >
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--gold)]/15 text-sm font-bold text-[var(--gold)]">
@@ -111,7 +102,7 @@ export default async function CoursePage({
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{mod.title}</p>
                       <p className="mt-1 text-sm text-[var(--muted)]">
-                        {mod.lessons.length} lessons
+                        {mod.lessons.length} sections · scroll in textbook
                       </p>
                     </div>
                   </Link>

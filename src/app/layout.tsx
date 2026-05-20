@@ -35,8 +35,21 @@ export const metadata: Metadata = {
   description:
     "Free AI-powered education platform. Learn across technology, business, finance, trades, healthcare, and more.",
   icons: {
-    icon: withBasePath("/forged-icon.png"),
-    apple: withBasePath("/forged-icon.png"),
+    icon: [
+      {
+        url: withBasePath("/forged-icon.png"),
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: withBasePath("/forged-icon.png"),
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+    shortcut: withBasePath("/forged-icon.png"),
   },
 };
 

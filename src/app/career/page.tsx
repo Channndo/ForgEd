@@ -21,7 +21,7 @@ export default function CareerPage() {
   ).flatMap((c) => c.skills);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-4xl space-y-8">
       <h1 className="text-3xl font-bold">Career progression</h1>
       <p className="mt-2 text-[var(--muted)]">
         Track skills earned on ForgEd and build toward resume-ready milestones.

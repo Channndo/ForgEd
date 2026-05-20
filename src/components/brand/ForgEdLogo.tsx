@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { withBasePath } from "@/lib/basePath";
 
 type LogoVariant = "icon" | "wordmark" | "full";
 
@@ -21,10 +22,11 @@ export function ForgEdLogo({
   priority?: boolean;
 }) {
   const { src, width, height } = SOURCES[variant];
+  const imageSrc = withBasePath(src);
 
   const img = (
     <Image
-      src={src}
+      src={imageSrc}
       alt="ForgEd"
       width={width}
       height={height}

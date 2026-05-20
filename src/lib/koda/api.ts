@@ -5,10 +5,11 @@ import type {
   KodaMode,
   KodaStatusResponse,
 } from "./types";
+import { apiUrl } from "@/lib/basePath";
 
 export async function fetchKodaStatus(): Promise<KodaStatusResponse & { responded: boolean }> {
   try {
-    const r = await fetch("/api/koda/status", { cache: "no-store" });
+    const r = await fetch(apiUrl("/api/koda/status"), { cache: "no-store" });
     const data = (await r.json()) as KodaStatusResponse;
     return { ...data, responded: true };
   } catch {
@@ -40,7 +41,7 @@ export async function sendKodaChat(params: {
 
   if (stream && onToken) {
     try {
-      const r = await fetch("/api/koda/chat?stream=1", {
+      const r = await fetch(apiUrl("/api/koda/chat?stream=1"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
         body: JSON.stringify({ ...body, stream: true }),
@@ -110,7 +111,7 @@ export async function sendKodaChat(params: {
   }
 
   try {
-    const r = await fetch("/api/koda/chat", {
+    const r = await fetch(apiUrl("/api/koda/chat"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -136,7 +137,7 @@ export async function sendKodaChat(params: {
 }
 
 export async function kodaSummarize(context: KodaLearningContext): Promise<string | null> {
-  const r = await fetch("/api/koda/summarize", {
+  const r = await fetch(apiUrl("/api/koda/summarize"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ context }),
@@ -147,7 +148,7 @@ export async function kodaSummarize(context: KodaLearningContext): Promise<strin
 }
 
 export async function kodaExplainQuiz(context: KodaLearningContext): Promise<string | null> {
-  const r = await fetch("/api/koda/explain-quiz", {
+  const r = await fetch(apiUrl("/api/koda/explain-quiz"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ context }),
@@ -161,7 +162,7 @@ export async function kodaRecommend(context: KodaLearningContext): Promise<{
   message: string | null;
   placeholders: string[];
 }> {
-  const r = await fetch("/api/koda/recommend", {
+  const r = await fetch(apiUrl("/api/koda/recommend"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ context }),

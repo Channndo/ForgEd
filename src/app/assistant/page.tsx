@@ -45,7 +45,7 @@ export default function AssistantPage() {
   }, [available]);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex items-center gap-4">
         <KodaLogoMark className="text-2xl" />
         <div>

@@ -1,15 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { Award, BookOpen, Flame, Target, Zap } from "lucide-react";
+import Image from "next/image";
+import {
+  Award,
+  BookOpen,
+  Flame,
+  Target,
+  Zap,
+  ArrowRight,
+  TrendingUp,
+} from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { BADGES } from "@/lib/badges";
-import { COURSES } from "@/lib/courses/catalog";
+import { COURSES, getFeaturedCourses } from "@/lib/courses/catalog";
+import { withBasePath } from "@/lib/basePath";
+import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
 
 export default function DashboardPage() {
-  const { progress, xpBar, refresh } = useProgress();
+  const { progress, xpBar } = useProgress();
+  const featured = getFeaturedCourses();
 
   const inProgress = COURSES.filter(
     (c) =>
@@ -18,113 +30,168 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-bold text-[var(--silver)]">Your dashboard</h1>
-          <p className="mt-1 text-[var(--muted)]">Track XP, streaks, and learning momentum.</p>
-        </div>
-        <Button href="/courses" variant="forge">Continue learning</Button>
-      </div>
-
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <Zap className="h-6 w-6 text-[var(--forge)]" />
-          <p className="mt-3 text-2xl font-bold">{progress.xp}</p>
-          <p className="text-sm text-[var(--muted)]">Total XP</p>
-        </Card>
-        <Card>
-          <Target className="h-6 w-6 text-[var(--accent)]" />
-          <p className="mt-3 text-2xl font-bold">Level {xpBar.level}</p>
-          <p className="text-sm text-[var(--muted)]">
-            {xpBar.current}/{xpBar.needed} to next level
-          </p>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
-            <div
-              className="h-full bg-[var(--accent)]"
-              style={{ width: `${xpBar.percent}%` }}
+    <div className="space-y-8">
+      <section className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/15 bg-gradient-to-br from-[#0a0a0a] via-[#121212] to-[#0a0a0a] p-6 sm:p-8">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[var(--gold)]/10 blur-[80px]" />
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <Image
+              src={withBasePath("/forged-wordmark.png")}
+              alt="ForgEd"
+              width={240}
+              height={120}
+              className="h-auto w-48 sm:w-56 object-contain"
+              priority
             />
-          </div>
-        </Card>
-        <Card>
-          <Flame className="h-6 w-6 text-[var(--forge)]" />
-          <p className="mt-3 text-2xl font-bold">{progress.streak}</p>
-          <p className="text-sm text-[var(--muted)]">Day streak</p>
-        </Card>
-        <Card>
-          <BookOpen className="h-6 w-6 text-[var(--accent)]" />
-          <p className="mt-3 text-2xl font-bold">
-            {progress.completedCourses.length}
-          </p>
-          <p className="text-sm text-[var(--muted)]">Courses completed</p>
-        </Card>
-      </div>
-
-      <section className="mt-12">
-        <h2 className="text-xl font-semibold">In progress</h2>
-        {inProgress.length === 0 ? (
-          <Card className="mt-4">
-            <p className="text-[var(--muted)]">
-              No active courses yet.{" "}
-              <Link href="/courses/insurance-fundamentals" className="text-[var(--accent)] hover:underline">
-                Start Insurance Fundamentals
-              </Link>{" "}
-              — our deepest course.
+            <ForgEdTagline className="mt-3 justify-start" />
+            <p className="mt-4 max-w-xl text-sm text-[var(--muted)] sm:text-base">
+              Your learning command center — track progress, launch courses, and get help from KODA.
             </p>
-          </Card>
-        ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {inProgress.map((c) => (
-              <Link key={c.id} href={`/courses/${c.slug}`}>
-                <Card>
-                  <h3 className="font-medium">{c.title}</h3>
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-                    <div
-                      className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--forge)]"
-                      style={{ width: `${progress.courseProgress[c.id] ?? 0}%` }}
-                    />
-                  </div>
-                  <p className="mt-1 text-xs text-[var(--muted)]">
-                    {progress.courseProgress[c.id] ?? 0}% complete
-                  </p>
-                </Card>
-              </Link>
-            ))}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href="/courses/insurance-fundamentals" variant="forge">
+                Start Insurance Fundamentals <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button href="/courses" variant="secondary">
+                Browse library
+              </Button>
+            </div>
           </div>
-        )}
-      </section>
-
-      <section className="mt-12">
-        <h2 className="flex items-center gap-2 text-xl font-semibold">
-          <Award className="h-5 w-5 text-[var(--forge)]" /> Achievements
-        </h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {BADGES.map((badge) => {
-            const earned = progress.earnedBadges.includes(badge.id);
-            return (
-              <Card
-                key={badge.id}
-                className={earned ? "" : "opacity-50"}
-              >
-                <p className="font-medium">{badge.name}</p>
-                <p className="text-sm text-[var(--muted)]">{badge.description}</p>
-                {earned && (
-                  <span className="mt-2 inline-block text-xs text-[var(--success)]">
-                    +{badge.xpBonus} XP earned
-                  </span>
-                )}
-              </Card>
-            );
-          })}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 lg:gap-4">
+            <StatChip icon={Zap} label="XP" value={String(progress.xp)} />
+            <StatChip icon={Target} label="Level" value={String(xpBar.level)} />
+            <StatChip icon={Flame} label="Streak" value={`${progress.streak}d`} />
+            <StatChip icon={BookOpen} label="Done" value={String(progress.completedCourses.length)} />
+          </div>
         </div>
       </section>
 
-      <button
-        type="button"
-        className="sr-only"
-        onClick={refresh}
-        aria-hidden
-      />
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-6">
+          <section>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-serif text-xl font-semibold text-[var(--silver)]">
+                Continue learning
+              </h2>
+              <Link href="/courses" className="text-sm text-[var(--gold)] hover:underline">
+                View all
+              </Link>
+            </div>
+            {inProgress.length === 0 ? (
+              <Card>
+                <p className="text-sm text-[var(--muted)]">
+                  No active courses yet. Start with{" "}
+                  <Link href="/courses/insurance-fundamentals" className="text-[var(--gold)]">
+                    Insurance Fundamentals
+                  </Link>{" "}
+                  — our most in-depth path.
+                </p>
+              </Card>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {inProgress.map((c) => (
+                  <Link key={c.id} href={`/courses/${c.slug}`}>
+                    <Card className="h-full transition hover:border-[var(--gold)]/30">
+                      <h3 className="font-medium">{c.title}</h3>
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+                        <div
+                          className="h-full bg-gradient-to-r from-[var(--silver)] to-[var(--gold)]"
+                          style={{ width: `${progress.courseProgress[c.id] ?? 0}%` }}
+                        />
+                      </div>
+                      <p className="mt-1 text-xs text-[var(--muted)]">
+                        {progress.courseProgress[c.id] ?? 0}% complete
+                      </p>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section>
+            <h2 className="mb-4 font-serif text-xl font-semibold text-[var(--silver)]">
+              Featured courses
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {featured.map((c) => (
+                <Link key={c.id} href={`/courses/${c.slug}`}>
+                  <Card className="h-full hover:border-[var(--gold)]/25">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--gold)]">
+                      {c.category}
+                    </span>
+                    <h3 className="mt-1 font-medium">{c.title}</h3>
+                    <p className="mt-1 line-clamp-2 text-xs text-[var(--muted)]">
+                      {c.description}
+                    </p>
+                    <p className="mt-2 text-xs text-[var(--gold)]">{c.xpReward} XP</p>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <div className="space-y-6">
+          <Card glow>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-[var(--gold)]" />
+              <h2 className="font-semibold">Level progress</h2>
+            </div>
+            <p className="mt-2 text-3xl font-bold text-[var(--silver)]">Level {xpBar.level}</p>
+            <p className="text-sm text-[var(--muted)]">
+              {xpBar.current} / {xpBar.needed} XP to next level
+            </p>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full bg-gradient-to-r from-[var(--gold-dark)] to-[var(--gold)]"
+                style={{ width: `${xpBar.percent}%` }}
+              />
+            </div>
+          </Card>
+
+          <section>
+            <h2 className="mb-3 flex items-center gap-2 font-semibold text-[var(--silver)]">
+              <Award className="h-4 w-4 text-[var(--gold)]" /> Achievements
+            </h2>
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {BADGES.slice(0, 5).map((badge) => {
+                const earned = progress.earnedBadges.includes(badge.id);
+                return (
+                  <div
+                    key={badge.id}
+                    className={`rounded-lg border px-3 py-2 text-sm ${
+                      earned
+                        ? "border-[var(--gold)]/20 bg-[var(--gold)]/5"
+                        : "border-white/5 bg-white/[0.02] opacity-60"
+                    }`}
+                  >
+                    <p className="font-medium">{badge.name}</p>
+                    <p className="text-xs text-[var(--muted)]">{badge.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatChip({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Zap;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-black/40 px-3 py-3 text-center">
+      <Icon className="mx-auto h-4 w-4 text-[var(--gold)]" />
+      <p className="mt-1 text-lg font-bold text-[var(--silver)]">{value}</p>
+      <p className="text-[10px] uppercase tracking-wider text-[var(--muted)]">{label}</p>
     </div>
   );
 }

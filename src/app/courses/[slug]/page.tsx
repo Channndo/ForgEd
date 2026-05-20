@@ -2,10 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Clock, Zap, CheckCircle2 } from "lucide-react";
 import { getCourseBySlug } from "@/lib/courses/catalog";
-import { getInsuranceModules } from "@/lib/courses/insurance";
+import { getModulesForSlug, getAllCourseSlugs } from "@/lib/coursePaths";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { CourseProgressClient } from "./CourseProgressClient";
+
+export function generateStaticParams() {
+  return getAllCourseSlugs().map((slug) => ({ slug }));
+}
 
 export default async function CoursePage({
   params,
@@ -16,42 +20,40 @@ export default async function CoursePage({
   const course = getCourseBySlug(slug);
   if (!course) notFound();
 
-  const modules = course.textbookCourse
-    ? getInsuranceModules()
-    : course.modules;
-
+  const modules = getModulesForSlug(slug);
   const firstModule = modules[0];
   const firstLesson = firstModule?.lessons[0];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <Link href="/courses" className="text-sm text-[var(--muted)] hover:text-white">
-        ← Course library
-      </Link>
-
-      <div className="mt-6">
-        <span className="text-xs font-medium uppercase tracking-wider text-[var(--accent)]">
+    <div className="space-y-8">
+      <div>
+        <Link href="/courses" className="text-sm text-[var(--muted)] hover:text-[var(--gold)]">
+          ← Course library
+        </Link>
+        <span className="mt-4 inline-block rounded-full border border-[var(--gold)]/20 bg-[var(--gold)]/10 px-3 py-0.5 text-xs capitalize text-[var(--gold)]">
           {course.difficulty} · {modules.length} modules
         </span>
-        <h1 className="mt-2 text-3xl font-bold">{course.title}</h1>
-        <p className="mt-4 text-[var(--muted)]">{course.description}</p>
+        <h1 className="mt-3 font-serif text-3xl font-bold text-[var(--silver)]">
+          {course.title}
+        </h1>
+        <p className="mt-3 max-w-3xl text-[var(--muted)]">{course.description}</p>
 
-        <div className="mt-6 flex flex-wrap gap-4 text-sm">
-          <span className="flex items-center gap-1 text-[var(--muted)]">
+        <div className="mt-4 flex flex-wrap gap-4 text-sm text-[var(--muted)]">
+          <span className="flex items-center gap-1">
             <Clock className="h-4 w-4" /> {course.estimatedHours} hours
           </span>
-          <span className="flex items-center gap-1 text-[var(--muted)]">
-            <Zap className="h-4 w-4 text-[var(--forge)]" /> {course.xpReward} XP reward
+          <span className="flex items-center gap-1">
+            <Zap className="h-4 w-4 text-[var(--gold)]" /> {course.xpReward} XP
           </span>
         </div>
 
         <CourseProgressClient courseId={course.id} />
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {course.skills.map((s) => (
             <span
               key={s.id}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs"
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-[var(--muted)]"
             >
               {s.name}
             </span>
@@ -59,65 +61,66 @@ export default async function CoursePage({
         </div>
 
         {firstLesson && (
-          <div className="mt-8">
+          <div className="mt-6 flex flex-wrap gap-3">
             <Button
               href={`/courses/${slug}/learn/${firstModule.id}/${firstLesson.id}`}
               variant="forge"
             >
               Start course
             </Button>
-            <Button
-              href={`/courses/${slug}/quiz`}
-              variant="secondary"
-              className="ml-3"
-            >
+            <Button href={`/courses/${slug}/quiz`} variant="secondary">
               Take quiz
             </Button>
           </div>
         )}
       </div>
 
-      <section className="mt-12">
-        <h2 className="text-xl font-semibold">Course overview</h2>
-        <Card className="mt-4">
-          <h3 className="font-medium">What you will learn</h3>
-          <ul className="mt-3 space-y-2 text-sm text-[var(--muted)]">
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-1">
+          <h2 className="font-semibold text-[var(--silver)]">Skills you will gain</h2>
+          <ul className="mt-4 space-y-2 text-sm text-[var(--muted)]">
             {course.skills.map((s) => (
               <li key={s.id} className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--success)]" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--gold)]" />
                 {s.name}
               </li>
             ))}
           </ul>
         </Card>
-      </section>
 
-      <section className="mt-12">
-        <h2 className="text-xl font-semibold">Modules</h2>
-        <ol className="mt-4 space-y-3">
-          {modules.map((mod, i) => {
-            const lesson = mod.lessons[0];
-            return (
-              <li key={mod.id}>
-                <Link
-                  href={
-                    lesson
-                      ? `/courses/${slug}/learn/${mod.id}/${lesson.id}`
-                      : "#"
-                  }
-                  className="glass block rounded-xl p-4 transition hover:border-[var(--accent)]/30"
-                >
-                  <span className="text-xs text-[var(--muted)]">Module {i + 1}</span>
-                  <p className="font-medium">{mod.title}</p>
-                  <p className="mt-1 text-sm text-[var(--muted)]">
-                    {mod.lessons.length} lessons · {mod.keyConcepts.join(", ")}
-                  </p>
-                </Link>
-              </li>
-            );
-          })}
-        </ol>
-      </section>
+        <div className="lg:col-span-2">
+          <h2 className="mb-4 font-serif text-xl font-semibold text-[var(--silver)]">
+            Modules
+          </h2>
+          <ol className="space-y-2">
+            {modules.map((mod, i) => {
+              const lesson = mod.lessons[0];
+              return (
+                <li key={mod.id}>
+                  <Link
+                    href={
+                      lesson
+                        ? `/courses/${slug}/learn/${mod.id}/${lesson.id}`
+                        : "#"
+                    }
+                    className="flex items-start gap-4 rounded-xl border border-white/[0.06] bg-[#0a0a0a] p-4 transition hover:border-[var(--gold)]/25 hover:bg-white/[0.02]"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--gold)]/15 text-sm font-bold text-[var(--gold)]">
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium">{mod.title}</p>
+                      <p className="mt-1 text-sm text-[var(--muted)]">
+                        {mod.lessons.length} lessons
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </div>
     </div>
   );
 }

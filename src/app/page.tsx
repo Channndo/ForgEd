@@ -1,19 +1,16 @@
-import { Hero } from "@/components/home/Hero";
-import { FeaturedCourses } from "@/components/home/FeaturedCourses";
-import { SkillCategories } from "@/components/home/SkillCategories";
-import { WhyForgEd } from "@/components/home/WhyForgEd";
-import { LearningPath } from "@/components/home/LearningPath";
-import { Roadmap } from "@/components/home/Roadmap";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/dashboard");
+  }, [router]);
   return (
-    <>
-      <Hero />
-      <FeaturedCourses />
-      <SkillCategories />
-      <WhyForgEd />
-      <LearningPath />
-      <Roadmap />
-    </>
+    <div className="flex min-h-[50vh] items-center justify-center text-[var(--muted)]">
+      Loading ForgEd…
+    </div>
   );
 }

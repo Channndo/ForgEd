@@ -16,8 +16,9 @@ function CoursesContent() {
     : COURSES;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <h1 className="text-3xl font-bold">Course library</h1>
+    <div className="space-y-6">
+      <div>
+      <h1 className="font-serif text-3xl font-bold text-[var(--silver)]">Course library</h1>
       <p className="mt-2 text-[var(--muted)]">
         {category
           ? CATEGORY_META[category]?.label ?? category
@@ -25,7 +26,8 @@ function CoursesContent() {
         — free, self-paced, XP-enabled.
       </p>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filtered.map((course) => (
           <Link key={course.id} href={`/courses/${course.slug}`}>
             <Card className="h-full hover:border-[var(--accent)]/30 transition-colors">

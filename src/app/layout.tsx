@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cinzel } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { AppShell } from "@/components/layout/AppShell";
 import { ProgressProvider } from "@/components/providers/ProgressProvider";
 import { KodaProvider } from "@/components/koda/KodaProvider";
 import { KodaFloatingButton } from "@/components/koda/KodaFab";
+import { withBasePath } from "@/lib/basePath";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   description:
     "Free AI-powered education platform. Learn skills in technology, business, insurance, cybersecurity, and future careers.",
   icons: {
-    icon: "/forged-icon.png",
-    apple: "/forged-icon.png",
+    icon: withBasePath("/forged-icon.png"),
+    apple: withBasePath("/forged-icon.png"),
   },
 };
 
@@ -43,12 +43,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} h-full`}
     >
-      <body className="texture-bg min-h-full flex flex-col antialiased relative">
+      <body className="h-full overflow-hidden antialiased bg-[#050505]">
         <ProgressProvider>
           <KodaProvider>
-            <Header />
-            <main className="relative z-10 flex-1">{children}</main>
-            <Footer />
+            <AppShell>{children}</AppShell>
             <KodaFloatingButton />
           </KodaProvider>
         </ProgressProvider>

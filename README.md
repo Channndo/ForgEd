@@ -21,6 +21,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## GitHub Pages (live site)
+
+The app deploys automatically to **https://channndo.github.io/ForgEd/** on every push to `main`.
+
+**Important:** In repo **Settings → Pages**, set **Source** to **GitHub Actions** (not “Deploy from branch” — that only shows the README).
+
+Local preview of the Pages build:
+
+```bash
+npm run build:pages
+npx serve out
+```
+
 ## Scripts
 
 | Command | Description |

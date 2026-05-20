@@ -113,6 +113,7 @@ import {
   ENTR_TEXTBOOK,
   ENTR_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/entrepreneurship-fundamentals";
+import { PATH_BUNDLES } from "@/lib/courses/textbook/pathBundles.generated";
 
 const BUNDLES: Record<string, TextbookBundle> = {
   "insurance-fundamentals": {
@@ -255,6 +256,7 @@ const BUNDLES: Record<string, TextbookBundle> = {
     intro: ENTR_TEXTBOOK_INTRO,
     chapters: ENTR_TEXTBOOK,
   },
+  ...PATH_BUNDLES,
 };
 
 export function getTextbookBundle(slug: string): TextbookBundle | undefined {

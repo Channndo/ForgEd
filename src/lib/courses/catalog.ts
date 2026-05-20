@@ -1,5 +1,6 @@
 import type { Course, CourseCategory } from "@/lib/types";
-import { getTextbookChapterCount } from "@/lib/courses/textbook/registry";
+import { textbookCourse } from "@/lib/courses/catalogCore";
+import { buildPathCourses } from "@/lib/courses/pathCatalog";
 
 export const CATEGORY_META: Record<
   CourseCategory,
@@ -97,32 +98,7 @@ export const CATEGORY_META: Record<
   },
 };
 
-function textbookCourse(
-  id: string,
-  title: string,
-  category: CourseCategory,
-  description: string,
-  skills: { id: string; name: string }[],
-  opts?: Partial<Course>
-): Course {
-  const chapters = getTextbookChapterCount(id);
-  return {
-    id,
-    slug: id,
-    title,
-    description,
-    category,
-    difficulty: "beginner",
-    estimatedHours: Math.max(10, chapters * 1.2),
-    xpReward: chapters * 100,
-    skills,
-    modules: [],
-    textbookCourse: true,
-    ...opts,
-  };
-}
-
-export const COURSES: Course[] = [
+const EXTENDED_CATALOG: Course[] = [
   textbookCourse(
     "insurance-fundamentals",
     "Insurance Fundamentals",
@@ -462,6 +438,13 @@ export const COURSES: Course[] = [
     ]
   ),
 ];
+
+const PATH_COURSES = buildPathCourses();
+const pathCatalogSlugs = new Set(PATH_COURSES.map((c) => c.slug));
+const EXTENDED_ONLY = EXTENDED_CATALOG.filter((c) => !pathCatalogSlugs.has(c.slug));
+
+/** Path courses first (structured progression), then extended domain library */
+export const COURSES: Course[] = [...PATH_COURSES, ...EXTENDED_ONLY];
 
 export function getCourseBySlug(slug: string): Course | undefined {
   return COURSES.find((c) => c.slug === slug);

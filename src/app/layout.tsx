@@ -37,6 +37,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
+        url: withBasePath("/icon.svg"),
+        type: "image/svg+xml",
+      },
+      {
         url: withBasePath("/forged-icon.png"),
         sizes: "512x512",
         type: "image/png",
@@ -44,12 +48,12 @@ export const metadata: Metadata = {
     ],
     apple: [
       {
-        url: withBasePath("/forged-icon.png"),
+        url: withBasePath("/apple-touch-icon.png"),
         sizes: "180x180",
         type: "image/png",
       },
     ],
-    shortcut: withBasePath("/forged-icon.png"),
+    shortcut: [{ url: withBasePath("/icon.svg"), type: "image/svg+xml" }],
   },
 };
 
@@ -63,6 +67,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} ${lora.variable}`}
     >
+      <head>
+        <link rel="icon" href={withBasePath("/icon.svg")} type="image/svg+xml" />
+        <link rel="alternate icon" href={withBasePath("/favicon.ico")} />
+        <link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
+      </head>
       <body className="min-h-screen overflow-y-auto antialiased bg-[#050505]">
         <ProgressProvider>
           <KodaProvider>

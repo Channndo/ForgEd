@@ -10,6 +10,7 @@ import {
   syncCourseProgressFromLessons,
 } from "./courseProgress";
 import { COURSES } from "./courses/catalog";
+import { syncPathFromCourseComplete } from "./paths/pathProgress";
 
 const STORAGE_KEY = "forged_progress_v1";
 
@@ -28,6 +29,11 @@ export const DEFAULT_PROGRESS: UserProgress = {
   sectionQuizzesPassed: {},
   courseReviewQuizPassed: [],
   finalExamPassed: [],
+  pathProgress: {},
+  activePathId: null,
+  dailyXpGoal: 150,
+  dailyXpEarnedToday: 0,
+  dailyXpDate: null,
 };
 
 function todayKey(): string {
@@ -81,9 +87,20 @@ function awardBadge(data: UserProgress, badgeId: string): UserProgress {
   return data;
 }
 
+function trackDailyXp(data: UserProgress, amount: number): UserProgress {
+  const today = todayKey();
+  if (data.dailyXpDate !== today) {
+    data.dailyXpDate = today;
+    data.dailyXpEarnedToday = 0;
+  }
+  data.dailyXpEarnedToday = (data.dailyXpEarnedToday ?? 0) + amount;
+  return data;
+}
+
 export function addXp(amount: number): UserProgress {
-  const data = updateStreak(readProgress());
+  let data = updateStreak(readProgress());
   data.xp += amount;
+  data = trackDailyXp(data, amount);
   writeProgress(data);
   return data;
 }
@@ -309,6 +326,7 @@ export function passFinalExamAndCompleteCourse(
         data = awardBadge(data, "insurance-complete");
       }
     }
+    data = syncPathFromCourseComplete(data, courseId);
     data = awardBadge(data, "quiz-pass");
   }
   writeProgress(data);

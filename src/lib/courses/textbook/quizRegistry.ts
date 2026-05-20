@@ -29,6 +29,7 @@ import { CREATIVE_MEDIA_FUNDAMENTALS_BANK } from "./banks/creative-media-fundame
 import { PERSONAL_DEVELOPMENT_FUNDAMENTALS_BANK } from "./banks/personal-development-fundamentals";
 import { TEACHING_FUNDAMENTALS_BANK } from "./banks/teaching-fundamentals";
 import { ENTREPRENEURSHIP_FUNDAMENTALS_BANK } from "./banks/entrepreneurship-fundamentals";
+import { PATH_BANKS } from "./pathBanks.generated";
 
 function buildInsuranceBank(): QuizQuestion[] {
   const merged = [...INSURANCE_QUIZ_BANK, ...INSURANCE_SUPPLEMENT];
@@ -64,6 +65,7 @@ const BANKS: Record<string, QuizQuestion[]> = {
   "personal-development-fundamentals": PERSONAL_DEVELOPMENT_FUNDAMENTALS_BANK,
   "teaching-fundamentals": TEACHING_FUNDAMENTALS_BANK,
   "entrepreneurship-fundamentals": ENTREPRENEURSHIP_FUNDAMENTALS_BANK,
+  ...PATH_BANKS,
 };
 
 export function getQuizBank(slug: string): QuizQuestion[] {

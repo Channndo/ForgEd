@@ -1,0 +1,497 @@
+const LEGAL_CHAPTER_META: Record<string, ChapterMeta> = {
+  "what-is-law": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in What Is Law and Why It Matters",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "sources-of-law": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Sources of Law: Constitutions, Statutes, and Precedent",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "courts-procedure": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Courts, Jurisdiction, and Civil Procedure",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "criminal-civil": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Criminal Law vs. Civil Law",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "legal-reasoning": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Legal Reasoning and Argument",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "rights-duties": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Rights, Duties, and Liability",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "legal-profession": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Lawyers, Judges, and Legal Roles",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "dispute-resolution": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Negotiation, Mediation, and Litigation",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "law-technology": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Law, Technology, and Emerging Issues",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "law-careers": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Studying Law and Career Pathways",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+};
+
+const BIZLAW_CHAPTER_META: Record<string, ChapterMeta> = {
+  "contracts-intro": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Introduction to Contracts",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "contract-formation": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Offer, Acceptance, and Consideration",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "breach-remedies": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Breach of Contract and Remedies",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "torts-intro": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Torts and Business Risk",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "negligence": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Negligence and Duty of Care",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "business-entities": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Corporations, LLCs, and Partnerships",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "employment-law": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Employment Law Essentials",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "intellectual-property": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Intellectual Property for Business",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "regulatory-compliance": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Regulation and Compliance",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "risk-management": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Legal Risk Management",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+};
+
+const CONLAW_CHAPTER_META: Record<string, ChapterMeta> = {
+  "foundations": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Constitutional Foundations",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "separation-powers": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Separation of Powers",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "federalism": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Federalism and State Authority",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "bill-of-rights": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in The Bill of Rights",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "due-process": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Due Process",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "equal-protection": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Equal Protection",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "first-amendment": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in First Amendment Freedoms",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "search-seizure": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Search, Seizure, and Privacy",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "contemporary-issues": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Contemporary Constitutional Issues",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "civic-participation": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Civic Participation and the Rule of Law",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+};
+
+const MECH_CHAPTER_META: Record<string, ChapterMeta> = {
+  "me-intro": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Introduction to Mechanical Engineering",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "statics": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Statics and Equilibrium",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "dynamics": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Dynamics and Motion",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "materials": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Engineering Materials",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "thermodynamics": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Thermodynamics Essentials",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "fluid-mechanics": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Fluid Mechanics Basics",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "machine-elements": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Machine Elements and Mechanisms",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "manufacturing": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Manufacturing Processes",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "design-process": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Engineering Design Process",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "me-careers": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Mechanical Engineering Careers",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+};
+
+const EE_CHAPTER_META: Record<string, ChapterMeta> = {
+  "ee-intro": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Introduction to Electrical Engineering",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "dc-circuits": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in DC Circuit Analysis",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "ac-circuits": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in AC Circuits and Power",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "electronics": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Semiconductor Electronics",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "digital-logic": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Digital Logic and Systems",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "signals-systems": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Signals and Systems Overview",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "power-systems": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Electric Power Systems",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "control-systems": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Control Systems Basics",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "ee-safety": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Electrical Safety and Standards",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "ee-careers": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Electrical Engineering Careers",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+};
+
+const CE_CHAPTER_META: Record<string, ChapterMeta> = {
+  "ce-intro": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Introduction to Civil Engineering",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "structural-loads": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Loads, Forces, and Structural Analysis",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "structural-materials": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Concrete, Steel, and Structural Materials",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "geotechnical": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Geotechnical Engineering",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "water-resources": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Hydraulics and Water Resources",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "transportation": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Transportation Engineering",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "environmental-ce": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Environmental Engineering",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "surveying-gis": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Surveying and Geospatial Tools",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "construction-pm": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Construction and Project Management",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+  "ce-careers": {
+    readMinutes: 8,
+    objectives: [
+      "Explain core ideas in Civil Engineering Careers",
+      "Apply concepts to examples and assessments",
+      "Connect this chapter to the broader course",
+    ],
+  },
+};

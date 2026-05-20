@@ -50,6 +50,55 @@ export const BADGES: Badge[] = [
     icon: "compass",
     xpBonus: 80,
   },
+  {
+    id: "path-ai-practitioner",
+    name: "AI Practitioner",
+    description: "Completed the AI Literacy mastery path",
+    icon: "cpu",
+    xpBonus: 400,
+  },
+  {
+    id: "path-sales-operator",
+    name: "Sales Operator",
+    description: "Completed the Sales mastery path",
+    icon: "target",
+    xpBonus: 400,
+  },
+  {
+    id: "path-financial-foundations",
+    name: "Financial Foundations",
+    description: "Completed the Financial Literacy mastery path",
+    icon: "wallet",
+    xpBonus: 400,
+  },
+  {
+    id: "path-it-foundations",
+    name: "IT Foundations",
+    description: "Completed the IT Foundations mastery path",
+    icon: "monitor",
+    xpBonus: 400,
+  },
+  {
+    id: "path-cyber-defense",
+    name: "Cyber Defense",
+    description: "Completed the Cybersecurity mastery path",
+    icon: "shield",
+    xpBonus: 400,
+  },
+  {
+    id: "path-founder",
+    name: "Founder",
+    description: "Completed the Entrepreneurship mastery path",
+    icon: "rocket",
+    xpBonus: 400,
+  },
+  {
+    id: "path-service-advisor",
+    name: "Service Advisor",
+    description: "Completed the Service Advisor mastery path",
+    icon: "wrench",
+    xpBonus: 400,
+  },
 ];
 
 export function getBadge(id: string): Badge | undefined {

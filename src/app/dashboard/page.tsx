@@ -24,6 +24,7 @@ import { withBasePath } from "@/lib/basePath";
 import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
 import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 import { DomainGrid } from "@/components/dashboard/DomainGrid";
+import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
 
 export default function DashboardPage() {
   const { progress, xpBar } = useProgress();
@@ -114,6 +115,8 @@ export default function DashboardPage() {
           </p>
         </Card>
       </section>
+
+      <PathDashboardSection />
 
       <DomainGrid />
 

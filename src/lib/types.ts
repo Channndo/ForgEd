@@ -54,6 +54,12 @@ export interface Course {
   featured?: boolean;
   /** Extended textbook course uses external content */
   textbookCourse?: boolean;
+  /** Learning path memberships */
+  learningPathIds?: string[];
+  /** Original step slug when aliased to another catalog slug */
+  pathStepSlug?: string;
+  pathOrder?: number;
+  instructorLed?: boolean;
 }
 
 export interface Badge {
@@ -83,4 +89,19 @@ export interface UserProgress {
   courseReviewQuizPassed?: string[];
   /** courseIds that passed the 20-question final exam (unlocks course completion) */
   finalExamPassed?: string[];
+  /** Per learning path progress */
+  pathProgress?: Record<
+    string,
+    {
+      startedAt?: string;
+      completedCourseSlugs: string[];
+      completedLabs: string[];
+      masteryExamPassed?: boolean;
+      badgeEarned?: boolean;
+    }
+  >;
+  activePathId?: string | null;
+  dailyXpGoal?: number;
+  dailyXpEarnedToday?: number;
+  dailyXpDate?: string | null;
 }

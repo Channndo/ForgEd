@@ -24,6 +24,7 @@ export const DEFAULT_PROGRESS: UserProgress = {
   quizScores: {},
   earnedBadges: [],
   courseProgress: {},
+  chapterQuickChecks: {},
 };
 
 function todayKey(): string {
@@ -170,6 +171,41 @@ export function markTextbookChapter(
   }
   writeProgress(data);
   return data;
+}
+
+export function isChapterQuickCheckPassed(
+  courseId: string,
+  chapterNum: number
+): boolean {
+  const data = readProgress();
+  return (data.chapterQuickChecks?.[courseId] ?? []).includes(chapterNum);
+}
+
+export function markChapterQuickCheckPassed(
+  courseId: string,
+  chapterNum: number,
+  xpAmount = 25
+): UserProgress {
+  let data = updateStreak(readProgress());
+  if (!data.chapterQuickChecks) data.chapterQuickChecks = {};
+  const list = data.chapterQuickChecks[courseId] ?? [];
+  if (!list.includes(chapterNum)) {
+    data.chapterQuickChecks[courseId] = [...list, chapterNum].sort((a, b) => a - b);
+    data.xp += xpAmount;
+  }
+  writeProgress(data);
+  return data;
+}
+
+export function countChapterQuickChecksPassed(
+  courseId: string,
+  totalChapters: number
+): { passed: number; total: number } {
+  const data = readProgress();
+  const passed = (data.chapterQuickChecks?.[courseId] ?? []).filter(
+    (n) => n >= 1 && n <= totalChapters
+  ).length;
+  return { passed, total: totalChapters };
 }
 
 export function categoriesStarted(courseCategories: string[]): boolean {

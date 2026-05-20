@@ -1,6 +1,9 @@
 import type { QuizQuestion } from "@/lib/quizTypes";
-import { QUIZ_SESSION_LENGTH } from "@/lib/quizTypes";
-import { pickQuizSession as pickInsuranceQuiz } from "@/lib/courses/insurance/quizUtils";
+import { CHAPTER_QUICK_CHECK_LENGTH, QUIZ_SESSION_LENGTH } from "@/lib/quizTypes";
+import {
+  pickQuizSession as pickInsuranceQuiz,
+  questionsForChapter as insuranceQuestionsForChapter,
+} from "@/lib/courses/insurance/quizUtils";
 import { getTextbookChapterCount } from "./registry";
 import { TEXTBOOK_QUIZ_BANKS } from "./quizBanks";
 
@@ -44,6 +47,28 @@ export function pickQuizSessionForCourse(slug: string): QuizQuestion[] {
     0,
     Math.min(QUIZ_SESSION_LENGTH, bank.length, chapterCount)
   );
+}
+
+export function questionsForChapter(
+  slug: string,
+  chapterNumber: number
+): QuizQuestion[] {
+  if (slug === "insurance-fundamentals") {
+    return insuranceQuestionsForChapter(chapterNumber);
+  }
+  const bank = TEXTBOOK_QUIZ_BANKS[slug] ?? [];
+  const chKey = String(chapterNumber).padStart(2, "0");
+  return bank.filter((q) => q.id.includes(`-ch${chKey}-`));
+}
+
+export function pickChapterQuickCheck(
+  slug: string,
+  chapterNumber: number,
+  count = CHAPTER_QUICK_CHECK_LENGTH
+): QuizQuestion[] {
+  const pool = questionsForChapter(slug, chapterNumber);
+  if (pool.length <= count) return shuffleQuestions([...pool]);
+  return shuffleQuestions(pool).slice(0, count);
 }
 
 export function getQuizBankSize(slug: string): number {

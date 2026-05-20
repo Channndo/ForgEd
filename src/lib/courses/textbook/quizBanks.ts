@@ -1,4 +1,5 @@
 import type { QuizQuestion } from "@/lib/quizTypes";
+import { QUIZ_EXTRA } from "./quizBanksExtra";
 
 function q(
   id: string,
@@ -114,13 +115,17 @@ const TECH_QUIZ: QuizQuestion[] = [
   q("tech-ch10-01", "Digital citizenship includes:", ["Responsible, ethical, and safe online behavior", "Sharing others' passwords", "Believing every viral post", "Ignoring privacy settings"], 0, "Citizenship covers rights, responsibilities, and literacy online."),
 ];
 
+function merge(slug: string, base: QuizQuestion[]): QuizQuestion[] {
+  return [...base, ...(QUIZ_EXTRA[slug] ?? [])];
+}
+
 export const TEXTBOOK_QUIZ_BANKS: Record<string, QuizQuestion[]> = {
-  "ai-fundamentals": AI_QUIZ,
-  "cybersecurity-basics": CYBER_QUIZ,
-  "it-fundamentals": IT_QUIZ,
-  "automotive-basics": AUTO_QUIZ,
-  "financial-literacy": FIN_QUIZ,
-  "communication-skills": COMM_QUIZ,
-  "business-foundations": BIZ_QUIZ,
-  "technology-for-beginners": TECH_QUIZ,
+  "ai-fundamentals": merge("ai-fundamentals", AI_QUIZ),
+  "cybersecurity-basics": merge("cybersecurity-basics", CYBER_QUIZ),
+  "it-fundamentals": merge("it-fundamentals", IT_QUIZ),
+  "automotive-basics": merge("automotive-basics", AUTO_QUIZ),
+  "financial-literacy": merge("financial-literacy", FIN_QUIZ),
+  "communication-skills": merge("communication-skills", COMM_QUIZ),
+  "business-foundations": merge("business-foundations", BIZ_QUIZ),
+  "technology-for-beginners": merge("technology-for-beginners", TECH_QUIZ),
 };

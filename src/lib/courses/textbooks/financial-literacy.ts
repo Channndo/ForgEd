@@ -50,6 +50,12 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
           "For households, inflation erodes real wages when nominal pay raises lag price increases. Fixed-rate debt becomes relatively cheaper in real terms (you repay with dollars worth less), while savers in low-yield accounts lose ground. Long-term financial plans must express goals in real (inflation-adjusted) terms, not nominal dollars.",
         ],
         {
+          bulletPoints: [
+            "CPI / PCE — headline indexes; components differ from personal basket",
+            "Demand-pull vs cost-push — different macro causes, same felt grocery bill",
+            "Real wages — nominal pay must exceed inflation to gain purchasing power",
+            "Central bank response — higher rates cool credit and spending",
+          ],
           citations: [
             {
               source: "Bureau of Labor Statistics — Consumer Price Index",
@@ -65,7 +71,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "When a bank quotes a savings APY or a lender quotes a mortgage rate, that figure is nominal—it does not subtract inflation. The real interest rate approximates the Fisher relationship: real ≈ nominal − expected inflation. A 5% certificate of deposit during 3% inflation yields roughly 2% real return before taxes.",
           "Borrowers face the mirror image. A 7% fixed mortgage with 3% inflation means the real cost of carrying debt declines over time if income keeps pace with prices. Variable-rate debt, however, reprices with policy rates and can squeeze budgets when inflation fighting raises borrowing costs faster than wages adjust.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Nominal rate — quoted APR/APY before inflation adjustment",
+            "Real rate — approximate nominal minus expected inflation",
+            "Savers lose — low nominal yields below inflation erode purchasing power",
+            "Fixed-rate borrowers — may repay with dollars worth less in real terms",
+          ],
+          citations: [
+            {
+              source: "Federal Reserve — Monetary policy and interest rates",
+              url: "https://www.federalreserve.gov/monetarypolicy.htm",
+              note: "How policy rates influence borrowing and savings conditions economy-wide",
+            },
+          ],
+        }
       ),
       section(
         "time-value",
@@ -89,7 +110,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Macro indicators are not abstract headlines—they transmit through wages, unemployment risk, rent inflation, and portfolio returns. Recessions raise default risk and job loss probability; expansions tighten labor markets and may improve bargaining power. Trade policy, energy shocks, and pandemics propagate through supply chains into grocery and auto prices.",
           "Households cannot control monetary policy, but they can hedge exposures: diversify income skills, avoid excessive variable-rate leverage, maintain liquid reserves, and index long-term investments where appropriate. Financial literacy at this layer means reading the economy as context for personal choices, not as noise on a news ticker.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Unemployment rate — signals job-loss risk for emergency-fund sizing",
+            "Policy rates — affect variable APRs, mortgage refinances, and savings yields",
+            "Rent and CPI shelter — largest budget line for many renters",
+            "Human capital — skills diversification hedges sector downturns",
+          ],
+        }
       ),
     ],
     "Functions of money, inflation dynamics, and real purchasing power"
@@ -105,7 +134,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "A household operates like a small firm: cash inflows (wages, benefits, gig income, transfers) minus outflows (housing, food, transport, debt service, taxes, discretionary spending) equal net cash flow. Positive net flow funds saving; negative net flow draws down balances or adds debt.",
           "Unlike accrual accounting, cash flow focuses on timing—when rent clears, when a paycheck lands, when insurance premiums hit. Seasonality matters: annual subscriptions, holiday travel, and back-to-school expenses create spikes that average monthly budgeting hides unless you plan explicitly.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Inflows — wages, self-employment, benefits, interest, transfers in",
+            "Outflows — fixed obligations, variable consumption, taxes, debt service",
+            "Net cash flow — inflows minus outflows for the period (not net worth)",
+            "Timing risk — bills due before payday require buffer or line of credit",
+          ],
+          citations: [
+            {
+              source: "CFPB — Budgeting and managing money",
+              url: "https://www.consumerfinance.gov/consumer-tools/budgeting/",
+              note: "Consumer-oriented guidance on building and maintaining a household budget",
+            },
+          ],
+        }
       ),
       section(
         "budget-methods",
@@ -129,7 +173,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Fixed costs (rent, insurance premiums, loan minimums) resist short-run cuts. Variable costs (utilities, groceries, fuel) flex with behavior. Periodic costs (vehicle registration, holidays, medical deductibles) derail naive monthly plans unless annualized—divide by twelve and fund a sinking fund.",
           "Separating essential from discretionary spending clarifies crisis response. In job loss, essentials and minimum debt service come first; discretionary and long-term investing pause until cash flow stabilizes. Documenting categories in a spreadsheet or app enables month-over-month variance analysis—the diagnostic that reveals lifestyle creep.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Fixed — contractually stable amounts (rent, loan minimums, premiums)",
+            "Variable — scales with usage or choices (utilities, food, fuel)",
+            "Periodic — annualized into monthly sinking-fund contributions",
+            "Essential vs discretionary — defines austerity order in a shock",
+          ],
+        }
       ),
       section(
         "net-worth-tracking",
@@ -137,7 +189,39 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Net worth equals assets minus liabilities. Tracking it quarterly reveals whether budgeting and investing compound toward wealth or whether consumption and debt outrun income. Complementary KPIs include savings rate (savings ÷ gross income), debt-to-income ratio, and months of essential expenses covered by liquid reserves.",
           "A monthly money date—thirty to sixty minutes reconciling accounts, updating categories, and previewing next month's obligations—prevents small errors from becoming crises. Couples and roommates benefit from shared visibility rules: which accounts are joint, who pays which bill, and how windfalls are allocated.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Net worth — assets minus liabilities; snapshot, not cash flow",
+            "Savings rate — share of gross income saved or invested",
+            "Debt-to-income — monthly debt payments ÷ gross monthly income",
+            "Money date — recurring reconciliation and forward-looking budget",
+          ],
+        }
+      ),
+      section(
+        "subscription-audit",
+        "2.5 Subscription creep, lifestyle inflation, and recurring audits",
+        [
+          "Recurring charges—streaming, software, gym memberships, meal kits, cloud storage—feel small individually but compound into material monthly outflows. Subscription creep occurs when trials convert silently, prices rise after promotional periods, and duplicate services overlap (three music apps, two cloud backups). Because card-on-file billing reduces pain of payment, these expenses evade envelope-style awareness until cash flow tightens.",
+          "A quarterly recurring-expense audit exports thirty to ninety days of card and bank activity, lists every repeating merchant, and forces a keep-cut-pause decision. Negotiate retention offers on internet and insurance at renewal; cancel what no longer matches priorities. Lifestyle inflation is the tendency to raise spending as income rises; pairing raises with automatic savings increases preserves marginal dollars before new habits form.",
+          "Income volatility—commission sales, seasonal work, tips—requires baseline budgets on conservative income estimates with surplus months funding holding accounts, not permanent spending lifts. Treat windfalls as one-time allocations: emergency fund top-up, debt principal, or IRA contribution—not implicit raises to monthly subscriptions.",
+        ],
+        {
+          bulletPoints: [
+            "Subscription audit — quarterly review of all auto-renew charges",
+            "Lifestyle inflation — spending rises with income unless defaults redirect raises",
+            "Holding account — park surplus months for lean months in variable income",
+            "Marginal dollar — next dollar should match stated goals, not drift",
+          ],
+          citations: [
+            {
+              source: "CFPB — Managing your money",
+              url: "https://www.consumerfinance.gov/consumer-tools/managing-your-money/",
+              note: "Federal consumer guidance on tracking spending and recurring obligations",
+            },
+          ],
+        }
       ),
     ],
     "Constructing budgets that reflect real cash timing and priorities"
@@ -155,11 +239,23 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
           "Checking accounts optimize payments: ACH, wires, debit cards, checks. Savings accounts historically limited withdrawals; today liquidity features vary. High-yield savings at insured online banks often pay more than legacy brick-and-mortar defaults while remaining federally insured when membership criteria are met.",
         ],
         {
+          bulletPoints: [
+            "Checking — payments and daily cash management",
+            "Savings / HYSA — store of value; compare APY and insurance",
+            "FDIC / NCUA — deposit insurance per institution limits",
+            "Fraud vs insolvency — insurance does not replace monitoring for unauthorized transfers",
+          ],
           laws: [
             {
               name: "Federal Deposit Insurance Act (FDIC insurance)",
               summary:
                 "Insures eligible deposits at FDIC-member banks up to applicable limits.",
+            },
+          ],
+          citations: [
+            {
+              source: "FDIC — How deposit insurance works",
+              url: "https://www.fdic.gov/resources/deposit-insurance/",
             },
           ],
         }
@@ -170,7 +266,29 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "ACH networks batch electronic transfers—payroll direct deposit, bill pay, account-to-account moves—typically settling in one to two business days. Wires move large or urgent sums same-day with irreversibility and higher fees. Card networks (Visa, Mastercard) authorize retail payments; merchants pay interchange, consumers see rewards and fraud protections governed by Regulation E and card network rules.",
           "Peer-to-peer apps (Zelle, Venmo, Cash App) map to bank accounts or balances; treat them as cash-like. Scams exploit instant transfers and weak dispute paths. Never send P2P payments to strangers claiming buyer protection you cannot verify.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "ACH — batched bank transfers; payroll and bill pay backbone",
+            "Wire — same-day, high-value, generally irreversible",
+            "Debit/credit cards — network authorization; Reg E vs FCBA protections differ",
+            "P2P apps — cash-like; weak recourse on scam payments to strangers",
+          ],
+          laws: [
+            {
+              name: "Electronic Fund Transfer Act (Regulation E)",
+              summary:
+                "Governs consumer rights on electronic debits from deposit accounts, including error resolution timelines.",
+            },
+          ],
+          citations: [
+            {
+              source: "Federal Reserve — Payment systems overview",
+              url: "https://www.federalreserve.gov/paymentsystems.htm",
+              note: "U.S. payment rails, oversight, and policy context for ACH and card networks",
+            },
+          ],
+        }
       ),
       section(
         "fees-overdraft",
@@ -178,7 +296,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Maintenance fees, minimum balance requirements, out-of-network ATM charges, and overdraft penalties can erode low-balance households. Opting into overdraft coverage for debit transactions is often expensive versus declined transactions plus a buffer in checking. Linking a savings account or line of credit for transfers can be cheaper if terms are understood.",
           "Float—the lag between spending and settlement—has shrunk as real-time payments expand. Still, pending charges reduce available balance before they post; budgeting on ledger balance avoids surprises.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Overdraft opt-in — debit coverage often triggers high per-item fees",
+            "Available balance — pending debits reduce spendable cash before posting",
+            "APY disclosure — savings yields must be stated under Truth in Savings rules",
+            "Fee schedule — compare maintenance, ATM, and transfer costs across institutions",
+          ],
+          laws: [
+            {
+              name: "Truth in Savings Act (Regulation DD)",
+              summary:
+                "Requires clear disclosure of deposit account APY, fees, and minimum balance rules before account opening.",
+            },
+          ],
+        }
       ),
       section(
         "identity-fraud",
@@ -248,6 +381,13 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
             "Age of accounts — keep oldest cards open if no fee harm",
             "Hard inquiries — rate shopping for mortgages/auto within windows counts as one inquiry in many models",
           ],
+          laws: [
+            {
+              name: "Fair Credit Reporting Act (FCRA)",
+              summary:
+                "Governs accuracy, access, disputes, and permissible use of consumer credit reports by furnishers and users.",
+            },
+          ],
         }
       ),
       section(
@@ -256,7 +396,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Secured credit cards (cash collateral), credit-builder loans, and authorized user status on a responsible cardholder's account can establish history. Consistent on-time payment matters more than carrying small balances—paying in full avoids interest while still building positive history.",
           "Collections and charge-offs negotiate pay-for-delete rarely; pay settled debts for moral and legal reasons, knowing score recovery may take time. Bankruptcy is a last-resort legal process with long reporting horizons—credit counseling agencies can model alternatives.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Secured card — refundable deposit backs credit limit for thin files",
+            "Authorized user — inherits positive history if primary pays on time",
+            "Pay in full — avoids interest; carrying balance not required to build credit",
+            "Rehabilitation — accurate negatives age off; disputes are free via bureaus",
+          ],
+        }
       ),
       section(
         "credit-myths",
@@ -264,7 +412,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Checking your own report is a soft inquiry and does not harm scores. Closing old cards can raise utilization and shorten history. Debit cards and prepaid cards do not build credit. 'Credit repair' firms cannot remove accurate negative information—dispute process is free DIY.",
           "Freeze and fraud alerts are free security tools. Paid monitoring is optional if you actively review reports. Before major borrowing, avoid new accounts and large balance swings that confuse underwriting.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Soft inquiry — your own credit check does not lower scores",
+            "Closing cards — can hurt utilization and average age of accounts",
+            "Credit repair scams — cannot delete accurate negative data",
+            "Security freeze — free at each bureau; blocks new account openings",
+          ],
+        }
       ),
     ],
     "How lenders evaluate trustworthiness—and how you improve it"
@@ -280,7 +436,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Secured debt (mortgages, auto loans) pledges collateral; default enables repossession or foreclosure. Unsecured debt (most cards, personal loans) relies on creditworthiness and legal collection. Installment loans amortize principal over a term; revolving credit re-borrows up to a limit.",
           "Interest may be fixed or variable. Promotional 0% APR periods reset to high go-to rates if balances remain. Prepayment penalties are rare on consumer products but read contracts for personal loans and subprime auto.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Secured — collateral backs the loan (home, vehicle)",
+            "Unsecured — lender relies on creditworthiness and collection law",
+            "Installment — fixed payments retire principal over a term",
+            "Revolving — reuse up to limit; minimum payments prolong cost",
+          ],
+        }
       ),
       section(
         "apr-apy-cost",
@@ -288,7 +452,29 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Annual Percentage Rate (APR) on loans includes interest and certain fees, enabling comparison. Credit cards quote APR but assess daily periodic interest on average daily balance if not paid in full. Minimum payments mostly service interest—stretching repayment for years.",
           "Amortization schedules front-load interest on mortgages early years; extra principal payments save total interest dramatically. On $300,000 at 6.5% for 30 years, tens of thousands hinge on small extra principal each month.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "APR — annualized borrowing cost including certain fees on installment credit",
+            "Daily periodic rate — card APR ÷ 365 applied to average daily balance",
+            "Amortization — early payments mostly interest; extra principal saves total cost",
+            "Minimum payment trap — revolving balance can persist for years at high APR",
+          ],
+          laws: [
+            {
+              name: "Truth in Lending Act (TILA / Regulation Z)",
+              summary:
+                "Requires standardized APR disclosures and key terms for consumer credit so borrowers can compare offers.",
+            },
+          ],
+          citations: [
+            {
+              source: "CFPB — Credit cards",
+              url: "https://www.consumerfinance.gov/consumer-tools/credit-cards/",
+              note: "Federal guidance on card APR, billing, and consumer rights",
+            },
+          ],
+        }
       ),
       section(
         "good-vs-bad",
@@ -320,7 +506,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Default triggers fees, credit damage, garnishment where legal, and loss of collateral. Communicate with lenders early—hardship programs exist. Statutes of limitations on collection suits vary by state and debt type; paying old debts restarts clocks in some jurisdictions—seek qualified legal advice before partial payments on ancient defaults.",
           "Chapter 7 liquidation and Chapter 13 repayment plans are federal bankruptcy paths with credit consequences and filing costs. Nonprofit credit counseling (NFCC members) offers budgeting help and debt management plans that may reduce interest without court.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Default — missed payments trigger fees, collections, and credit damage",
+            "Validation — collectors must substantiate debt; dispute in writing",
+            "Statute of limitations — state-specific; legal advice before paying old debts",
+            "Bankruptcy — federal Chapter 7/13 with long credit reporting horizons",
+          ],
+          laws: [
+            {
+              name: "Fair Debt Collection Practices Act (FDCPA)",
+              summary:
+                "Limits how third-party collectors contact consumers, misrepresent debts, and threaten actions they cannot legally take.",
+            },
+          ],
+        }
       ),
     ],
     "Borrowing with eyes open: costs, structures, and exit ramps"
@@ -336,7 +537,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Saving transfers consumption from high-income periods to low-income or high-expense periods. Precautionary saving responds to uncertainty (job loss, medical shocks). Goal-based saving targets known future costs—education, relocation, home down payment.",
           "Without liquid savings, households cycle through expensive debt after shocks, never recovering fully. Saving is not deprivation; it is insurance you self-fund.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Precautionary saving — buffer against unknown shocks",
+            "Goal-based saving — named targets with amounts and dates",
+            "Liquidity — ability to access cash within days without penalty",
+            "Debt spiral — shocks without savings often force high-interest borrowing",
+          ],
+        }
       ),
       section(
         "emergency-fund-size",
@@ -344,7 +553,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Conventional guidance suggests three to six months of essential expenses in cash or cash-like instruments. Single earners, commission income, or recession-vulnerable industries may need more; stable dual-income households with low fixed costs may hold less if other buffers exist.",
           "Keep emergency money separate from checking to reduce accidental spend, but accessible within days—not locked in long-term investments. Series I savings bonds and CDs with manageable penalties can supplement for inflation-aware savers who understand liquidity tradeoffs.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Three to six months — rule of thumb on essential expenses, not gross income",
+            "Separate account — reduces accidental spending of the buffer",
+            "Cash-like — high-yield savings, Treasury bills, not volatile equities",
+            "I bonds — inflation-linked federal savings; redemption rules apply",
+          ],
+          citations: [
+            {
+              source: "FDIC — Deposit insurance",
+              url: "https://www.fdic.gov/resources/deposit-insurance/",
+              note: "Insurance limits and coverage rules for bank deposit emergency funds",
+            },
+          ],
+        }
       ),
       section(
         "sinking-funds",
@@ -352,7 +576,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Sinking funds accumulate for predictable non-monthly costs: tires, braces, property tax if not escrowed. A liquidity ladder tiers cash: checking buffer → high-yield savings → short-term Treasuries or CDs → only then long-term investments. Each rung trades yield for speed and certainty.",
           "Automate transfers on payday. Naming accounts ('Emergency,' 'Car Repair') increases psychological commitment versus a single ambiguous savings balance.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Sinking fund — dedicated pot for a known future expense",
+            "Liquidity ladder — checking → HYSA → T-bills/CDs → long-term assets",
+            "Annualize periodic bills — divide yearly cost by 12 for monthly funding",
+            "Named accounts — behavioral cue to protect purpose-specific balances",
+          ],
+        }
       ),
       section(
         "behavioral-tactics",
@@ -360,7 +592,46 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Defaults beat willpower: payroll split to savings, round-up apps, and annual raise redirection increase balances invisibly. Visualizing goals with target dates converts abstract dollars into months of rent covered. Celebrate milestones without spending the fund—rewards should not undermine the buffer you built.",
           "After filling an emergency fund, redirect cash flow to employer retirement match, high-interest debt payoff, and then brokerage investing—sequencing optimizes risk-adjusted household stability.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Pay yourself first — automate savings on payday",
+            "Raise redirection — send part of each raise to savings before lifestyle adjusts",
+            "Milestone rewards — celebrate without drawing down the emergency fund",
+            "Sequencing — emergency fund → employer match → high APR debt → investing",
+          ],
+        }
+      ),
+      section(
+        "yield-safety-disclosure",
+        "6.5 Yield, FDIC coverage, and savings disclosures",
+        [
+          "Not all 'savings' products are equivalent. High-yield savings accounts at FDIC-insured banks pay competitive APY with daily liquidity subject to transfer limits. Money market mutual funds in brokerage accounts are investments, not deposits—they can break the buck in stress though reforms reduced risk. Compare APY, fees, transfer speed, and whether balances are deposit-insured before moving emergency funds.",
+          "Truth in Savings rules require banks to disclose APY calculation methods, compounding frequency, fees that reduce yield, and minimum balances. Promotional 'teaser' rates expire—note the standard ongoing APY. Tiered balances may earn different rates on slices above thresholds.",
+          "Chasing an extra 0.25% APY by moving banks monthly costs time and error risk; pick a reputable insured institution with sustainable rates and strong authentication. Pair yield with fraud hygiene: unique passwords, MFA, and alerts on outbound transfers.",
+        ],
+        {
+          bulletPoints: [
+            "FDIC insurance — per depositor, per insured bank, up to statutory limits",
+            "APY vs interest rate — APY reflects compounding; compare like for like",
+            "Brokerage cash sweep — not the same as insured deposit accounts; read disclosures",
+            "Teaser rates — revert to standard APY; calendar renewal reminders",
+          ],
+          laws: [
+            {
+              name: "Truth in Savings Act (Regulation DD)",
+              summary:
+                "Mandates uniform APY and fee disclosures on deposit accounts so consumers can compare savings products.",
+            },
+          ],
+          citations: [
+            {
+              source: "FDIC — BankFind and insurance education",
+              url: "https://www.fdic.gov/resources/deposit-insurance/bank-find/",
+              note: "Verify institution FDIC membership before placing emergency savings",
+            },
+          ],
+        }
       ),
     ],
     "Liquidity first: buffers that prevent financial cascades"
@@ -376,7 +647,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Investing commits capital to assets expected to return cash flows or appreciation over years—business ownership (stocks), lending (bonds), real estate, or broad funds. Speculating bets on short-term price moves with inadequate fundamental justification. The distinction is horizon, diversification, and edge—retail speculators usually face professionals with better information and execution.",
           "Historical equity risk premiums compensated patient owners for volatility, but past performance does not guarantee future results. Bonds reduce portfolio volatility but face interest-rate and inflation risk. Cash preserves nominal value poorly when inflation runs hot.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Investing — long horizon, cash-flow or diversification rationale",
+            "Speculating — short horizon, narrative or momentum without fundamentals",
+            "Risk premium — higher expected return compensates for volatility, not guaranteed",
+            "Inflation risk — cash and nominal bonds lose real value when prices rise fast",
+          ],
+          citations: [
+            {
+              source: "SEC — Investor.gov introduction to investing",
+              url: "https://www.investor.gov/introduction-investing",
+              note: "Federal investor education on markets, risk, and avoiding fraud",
+            },
+          ],
+        }
       ),
       section(
         "risk-return-diversify",
@@ -456,7 +742,29 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Health insurance mitigates catastrophic medical costs—understand deductibles, out-of-pocket maximums, networks, and coinsurance. High-deductible plans pair with HSAs when cash flow allows. Disability insurance replaces income when illness or injury prevents work—often overlooked despite human capital being a young worker's largest asset.",
           "Term life insurance covers income replacement for dependents for a set period; permanent policies mix insurance with investment and suit niche estate needs. Buy enough to clear debts and fund dependents' goals; term is usually sufficient and cheapest.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Deductible — amount you pay before plan sharing begins",
+            "Out-of-pocket max — annual cap on your share of covered costs",
+            "Disability income — replaces paychecks; own-occupation vs any-occupation definitions matter",
+            "Term life — pure death benefit for a set years; usually cheapest for young families",
+          ],
+          laws: [
+            {
+              name: "Affordable Care Act (ACA)",
+              summary:
+                "Established marketplace coverage, essential health benefits, and protections such as prohibiting denials for pre-existing conditions in qualified plans.",
+            },
+          ],
+          citations: [
+            {
+              source: "HealthCare.gov — Coverage and protections",
+              url: "https://www.healthcare.gov/health-care-law/protections/",
+              note: "Overview of ACA consumer protections and enrollment concepts",
+            },
+          ],
+        }
       ),
       section(
         "deductibles-shopping",
@@ -464,7 +772,46 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Higher deductibles lower premiums if you can absorb the hit from savings. Umbrella liability adds million-dollar layers cheaply once auto/home limits are maximized. Shop at renewal; bundle discounts help but compare total price. Document home contents with video inventory.",
           "Insurance is not an investment—evaluate on protection value, not cash-value projections from agents motivated by commission.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Deductible tradeoff — higher deductible lowers premium if savings can absorb loss",
+            "Umbrella policy — extra liability layer after underlying auto/home limits",
+            "Renewal shop — compare total premium, not bundle discount alone",
+            "Home inventory — video/serial numbers speed claims after theft or fire",
+          ],
+        }
+      ),
+      section(
+        "employer-benefits-cobra",
+        "8.5 Employer benefits, COBRA, and coverage continuity",
+        [
+          "Many workers receive health, dental, vision, life, and disability coverage through employer group plans subsidized by the firm. Open enrollment is the annual window to elect coverage, HSA contributions, and dependent status without a qualifying life event. Summary Plan Descriptions explain deductibles, networks, and appeal rights—read before assuming 'good insurance' from a low premium share.",
+          "Job loss triggers special enrollment on ACA marketplaces and may qualify you for COBRA continuation of the former employer plan—typically at full premium plus administrative fee, expensive but useful for provider continuity or pending procedures. Compare COBRA total cost to marketplace subsidies based on projected annual income; Medicaid or CHIP may cover children in eligible states.",
+          "Life and disability through work often lapse when employment ends; evaluate portable or individual policies before leaving if dependents rely on your income. Beneficiary forms on group life override informal wishes—update after marriage, divorce, or births.",
+        ],
+        {
+          bulletPoints: [
+            "Open enrollment — annual election period; qualifying events allow mid-year changes",
+            "COBRA — temporary continuation of group health; usually full cost to employee",
+            "Special enrollment — marketplace window after loss of employer coverage",
+            "Portable coverage — individual disability/term life when group benefits end",
+          ],
+          laws: [
+            {
+              name: "Consolidated Omnibus Budget Reconciliation Act (COBRA)",
+              summary:
+                "Allows eligible employees and dependents to continue group health coverage for a limited period after qualifying events such as job loss.",
+            },
+          ],
+          citations: [
+            {
+              source: "U.S. Department of Labor — COBRA continuation coverage",
+              url: "https://www.dol.gov/general/topic/health-plans/cobra",
+              note: "Federal overview of COBRA rights and employer notice obligations",
+            },
+          ],
+        }
       ),
     ],
     "Transferring catastrophic risk while self-insuring small losses"
@@ -480,7 +827,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Federal income tax is progressive—marginal brackets apply to slices of taxable income, not every dollar at the top rate. Payroll taxes fund Social Security and Medicare (FICA). State and local income taxes vary; some states rely on sales tax instead. Property taxes fund schools and municipal services; renters indirectly pay through rent.",
           "Understanding marginal versus average tax rate prevents bracket myths—earning $1 into the next bracket does not raise tax on all prior income.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Marginal rate — tax on the next dollar of taxable income in its bracket",
+            "Average rate — total tax ÷ taxable income; lower than marginal for progressivity",
+            "FICA — payroll taxes for Social Security and Medicare on wages",
+            "Sales and property — consumption and wealth-local taxes layered on income",
+          ],
+          citations: [
+            {
+              source: "IRS — Tax information for individuals",
+              url: "https://www.irs.gov/individuals",
+              note: "Official federal tax guidance, forms, and withholding resources",
+            },
+          ],
+        }
       ),
       section(
         "w2-1099-withholding",
@@ -488,7 +850,15 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Employers withhold income and FICA from paychecks; year-end W-2 reconciles. Adjust Form W-4 when life changes (marriage, dependents, side income) to avoid large refunds or balances due. Refunds are interest-free loans to Treasury; large balances due trigger penalties.",
           "Self-employed and gig workers pay quarterly estimated taxes and both employer and employee FICA on net profit—budget roughly 25–35% aside depending on state and deductions, verified with software or preparer.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Form W-4 — adjusts federal withholding from paychecks",
+            "W-2 — annual wage and withholding statement from employers",
+            "1099-NEC — nonemployee compensation reported to IRS and you",
+            "Self-employment tax — Social Security and Medicare on net profit",
+          ],
+        }
       ),
       section(
         "deductions-credits",
@@ -514,10 +884,40 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
           "Free File Alliance offers guided filing for qualifying incomes. Extension to file is not extension to pay—estimate tax due by April deadline.",
         ],
         {
+          bulletPoints: [
+            "Record retention — seven years is a practical standard for many documents",
+            "IRS mail — legitimate notices arrive by postal mail first in most cases",
+            "Extension to file — not an extension to pay; estimate tax to avoid penalties",
+            "Free File — IRS-partnered software for qualifying income thresholds",
+          ],
           citations: [
             {
               source: "IRS — Tax topics for individuals",
               url: "https://www.irs.gov/help/ita",
+            },
+          ],
+        }
+      ),
+      section(
+        "state-local-estimated",
+        "9.6 State, local, and estimated tax mechanics",
+        [
+          "Federal withholding on a W-2 does not satisfy state and local obligations automatically. Nine states impose no broad-based income tax on wages (list changes—verify current law); others require annual returns, estimated payments, or employer withholding mirroring federal mechanics. City income taxes—common in Ohio municipalities, New York City, Philadelphia—add another layer requiring separate forms and rates.",
+          "Estimated tax payments (IRS Form 1040-ES and state equivalents) are quarterly prepayments required when withholding will not cover liability—typical for self-employment, large capital gains, or two-earner households with insufficient W-4 adjustments. Underpayment penalties apply if safe-harbor thresholds are missed: generally paying 90% of current-year tax or 100% of prior-year tax (110% if prior AGI exceeded limits—verify annually).",
+          "Remote work across state lines created nexus questions: some states tax wages where work is performed, others where employer is located. Document days worked by state; payroll may not align with true liability until you true-up on the return. Sales tax on online purchases is collected by many marketplaces, but use-tax reporting still applies in some states for untaxed purchases.",
+        ],
+        {
+          bulletPoints: [
+            "Multi-state filing — residency, sourcing, and reciprocity rules vary",
+            "Quarterly estimates — due in April, June, September, January for federal",
+            "Safe harbor — prior-year or percentage tests reduce underpayment penalties",
+            "Remote work — track work location; payroll withholding may not match liability",
+          ],
+          citations: [
+            {
+              source: "IRS — Estimated taxes",
+              url: "https://www.irs.gov/businesses/small-businesses-self-employed/estimated-taxes",
+              note: "Who must pay quarterly estimates and how to calculate them",
             },
           ],
         }
@@ -536,7 +936,22 @@ export const FIN_TEXTBOOK: TextbookChapter[] = [
         [
           "Romance scams, IRS impersonation, tech support, lottery, and investment fraud share psychology: urgency, secrecy, authority, and fear. No legitimate institution demands gift cards, crypto, or wire transfers for 'verification.' Slow down; call back on published numbers, not caller ID.",
           "Elder fraud exploits isolation and cognitive decline—family protocols and limited-power-of-attorney guardrails help. Report to FTC, FBI IC3, and local law enforcement; recovery is rare—prevention dominates.",
-        ]
+        ],
+        {
+          bulletPoints: [
+            "Urgency and secrecy — classic manipulation tactics in payment fraud",
+            "Gift cards and crypto — red flags; government and banks do not demand these",
+            "Callback protocol — use published numbers, not numbers in texts or emails",
+            "Reporting — FTC and IC3 complaints aid enforcement patterns",
+          ],
+          citations: [
+            {
+              source: "FTC — Consumer Advice on scams",
+              url: "https://consumer.ftc.gov/scams",
+              note: "Federal reporting and education on common financial fraud schemes",
+            },
+          ],
+        }
       ),
       section(
         "identity-theft-response",

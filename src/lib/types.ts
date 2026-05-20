@@ -66,4 +66,6 @@ export interface UserProgress {
   quizScores: Record<string, { score: number; total: number; at: string }>;
   earnedBadges: string[];
   courseProgress: Record<string, number>;
+  /** courseId → chapter numbers with passed quick checks */
+  chapterQuickChecks?: Record<string, number[]>;
 }

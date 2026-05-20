@@ -688,8 +688,40 @@ export const INSURANCE_TEXTBOOK: TextbookChapter[] = [
         ],
       },
       {
+        id: "aca-marketplace-depth",
+        title: "7.17 ACA marketplace: subsidies, enrollment, and special periods",
+        paragraphs: [
+          "The Affordable Care Act (ACA) created health insurance marketplaces where individuals and families can compare qualified health plans (QHPs) with standardized summary of benefits and coverage (SBC) documents. Open enrollment typically runs annually; outside that window, you need a qualifying life event — loss of other coverage, marriage, birth, move, or income change — for a special enrollment period (SEP).",
+          "Advance premium tax credits (APTC) and cost-sharing reductions (CSR) lower premiums and out-of-pocket costs for eligible households based on modified adjusted gross income and family size. Reporting income changes during the year avoids surprise balances at tax time when credits were too high or too low relative to actual income.",
+          "Marketplace plans cover essential health benefits and cannot deny coverage for pre-existing conditions. Metal tiers (Bronze, Silver, Gold, Platinum) indicate how costs are split between premium and cost-sharing, not quality of doctors — network and formulary still determine access.",
+        ],
+        bulletPoints: [
+          "Compare total cost: premium plus deductible, copays, and maximum out-of-pocket",
+          "Verify whether your doctors and prescriptions are in-network before enrolling",
+          "Keep SEP documentation (loss of coverage letter, marriage certificate, etc.) for audit",
+          "Report income changes to the marketplace to adjust subsidies during the year",
+        ],
+        laws: [
+          {
+            name: "Patient Protection and Affordable Care Act (ACA)",
+            year: "2010",
+            summary: "Established marketplaces, essential health benefits, and premium tax credits for eligible enrollees.",
+          },
+        ],
+        citations: [
+          {
+            source: "HealthCare.gov — Special enrollment periods",
+            url: "https://www.healthcare.gov/coverage-outside-open-enrollment/special-enrollment-period/",
+          },
+          {
+            source: "CMS — Marketplace coverage",
+            url: "https://www.cms.gov/marketplace",
+          },
+        ],
+      },
+      {
         id: "lh-vs-pc",
-        title: "7.17 How life and health differ from property-casualty",
+        title: "7.18 How life and health differ from property-casualty",
         paragraphs: [
           "Property-casualty policies typically renew annually and indemnify physical damage or legal liability. Life policies may last decades; health policies revolve around networks, utilization management, and federal program rules. Claims on health policies are service reimbursements or provider payments, not rebuilding a house or fixing a car.",
           "Consumers should keep summary of benefits and coverage (SBC) documents for health, evidence of coverage for Medicare plans, and policy illustrations plus contracts for life products. File complaints with your state insurance department or, for employer plans, DOL or HHS as appropriate.",

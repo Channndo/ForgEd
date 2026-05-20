@@ -7,6 +7,7 @@ import {
   computeCourseProgressPercent,
   countCompletedLessons,
 } from "@/lib/courseProgress";
+import { countChapterQuickChecksPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 
 export function TextbookTableOfContents({
@@ -25,6 +26,7 @@ export function TextbookTableOfContents({
   const { progress } = useProgress();
   const pct = computeCourseProgressPercent(progress, courseId);
   const { completed, total } = countCompletedLessons(progress, slug);
+  const quickChecks = countChapterQuickChecksPassed(courseId, chapters.length);
 
   return (
     <nav
@@ -58,7 +60,10 @@ export function TextbookTableOfContents({
               />
             </div>
             <p className="mt-1.5 text-xs text-[var(--muted)]">
-              {completed}/{total} sections marked complete
+              {completed}/{total} sections read · Quick checks{" "}
+              <span className="font-semibold text-[var(--silver)]">
+                {quickChecks.passed}/{quickChecks.total}
+              </span>
             </p>
           </div>
         </div>
@@ -81,7 +86,16 @@ export function TextbookTableOfContents({
                     Ch. {ch.number}
                     {meta ? ` · ${meta.readMinutes}m` : ""}
                   </span>
-                  <span className="mt-0.5 block text-sm leading-snug">{ch.title}</span>
+                  <span className="mt-0.5 flex items-center gap-1.5 text-sm leading-snug">
+                    {ch.title}
+                    {(progress.chapterQuickChecks?.[courseId] ?? []).includes(
+                      ch.number
+                    ) && (
+                      <span className="text-[var(--success)]" title="Quick check passed">
+                        ✓
+                      </span>
+                    )}
+                  </span>
                 </a>
                 {isChapterActive && (
                   <ul className="mb-2 ml-3 mt-0.5 space-y-0.5 border-l border-white/[0.06] pl-3">

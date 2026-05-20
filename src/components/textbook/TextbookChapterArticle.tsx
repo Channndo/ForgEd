@@ -6,6 +6,8 @@ import {
 } from "@/lib/courses/textbook/chapterMeta";
 import { TextbookSectionContent } from "./TextbookSectionContent";
 import { TextbookSectionFooter } from "./TextbookSectionFooter";
+import { ChapterQuickCheck } from "./ChapterQuickCheck";
+import { getCourseBySlug } from "@/lib/courses/catalog";
 
 export function TextbookChapterArticle({
   chapter,
@@ -18,6 +20,7 @@ export function TextbookChapterArticle({
   next?: TextbookChapter;
   courseSlug: string;
 }) {
+  const course = getCourseBySlug(courseSlug);
   const meta = getChapterMeta(courseSlug, chapter.id) ?? defaultChapterMeta(chapter.title);
   const roman = toRoman(chapter.number);
 
@@ -80,6 +83,15 @@ export function TextbookChapterArticle({
           </div>
         ))}
       </div>
+
+      {course && (
+        <ChapterQuickCheck
+          courseId={course.id}
+          courseSlug={courseSlug}
+          chapterNumber={chapter.number}
+          chapterTitle={chapter.title}
+        />
+      )}
 
       <footer className="mt-14 flex flex-col gap-4 border-t border-white/[0.08] pt-8 sm:flex-row sm:items-center sm:justify-between">
         {prev ? (

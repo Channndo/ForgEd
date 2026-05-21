@@ -31,11 +31,7 @@ export function ForgEdLogo({
       width={width}
       height={height}
       className={`shrink-0 object-contain object-center ${
-        variant === "icon"
-          ? className
-            ? "max-h-none"
-            : "h-9 w-9 max-h-none"
-          : "h-auto w-auto max-h-24 sm:max-h-32"
+        variant === "icon" ? "h-9 w-9 max-h-none" : "h-auto w-auto max-h-24 sm:max-h-32"
       } ${className}`}
       priority={priority}
     />
@@ -58,13 +54,12 @@ export function ForgEdWordmarkText({
   size = "md",
 }: {
   className?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "lg";
 }) {
   const sizes = {
     sm: "text-base",
     md: "text-lg",
     lg: "text-2xl sm:text-3xl",
-    xl: "text-3xl sm:text-4xl md:text-[2.75rem] md:leading-tight",
   };
   return (
     <span
@@ -79,38 +74,11 @@ export function ForgEdWordmarkText({
 export function ForgEdTagline({ className = "" }: { className?: string }) {
   return (
     <p
-      className={`text-center text-[10px] font-sans uppercase tracking-[0.35em] text-[var(--foreground)]/90 sm:text-xs ${className}`}
+      className={`text-[10px] font-sans uppercase tracking-[0.35em] text-[var(--foreground)]/90 sm:text-xs ${className}`}
     >
       <span className="inline-block h-px w-6 align-middle bg-[var(--gold)]/60 sm:w-10" />
       <span className="mx-3 align-middle">Learn Skills That Matter.</span>
       <span className="inline-block h-px w-6 align-middle bg-[var(--gold)]/60 sm:w-10" />
     </p>
-  );
-}
-
-/** Icon + wordmark + tagline stacked on one center axis (avoids misaligned composite PNG). */
-export function ForgEdBrandStack({
-  size = "md",
-  className = "",
-  priority = false,
-}: {
-  size?: "sm" | "md" | "lg";
-  className?: string;
-  priority?: boolean;
-}) {
-  const iconClass = {
-    sm: "h-9 w-9",
-    md: "h-12 w-12 sm:h-14 sm:w-14",
-    lg: "h-16 w-16 sm:h-20 sm:w-20 md:h-[5.25rem] md:w-[5.25rem]",
-  }[size];
-  const wordmarkSize = { sm: "md" as const, md: "lg" as const, lg: "xl" as const }[size];
-  const stackGap = { sm: "gap-2", md: "gap-2.5 sm:gap-3", lg: "gap-3 sm:gap-4" }[size];
-
-  return (
-    <div className={`inline-flex flex-col items-center ${stackGap} ${className}`}>
-      <ForgEdLogo variant="icon" className={iconClass} priority={priority} />
-      <ForgEdWordmarkText size={wordmarkSize} className="leading-none" />
-      <ForgEdTagline />
-    </div>
   );
 }

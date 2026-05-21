@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   Award,
   BookOpen,
@@ -21,7 +22,6 @@ import {
   computeCourseProgressPercent,
 } from "@/lib/courseProgress";
 import { withBasePath } from "@/lib/basePath";
-import { ForgEdBrandStack } from "@/components/brand/ForgEdLogo";
 import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
@@ -53,7 +53,14 @@ export default function DashboardPage() {
         <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 overflow-hidden rounded-full bg-[var(--gold)]/8 blur-[100px]" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <ForgEdBrandStack size="lg" priority />
+            <Image
+              src={withBasePath("/forged-wordmark.png")}
+              alt="ForgEd — Learn Skills That Matter"
+              width={800}
+              height={800}
+              className="h-auto w-[15.5rem] object-contain object-left sm:w-[17.5rem] md:w-[19.5rem]"
+              priority
+            />
             <p className="mt-4 font-serif text-lg text-[var(--silver)]">
               {user ? `Welcome back, ${firstName}.` : "Welcome to ForgEd."}
             </p>

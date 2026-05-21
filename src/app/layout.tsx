@@ -39,19 +39,19 @@ export const metadata: Metadata = {
     "Free AI-powered education platform. Learn across technology, business, finance, trades, healthcare, and more.",
   icons: {
     icon: [
-      { url: withBasePath("/favicon.ico?v=5"), sizes: "any" },
-      { url: withBasePath("/icon-32.png?v=5"), sizes: "32x32", type: "image/png" },
-      { url: withBasePath("/icon-16.png?v=5"), sizes: "16x16", type: "image/png" },
-      { url: withBasePath("/icon-48.png?v=5"), sizes: "48x48", type: "image/png" },
+      { url: withBasePath("/favicon.ico?v=6"), sizes: "any" },
+      { url: withBasePath("/icon-32.png?v=6"), sizes: "32x32", type: "image/png" },
+      { url: withBasePath("/icon-16.png?v=6"), sizes: "16x16", type: "image/png" },
+      { url: withBasePath("/icon-48.png?v=6"), sizes: "48x48", type: "image/png" },
     ],
     apple: [
       {
-        url: withBasePath("/apple-touch-icon.png?v=5"),
+        url: withBasePath("/apple-touch-icon.png?v=6"),
         sizes: "180x180",
         type: "image/png",
       },
     ],
-    shortcut: [{ url: withBasePath("/favicon.ico?v=5") }],
+    shortcut: [{ url: withBasePath("/favicon.ico?v=6") }],
   },
 };
 
@@ -66,22 +66,22 @@ export default function RootLayout({
       className={`h-full ${geistSans.variable} ${geistMono.variable} ${cinzel.variable} ${lora.variable}`}
     >
       <head>
-        <link rel="icon" href={withBasePath("/favicon.ico?v=5")} sizes="any" />
+        <link rel="icon" href={withBasePath("/favicon.ico?v=6")} sizes="any" />
         <link
           rel="icon"
-          href={withBasePath("/icon-32.png?v=5")}
+          href={withBasePath("/icon-32.png?v=6")}
           sizes="32x32"
           type="image/png"
         />
         <link
           rel="icon"
-          href={withBasePath("/icon-16.png?v=5")}
+          href={withBasePath("/icon-16.png?v=6")}
           sizes="16x16"
           type="image/png"
         />
         <link
           rel="apple-touch-icon"
-          href={withBasePath("/apple-touch-icon.png?v=5")}
+          href={withBasePath("/apple-touch-icon.png?v=6")}
         />
       </head>
       <body className="min-h-full antialiased bg-[#050505]">

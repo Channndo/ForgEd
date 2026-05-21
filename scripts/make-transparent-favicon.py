@@ -17,18 +17,19 @@ USER_ASSET = (
 USER_GLOB_NAMES = ["887B4512*.png", "forged*.png"]
 FALLBACK = ROOT / "public" / "forged-icon.png"
 BLACK_THRESHOLD = 36
-CACHE_VERSION = "5"
+CACHE_VERSION = "6"
 
 
 def find_user_asset() -> Path | None:
+    """Only accept explicit ForgEd logo drops — never random screenshots."""
     assets_dir = Path(
         "/Users/chandlerhill/.cursor/projects/Users-chandlerhill-Omnistrata-other-ventures-ForgEd/assets"
     )
     if not assets_dir.is_dir():
         return None
-    for pattern in ("*.png",):
+    for pattern in ("forged*.png", "887B4512*.png", "FE_*.png", "*logo*.png"):
         for p in sorted(assets_dir.glob(pattern), key=lambda x: -x.stat().st_mtime):
-            if p.stat().st_size > 50_000:
+            if p.stat().st_size > 20_000 and "Screenshot" not in p.name:
                 return p
     return None
 
@@ -101,7 +102,21 @@ def crop_to_content(im: Image.Image, padding: int = 3) -> Image.Image:
     return im.crop((left, top, right, bottom))
 
 
-def fit_square(im: Image.Image, size: int, margin: float = 0.04) -> Image.Image:
+def favicon_margin(size: int) -> float:
+    """Extra breathing room so the FE monogram is not cropped in browser tabs."""
+    if size <= 16:
+        return 0.20
+    if size <= 32:
+        return 0.18
+    if size <= 48:
+        return 0.16
+    if size <= 180:
+        return 0.14
+    return 0.12
+
+
+def fit_square(im: Image.Image, size: int, margin: float | None = None) -> Image.Image:
+    margin = favicon_margin(size) if margin is None else margin
     master_size = 256 if size < 128 else size
     canvas = Image.new("RGBA", (master_size, master_size), (0, 0, 0, 0))
     inner = int(master_size * (1 - 2 * margin))
@@ -132,6 +147,16 @@ def write_ico(path: Path, base: Image.Image, sizes: list[int]) -> None:
 
 
 def load_source() -> Image.Image:
+    if SRC.exists():
+        raw = Image.open(SRC).convert("RGBA")
+        w, h = raw.size
+        # Square assets are already the FE monogram — do not re-crop
+        if h > w * 1.12:
+            raw = extract_monogram_from_full_logo(raw)
+            print(f"source {SRC} → monogram {raw.size}")
+        else:
+            print(f"source {SRC} ({raw.size})")
+        return raw
     user = find_user_asset()
     if user and user.exists():
         raw = Image.open(user).convert("RGBA")
@@ -139,8 +164,6 @@ def load_source() -> Image.Image:
         raw.save(SRC)
         print(f"source from user asset → {SRC} ({raw.size})")
         return raw
-    if SRC.exists():
-        return Image.open(SRC).convert("RGBA")
     if FALLBACK.exists():
         return Image.open(FALLBACK).convert("RGBA")
     raise SystemExit(f"Missing icon source. Add {SRC} or run with user PNG in assets/")
@@ -148,7 +171,7 @@ def load_source() -> Image.Image:
 
 def main() -> None:
     raw = load_source()
-    base = crop_to_content(remove_black_background(raw.copy()), padding=3)
+    base = crop_to_content(remove_black_background(raw.copy()), padding=8)
 
     png_outputs: list[tuple[Path, int]] = [
         (ROOT / "public" / "icon-16.png", 16),

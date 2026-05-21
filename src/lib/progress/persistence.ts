@@ -33,6 +33,16 @@ export function writeLocalProgress(data: UserProgress): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProgress(data)));
 }
 
+export function clearLocalProgress(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+/** Progress is only stored locally and in the cloud for signed-in users. */
+export function isProgressPersistenceEnabled(): boolean {
+  return Boolean(getAccessToken());
+}
+
 export async function fetchRemoteProgress(): Promise<UserProgress | null> {
   if (!getAccessToken()) return null;
   try {

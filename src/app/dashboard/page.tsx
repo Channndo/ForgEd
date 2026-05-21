@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import {
   Award,
   BookOpen,
@@ -22,6 +21,7 @@ import {
   computeCourseProgressPercent,
 } from "@/lib/courseProgress";
 import { withBasePath } from "@/lib/basePath";
+import { ForgEdBrandStack } from "@/components/brand/ForgEdLogo";
 import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
@@ -53,14 +53,7 @@ export default function DashboardPage() {
         <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 overflow-hidden rounded-full bg-[var(--gold)]/8 blur-[100px]" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <Image
-              src={withBasePath("/forged-wordmark.png")}
-              alt="ForgEd — Learn Skills That Matter"
-              width={800}
-              height={800}
-              className="h-auto w-[15.5rem] object-contain object-left sm:w-[17.5rem] md:w-[19.5rem]"
-              priority
-            />
+            <ForgEdBrandStack size="lg" priority />
             <p className="mt-4 font-serif text-lg text-[var(--silver)]">
               Welcome back, {firstName}.
             </p>
@@ -70,14 +63,14 @@ export default function DashboardPage() {
             </p>
             <CourseSpotlight />
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:max-w-md lg:grid-cols-2">
+          <div className="grid w-full max-w-[17rem] grid-cols-2 gap-3 sm:max-w-none sm:grid-cols-4 lg:max-w-[17rem] lg:grid-cols-2 [&>*]:min-w-0">
             <StatChip icon={Zap} label="XP" value={String(progress.xp)} />
             <StatChip icon={Target} label="Level" value={String(xpBar.level)} />
             <StatChip icon={Flame} label="Streak" value={`${progress.streak}d`} />
             <StatChip
               icon={BookOpen}
               label="Sections"
-              value={`${completedLessons}/${totalLessons}`}
+              value={formatSectionsProgress(completedLessons, totalLessons)}
               compactValue
             />
           </div>
@@ -269,6 +262,17 @@ export default function DashboardPage() {
   );
 }
 
+function formatSectionsProgress(completed: number, total: number): string {
+  if (total >= 1000) {
+    const compact =
+      total >= 10000
+        ? `${Math.round(total / 1000)}k`
+        : `${(total / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+    return `${completed}/${compact}`;
+  }
+  return `${completed}/${total}`;
+}
+
 function StatChip({
   icon: Icon,
   label,
@@ -281,20 +285,18 @@ function StatChip({
   compactValue?: boolean;
 }) {
   return (
-    <div
-      className={`rounded-xl border border-white/[0.06] bg-black/40 py-3 text-center transition hover:border-[var(--gold)]/15 ${
-        compactValue ? "min-w-0 px-2.5 sm:min-w-[8.25rem] sm:px-3" : "px-3"
-      }`}
-    >
+    <div className="min-w-0 rounded-xl border border-white/[0.06] bg-black/40 px-2.5 py-3 text-center transition hover:border-[var(--gold)]/15 sm:px-3">
       <Icon className="mx-auto h-4 w-4 shrink-0 text-[var(--gold)]" />
       <p
-        className={`mt-1 font-bold tabular-nums leading-tight text-[var(--silver)] ${
+        className={`mt-1 truncate font-bold tabular-nums leading-tight text-[var(--silver)] ${
           compactValue ? "text-xs sm:text-sm" : "text-lg"
         }`}
       >
         {value}
       </p>
-      <p className="text-[10px] uppercase tracking-wider text-[var(--muted)]">{label}</p>
+      <p className="truncate text-[10px] uppercase tracking-wider text-[var(--muted)]">
+        {label}
+      </p>
     </div>
   );
 }

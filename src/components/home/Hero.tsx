@@ -3,8 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
-import Image from "next/image";
+import { ForgEdBrandStack } from "@/components/brand/ForgEdLogo";
 
 export function Hero() {
   return (
@@ -18,18 +17,11 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="mx-auto flex justify-center">
-            <Image
-              src="/forged-wordmark.png"
-              alt="ForgEd — Learn Skills That Matter."
-              width={320}
-              height={180}
-              className="h-auto w-full max-w-[min(100%,320px)] object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
-              priority
-            />
-          </div>
-
-          <ForgEdTagline className="mt-6" />
+          <ForgEdBrandStack
+            size="lg"
+            priority
+            className="drop-shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+          />
 
           <p className="mx-auto mt-8 max-w-2xl text-lg text-[var(--muted)] sm:text-xl">
             A free AI-powered platform to build skills in technology, business, insurance, cybersecurity, and the careers of the future — at your own pace.

@@ -17,6 +17,7 @@ import {
   writeProgress,
 } from "@/lib/progress";
 import {
+  clearLocalProgress,
   migrateGuestProgress,
   saveRemoteProgress,
   writeLocalProgress,
@@ -41,12 +42,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hadSignedInUser = useRef(false);
 
   const refresh = useCallback(() => {
-    setProgressState(readProgress());
+    setProgressState(getAccessToken() ? readProgress() : { ...DEFAULT_PROGRESS });
   }, []);
 
   const setProgress = useCallback((data: UserProgress) => {
+    if (!getAccessToken()) return;
     writeProgress(data);
   }, []);
 
@@ -73,13 +76,18 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     (async () => {
       if (user?.email) {
+        hadSignedInUser.current = true;
         const data = await migrateGuestProgress(user.email);
         if (!cancelled) {
           writeLocalProgress(data);
           setProgressState(data);
         }
       } else {
-        if (!cancelled) setProgressState(readProgress());
+        if (hadSignedInUser.current) {
+          clearLocalProgress();
+          hadSignedInUser.current = false;
+        }
+        if (!cancelled) setProgressState({ ...DEFAULT_PROGRESS });
       }
       if (!cancelled) setMounted(true);
     })();

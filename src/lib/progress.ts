@@ -12,6 +12,7 @@ import {
 import { COURSES } from "./courses/catalog";
 import { syncPathFromCourseComplete } from "./paths/pathProgress";
 
+import { getAccessToken } from "@/lib/forged-account/session";
 import {
   readLocalProgress,
   writeLocalProgress,
@@ -57,11 +58,17 @@ function yesterdayKey(): string {
   return d.toISOString().slice(0, 10);
 }
 
+function emptyProgress(): UserProgress {
+  return { ...DEFAULT_PROGRESS };
+}
+
 export function readProgress(): UserProgress {
+  if (!getAccessToken()) return emptyProgress();
   return readLocalProgress();
 }
 
 export function writeProgress(data: UserProgress): void {
+  if (!getAccessToken()) return;
   data.level = levelFromXp(data.xp);
   const synced = syncCourseProgressFromLessons(data);
   writeLocalProgress(synced);

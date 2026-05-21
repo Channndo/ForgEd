@@ -28,7 +28,7 @@ export function KodaFloatingButton() {
         {open ? (
           <X className="h-7 w-7 text-[var(--koda-gold)]" strokeWidth={2} />
         ) : (
-          <KodaLogo size={44} />
+          <KodaLogo size={44} imageClassName="p-[5%]" />
         )}
       </span>
       <span className="rounded-full border border-[var(--koda-gold)]/30 bg-[#050505]/95 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--koda-gold)]">

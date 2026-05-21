@@ -4,6 +4,8 @@ import { withBasePath } from "@/lib/basePath";
 type KodaLogoProps = {
   size?: number;
   className?: string;
+  /** Padding inside the black tile — use tighter values on the FAB for legibility */
+  imageClassName?: string;
   showLabel?: boolean;
   priority?: boolean;
 };
@@ -12,6 +14,7 @@ type KodaLogoProps = {
 export function KodaLogo({
   size = 40,
   className = "",
+  imageClassName = "p-[18%]",
   showLabel = false,
   priority = false,
 }: KodaLogoProps) {
@@ -29,7 +32,7 @@ export function KodaLogo({
           alt=""
           width={size}
           height={size}
-          className="object-contain p-[18%]"
+          className={`object-contain ${imageClassName}`}
           priority={priority}
           unoptimized
         />

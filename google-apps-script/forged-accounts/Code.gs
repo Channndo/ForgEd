@@ -12,6 +12,9 @@
 
 var PROP_SPREADSHEET_ID = 'FORGED_SPREADSHEET_ID';
 var PROP_SERVER_SECRET = 'FORGED_SERVER_SECRET';
+var PROP_OLLAMA_BASE_URL = 'OLLAMA_BASE_URL';
+var PROP_OLLAMA_MODEL = 'OLLAMA_MODEL';
+var PROP_OLLAMA_API_KEY = 'OLLAMA_API_KEY';
 
 /**
  * Paste values here — copied into Script Properties on every Web App request.
@@ -23,7 +26,12 @@ var FORGED_SETUP = {
   SPREADSHEET_URL:
     'https://docs.google.com/spreadsheets/d/15uwWuA94k0DKAORYkEXq2BbW7QVpfrC38G7d7uqQjTo/edit',
   SPREADSHEET_ID: '15uwWuA94k0DKAORYkEXq2BbW7QVpfrC38G7d7uqQjTo',
-  SERVER_SECRET: 'a704546b065d1e4dfc3dcd60f37f8dc8395068697012dab4104fce456698824a'
+  SERVER_SECRET: 'a704546b065d1e4dfc3dcd60f37f8dc8395068697012dab4104fce456698824a',
+  /** Shared Omnistrata Ollama (same host as CoverIQ / Syntrix). */
+  OLLAMA_BASE_URL: 'https://ollama.syntrix.solutions',
+  OLLAMA_MODEL: 'llama3.2:1b',
+  /** Paste the same OLLAMA_API_KEY you use on Syntrix/CoverIQ, then redeploy the Web App. */
+  OLLAMA_API_KEY: ''
 };
 
 function parseSpreadsheetId_(value) {
@@ -259,6 +267,15 @@ function doPost(e) {
       return jsonResponse_(unlockAchievement_(u7.userId, raw));
     }
 
+    if (action === 'kodaHealth') {
+      return jsonResponse_(kodaHealth_());
+    }
+
+    if (action === 'kodaChat') {
+      var uKoda = requireSession_(raw);
+      return jsonResponse_(kodaChat_(uKoda, raw));
+    }
+
     return jsonResponse_({ ok: false, error: 'Unknown action: ' + action });
   } catch (err) {
     return jsonResponse_({ ok: false, error: String(err.message || err) });
@@ -326,6 +343,15 @@ function ensureForgEdProperties_(force) {
   // Code.gs FORGED_SETUP always wins when set (overrides stale Script Properties).
   if (sheetId) {
     props.setProperty(PROP_SPREADSHEET_ID, sheetId);
+  }
+  if (FORGED_SETUP.OLLAMA_BASE_URL) {
+    props.setProperty(PROP_OLLAMA_BASE_URL, String(FORGED_SETUP.OLLAMA_BASE_URL).trim());
+  }
+  if (FORGED_SETUP.OLLAMA_MODEL) {
+    props.setProperty(PROP_OLLAMA_MODEL, String(FORGED_SETUP.OLLAMA_MODEL).trim());
+  }
+  if (FORGED_SETUP.OLLAMA_API_KEY) {
+    props.setProperty(PROP_OLLAMA_API_KEY, String(FORGED_SETUP.OLLAMA_API_KEY).trim());
   }
 }
 
@@ -1597,6 +1623,123 @@ function getServerSecret_() {
     FORGED_SETUP.SERVER_SECRET ||
     ''
   );
+}
+
+// ─── KODA (Ollama via Apps Script — Netlify calls here, GAS calls shared Ollama) ─
+
+function getOllamaConfig_() {
+  ensureForgEdProperties_();
+  var props = PropertiesService.getScriptProperties();
+  var base = String(
+    FORGED_SETUP.OLLAMA_BASE_URL || props.getProperty(PROP_OLLAMA_BASE_URL) || ''
+  )
+    .trim()
+    .replace(/\/$/, '');
+  var model = String(
+    FORGED_SETUP.OLLAMA_MODEL || props.getProperty(PROP_OLLAMA_MODEL) || 'llama3.2:1b'
+  ).trim();
+  var apiKey = String(
+    FORGED_SETUP.OLLAMA_API_KEY || props.getProperty(PROP_OLLAMA_API_KEY) || ''
+  ).trim();
+  return { baseUrl: base, model: model, apiKey: apiKey };
+}
+
+function ollamaFetchHeaders_(apiKey) {
+  var headers = { Accept: 'application/json', 'Content-Type': 'application/json' };
+  if (apiKey) {
+    headers.Authorization = 'Bearer ' + apiKey;
+  }
+  return headers;
+}
+
+function kodaHealth_() {
+  var cfg = getOllamaConfig_();
+  if (!cfg.baseUrl) {
+    return {
+      ok: true,
+      ollamaOk: false,
+      model: cfg.model,
+      configured: false,
+      error: 'Set FORGED_SETUP.OLLAMA_BASE_URL in Code.gs and redeploy the Web App.'
+    };
+  }
+  try {
+    var r = UrlFetchApp.fetch(cfg.baseUrl + '/api/tags', {
+      method: 'get',
+      headers: ollamaFetchHeaders_(cfg.apiKey),
+      muteHttpExceptions: true
+    });
+    var code = r.getResponseCode();
+    return {
+      ok: true,
+      ollamaOk: code >= 200 && code < 300,
+      model: cfg.model,
+      configured: true,
+      error: code >= 200 && code < 300 ? '' : 'Ollama health check failed (' + code + '). Check OLLAMA_API_KEY.'
+    };
+  } catch (err) {
+    return {
+      ok: true,
+      ollamaOk: false,
+      model: cfg.model,
+      configured: true,
+      error: String(err.message || err)
+    };
+  }
+}
+
+function kodaChat_(user, data) {
+  var cfg = getOllamaConfig_();
+  if (!cfg.baseUrl) {
+    throw new Error('KODA is not configured. Set FORGED_SETUP.OLLAMA_BASE_URL in Apps Script.');
+  }
+  var messages = data.messages;
+  if (!messages || !messages.length) {
+    throw new Error('Messages required.');
+  }
+  var model = String(data.model || cfg.model || 'llama3.2:1b').trim();
+  var payload = {
+    model: model,
+    messages: messages,
+    stream: true,
+    options: { temperature: 0.5, num_ctx: 4096, num_predict: 768 }
+  };
+  var r = UrlFetchApp.fetch(cfg.baseUrl + '/api/chat', {
+    method: 'post',
+    headers: ollamaFetchHeaders_(cfg.apiKey),
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+  var code = r.getResponseCode();
+  var text = r.getContentText() || '';
+  if (code < 200 || code >= 300) {
+    throw new Error(
+      code === 401
+        ? 'Ollama rejected the API key. Set FORGED_SETUP.OLLAMA_API_KEY in Code.gs and redeploy.'
+        : 'Ollama error (' + code + '): ' + text.slice(0, 200)
+    );
+  }
+  var parts = [];
+  var usedModel = model;
+  var lines = text.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var line = String(lines[i] || '').trim();
+    if (!line) continue;
+    try {
+      var obj = JSON.parse(line);
+      if (obj.model) usedModel = String(obj.model);
+      if (obj.message && obj.message.content) {
+        parts.push(String(obj.message.content));
+      }
+    } catch (parseErr) {
+      /* skip bad NDJSON line */
+    }
+  }
+  var content = parts.join('').trim();
+  if (!content) {
+    throw new Error('Empty response from Ollama.');
+  }
+  return { ok: true, message: content, model: usedModel, userId: user.userId };
 }
 
 function jsonResponse_(obj) {

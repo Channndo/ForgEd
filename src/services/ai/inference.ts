@@ -26,6 +26,18 @@ export function useForgedAccountKoda(): boolean {
   return Boolean(process.env.FORGED_WEB_APP_URL?.trim());
 }
 
+/**
+ * Route Ollama through the ForgEd Apps Script Web App (Script Properties hold URL + API key).
+ * Default when ForgEd accounts are configured — Netlify cannot reach localhost Ollama.
+ */
+export function useForgedGasOllama(): boolean {
+  if (!useForgedAccountKoda()) return false;
+  const flag = process.env.KODA_USE_GAS_OLLAMA?.trim().toLowerCase();
+  if (flag === "false" || flag === "0") return false;
+  if (flag === "true" || flag === "1") return true;
+  return true;
+}
+
 /** Syntrix KODA API — only when ForgEd accounts are not configured. */
 export function useSyntrixKoda(): boolean {
   if (useForgedAccountKoda()) return false;

@@ -6,8 +6,12 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  # ForgEd accounts + KODA: set OLLAMA_BASE_URL in Netlify UI (reachable Ollama, not localhost)
+  # ForgEd accounts + KODA (Ollama via Apps Script; optional direct override below)
+  KODA_ENABLED = "true"
   KODA_USE_SYNTRIX = "false"
+  KODA_USE_GAS_OLLAMA = "true"
+  OLLAMA_BASE_URL = "https://ollama.syntrix.solutions"
+  # Also set OLLAMA_API_KEY in Netlify UI if using direct Ollama (KODA_USE_GAS_OLLAMA=false)
 
 # Force HTTPS (fixes browser "Not Secure" when cert is valid)
 [[redirects]]

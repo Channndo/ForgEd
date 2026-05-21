@@ -42,21 +42,35 @@ export interface OllamaSettings {
   kodaEnabled: boolean;
 }
 
+/** ForgEd production keeps KODA on unless explicitly turned off. */
+export function isKodaFeatureEnabled(): boolean {
+  if (envBool("KODA_DISABLED", false)) return false;
+  if (process.env.FORGED_WEB_APP_URL?.trim()) return true;
+  return envBool("KODA_ENABLED", true);
+}
+
+export function defaultOllamaBaseUrl(): string {
+  const raw = process.env.OLLAMA_BASE_URL?.trim();
+  if (raw) return raw.replace(/\/$/, "");
+  if (process.env.FORGED_WEB_APP_URL?.trim()) {
+    return "https://ollama.syntrix.solutions";
+  }
+  return "http://127.0.0.1:11434";
+}
+
 export function getOllamaSettings(): OllamaSettings {
   const ctx = envIntOptional("OLLAMA_NUM_CTX") ?? 4096;
   const pred = envIntOptional("OLLAMA_NUM_PREDICT") ?? 768;
 
   return {
-    baseUrl: (process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434")
-      .trim()
-      .replace(/\/$/, ""),
+    baseUrl: defaultOllamaBaseUrl(),
     model: resolvedOllamaModel(),
     apiKey: (process.env.OLLAMA_API_KEY || "").trim(),
     temperature: envFloat("OLLAMA_TEMPERATURE", 0.5),
     numCtx: Math.min(Math.max(512, ctx), 8192),
     numPredict: Math.min(Math.max(64, pred), 2048),
     httpTimeoutSeconds: envFloat("OLLAMA_HTTP_TIMEOUT_SECONDS", 900),
-    kodaEnabled: envBool("KODA_ENABLED", true),
+    kodaEnabled: isKodaFeatureEnabled(),
   };
 }
 

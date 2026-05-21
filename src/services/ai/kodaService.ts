@@ -12,7 +12,12 @@ import {
 } from "@/services/ollama";
 import { getOllamaSettings } from "@/services/ollama/config";
 import { assertKodaAuthorized, kodaRequiresSignIn, KodaAuthError } from "./kodaAuth";
-import { useForgedAccountKoda, useSyntrixKoda } from "./inference";
+import { forgedGasKodaChat, forgedGasKodaHealth } from "./forgedGasKoda";
+import {
+  useForgedAccountKoda,
+  useForgedGasOllama,
+  useSyntrixKoda,
+} from "./inference";
 import { getSyntrixKodaStatus, syntrixKodaChat, SyntrixKodaError } from "./syntrixKoda";
 import { loadSession, saveSession } from "./memory";
 import { buildKodaSystemPrompt } from "./kodaPrompt";
@@ -84,11 +89,18 @@ export async function getKodaStatus(
     };
   }
 
-  const health = await ollamaHealth();
+  const health = useForgedGasOllama()
+    ? await forgedGasKodaHealth().then((h) => ({
+        ok: h.ok,
+        model: h.model || settings.model,
+        baseUrl: h.configured ? "forged-gas" : "",
+      }))
+    : await ollamaHealth();
   const token = extractBearerFromHeader(authHeader);
   const hasToken = Boolean(token);
   const ollamaUp = health.ok && !!settings.baseUrl;
-  const localhostOnHost = /127\.0\.0\.1|localhost/i.test(settings.baseUrl);
+  const localhostOnHost =
+    !useForgedGasOllama() && /127\.0\.0\.1|localhost/i.test(settings.baseUrl);
   let available = settings.kodaEnabled && ollamaUp;
   if (requiresSignIn) {
     available = settings.kodaEnabled && hasToken && (ollamaUp || !localhostOnHost);
@@ -106,9 +118,11 @@ export async function getKodaStatus(
     requiresSignIn,
     degraded: hasToken && settings.kodaEnabled && !ollamaUp,
     detail: !ollamaUp
-      ? localhostOnHost
-        ? "OLLAMA_BASE_URL is still localhost on the server — set it in Netlify environment variables to your shared Ollama host."
-        : `Ollama not reachable at ${settings.baseUrl}`
+      ? useForgedGasOllama()
+        ? "KODA cannot reach Ollama from ForgEd Apps Script. In Code.gs set FORGED_SETUP.OLLAMA_BASE_URL and OLLAMA_API_KEY, then redeploy the Web App."
+        : localhostOnHost
+          ? "OLLAMA_BASE_URL is still localhost on the server — set it in Netlify environment variables to your shared Ollama host."
+          : `Ollama not reachable at ${settings.baseUrl}`
       : undefined,
   };
 }
@@ -171,7 +185,14 @@ export async function kodaChat(
   }
 
   try {
-    const { content, model } = await ollamaChatAggregate(ollamaMessages);
+    const token = extractBearerFromHeader(authHeader);
+    const { content, model } = useForgedGasOllama()
+      ? await forgedGasKodaChat({
+          accessToken: token ?? "",
+          messages: ollamaMessages,
+          model: getOllamaSettings().model,
+        })
+      : await ollamaChatAggregate(ollamaMessages);
     const reply = content || "I'm here to help — could you rephrase that?";
     await saveSession(sessionId, [
       ...messages,

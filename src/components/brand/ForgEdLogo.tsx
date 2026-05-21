@@ -5,7 +5,7 @@ import { withBasePath } from "@/lib/basePath";
 type LogoVariant = "icon" | "wordmark" | "full";
 
 const SOURCES: Record<LogoVariant, { src: string; width: number; height: number }> = {
-  icon: { src: "/forged-icon.png", width: 44, height: 48 },
+  icon: { src: "/forged-icon.png", width: 48, height: 52 },
   wordmark: { src: "/forged-wordmark.png", width: 220, height: 120 },
   full: { src: "/forged-wordmark.png", width: 280, height: 150 },
 };
@@ -30,7 +30,11 @@ export function ForgEdLogo({
       alt="ForgEd"
       width={width}
       height={height}
-      className={`object-contain object-center ${variant === "icon" ? "h-11 w-11" : "h-auto w-auto max-h-24 sm:max-h-32"} ${className}`}
+      className={`object-contain object-center ${
+        variant === "icon"
+          ? "h-12 w-12 min-h-12 min-w-12 shrink-0"
+          : "h-auto w-auto max-h-24 sm:max-h-32"
+      } ${className}`}
       priority={priority}
     />
   );

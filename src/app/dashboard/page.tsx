@@ -52,22 +52,16 @@ export default function DashboardPage() {
       <section className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/12 bg-gradient-to-br from-[#0a0a0a] via-[#101010] to-[#0a0a0a] p-6 sm:p-8">
         <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[var(--gold)]/8 blur-[100px]" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-2xl">
-            {/* Wordmark only — crop baked-in tagline at bottom of PNG */}
-            <div
-              className="mb-2 w-[18rem] overflow-hidden sm:w-[24rem] md:w-[30rem]"
-              style={{ height: "clamp(7.5rem, 22vw, 11.5rem)" }}
-            >
-              <Image
-                src={withBasePath("/forged-wordmark.png")}
-                alt="ForgEd"
-                width={960}
-                height={480}
-                className="h-auto w-full object-contain object-left-top"
-                priority
-              />
-            </div>
-            <p className="mt-4 font-serif text-lg text-[var(--silver)]">
+          <div className="max-w-3xl">
+            <Image
+              src={withBasePath("/forged-wordmark.png")}
+              alt="ForgEd — Learn Skills That Matter"
+              width={1200}
+              height={600}
+              className="h-auto w-full max-w-[min(100%,22rem)] object-contain object-left sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[44rem]"
+              priority
+            />
+            <p className="mt-5 font-serif text-lg text-[var(--silver)]">
               Welcome back, {firstName}.
             </p>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] sm:text-base">

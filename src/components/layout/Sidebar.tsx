@@ -111,13 +111,13 @@ function SidebarInner({
           collapsed ? "w-[72px]" : "w-[272px]"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
-        <div className="flex h-[3.75rem] shrink-0 items-center justify-between border-b border-white/[0.06] px-3 py-1">
+        <div className="flex min-h-[4.25rem] shrink-0 items-center justify-between border-b border-white/[0.06] px-3 py-2">
           <Link
             href="/dashboard"
-            className="flex min-w-0 items-center gap-2 overflow-visible"
+            className="flex min-w-0 items-center gap-2.5 overflow-visible"
             onClick={onMobileClose}
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-visible">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-visible p-1">
               <ForgEdLogo variant="icon" />
             </span>
             {!collapsed && <ForgEdWordmarkText size="sm" />}

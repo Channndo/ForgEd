@@ -6,8 +6,8 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  # Production KODA uses Syntrix /api/koda (shared Ollama with MIRA)
-  KODA_USE_SYNTRIX = "true"
+  # ForgEd accounts + KODA: set OLLAMA_BASE_URL in Netlify UI (reachable Ollama, not localhost)
+  KODA_USE_SYNTRIX = "false"
 
 # Force HTTPS (fixes browser "Not Secure" when cert is valid)
 [[redirects]]

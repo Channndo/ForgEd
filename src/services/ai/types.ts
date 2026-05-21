@@ -57,4 +57,7 @@ export interface KodaStatusResponse {
   assistant: string;
   /** Syntrix-backed KODA requires Omnistrata sign-in */
   requiresSignIn?: boolean;
+  /** Ollama reachable but chat may still work for signed-in users */
+  degraded?: boolean;
+  detail?: string;
 }

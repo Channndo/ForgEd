@@ -27,6 +27,12 @@ import type {
 
 const CLIENT_ROLES = new Set(["user", "assistant"]);
 
+function extractBearerFromHeader(authHeader?: string | null): string | undefined {
+  if (!authHeader) return undefined;
+  const m = authHeader.match(/^Bearer\s+(.+)$/i);
+  return m?.[1]?.trim() || undefined;
+}
+
 function sanitizeText(text: string): string {
   if (!text) return "";
   return text
@@ -79,12 +85,18 @@ export async function getKodaStatus(
   }
 
   const health = await ollamaHealth();
-  let available =
-    settings.kodaEnabled && health.ok && !!settings.baseUrl;
-  if (requiresSignIn && available) {
-    const token = authHeader?.match(/^Bearer\s+(.+)$/i)?.[1]?.trim();
-    available = Boolean(token);
+  const token = extractBearerFromHeader(authHeader);
+  const hasToken = Boolean(token);
+  const ollamaUp = health.ok && !!settings.baseUrl;
+  const localhostOnHost = /127\.0\.0\.1|localhost/i.test(settings.baseUrl);
+  let available = settings.kodaEnabled && ollamaUp;
+  if (requiresSignIn) {
+    available = settings.kodaEnabled && hasToken && (ollamaUp || !localhostOnHost);
+    if (!ollamaUp && hasToken && settings.kodaEnabled) {
+      available = true;
+    }
   }
+
   return {
     enabled: settings.kodaEnabled,
     available,
@@ -92,6 +104,12 @@ export async function getKodaStatus(
     cognitiveStack: "Omnistrata-Ollama",
     assistant: "KODA",
     requiresSignIn,
+    degraded: hasToken && settings.kodaEnabled && !ollamaUp,
+    detail: !ollamaUp
+      ? localhostOnHost
+        ? "OLLAMA_BASE_URL is still localhost on the server — set it in Netlify environment variables to your shared Ollama host."
+        : `Ollama not reachable at ${settings.baseUrl}`
+      : undefined,
   };
 }
 

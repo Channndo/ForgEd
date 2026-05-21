@@ -11,7 +11,6 @@ export function syntrixApiBase(): string {
   );
 }
 
-/** Production / Netlify: route KODA through Syntrix shared Ollama (see netlify.toml). */
 function syntrixKodaEnabled(): boolean {
   const flag = process.env.KODA_USE_SYNTRIX?.trim().toLowerCase();
   if (flag === "false" || flag === "0") return false;
@@ -22,13 +21,14 @@ function syntrixKodaEnabled(): boolean {
   return false;
 }
 
-/** ForgEd GAS accounts — direct Ollama only when Syntrix is not the active KODA backend. */
+/** ForgEd GAS session + server-side Ollama (see README — requires OLLAMA_BASE_URL on Netlify). */
 export function useForgedAccountKoda(): boolean {
-  if (syntrixKodaEnabled()) return false;
   return Boolean(process.env.FORGED_WEB_APP_URL?.trim());
 }
 
+/** Syntrix KODA API — only when ForgEd accounts are not configured. */
 export function useSyntrixKoda(): boolean {
+  if (useForgedAccountKoda()) return false;
   return syntrixKodaEnabled();
 }
 

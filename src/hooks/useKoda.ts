@@ -52,18 +52,24 @@ export function useKoda(initialContext?: KodaLearningContext) {
     const st = await fetchKodaStatus();
     const signedIn = Boolean(user) || hasActiveSession();
     const backendUp = st.responded && st.enabled;
-    const up = backendUp && st.available;
+    const up =
+      backendUp &&
+      (st.available || (signedIn && st.requiresSignIn && hasActiveSession()));
     setAvailable(up);
     setStatusNote(
       up
-        ? "KODA is ready — powered by Omnistrata AI."
+        ? st.degraded
+          ? "KODA is connected in limited mode — responses may be slow or fail until the AI host is fully online."
+          : "KODA is ready — powered by Omnistrata AI."
         : !signedIn && st.requiresSignIn
           ? KODA_SIGN_IN
-          : signedIn
-            ? KODA_OFFLINE_SIGNED_IN
-            : !st.responded
-              ? "Could not reach the KODA service. Check your connection and try again."
-              : KODA_OFFLINE
+          : signedIn && st.detail
+            ? st.detail
+            : signedIn
+              ? KODA_OFFLINE_SIGNED_IN
+              : !st.responded
+                ? "Could not reach the KODA service. Check your connection and try again."
+                : KODA_OFFLINE
     );
     if (up) {
       setMessages((prev) =>

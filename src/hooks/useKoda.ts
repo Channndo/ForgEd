@@ -8,7 +8,12 @@ import {
   kodaExplainQuiz,
   kodaRecommend,
 } from "@/lib/koda/api";
-import { KODA_OFFLINE, KODA_SIGN_IN, KODA_WELCOME } from "@/lib/koda/config";
+import {
+  KODA_OFFLINE,
+  KODA_OFFLINE_SIGNED_IN,
+  KODA_SIGN_IN,
+  KODA_WELCOME,
+} from "@/lib/koda/config";
 import { hasActiveSession } from "@/lib/forged-account/session";
 import { useAuth } from "@/components/providers/AuthProvider";
 import type {
@@ -45,7 +50,7 @@ export function useKoda(initialContext?: KodaLearningContext) {
 
   const refreshStatus = useCallback(async () => {
     const st = await fetchKodaStatus();
-    const signedIn = hasActiveSession();
+    const signedIn = Boolean(user) || hasActiveSession();
     const backendUp = st.responded && st.enabled;
     const up = backendUp && st.available;
     setAvailable(up);
@@ -54,14 +59,18 @@ export function useKoda(initialContext?: KodaLearningContext) {
         ? "KODA is ready — powered by Omnistrata AI."
         : !signedIn && st.requiresSignIn
           ? KODA_SIGN_IN
-          : KODA_OFFLINE
+          : signedIn
+            ? KODA_OFFLINE_SIGNED_IN
+            : !st.responded
+              ? "Could not reach the KODA service. Check your connection and try again."
+              : KODA_OFFLINE
     );
     if (up) {
       setMessages((prev) =>
         prev.length === 0 ? [{ role: "assistant", content: KODA_WELCOME }] : prev
       );
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     setSessionId(loadSessionId());

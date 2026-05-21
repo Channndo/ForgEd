@@ -6,6 +6,9 @@ export const KODA_WELCOME =
 export const KODA_OFFLINE =
   "KODA is unavailable. Sign in to ForgEd, or the AI host may be updating — try again shortly.";
 
+export const KODA_OFFLINE_SIGNED_IN =
+  "KODA's AI host is not responding right now. Wait a moment and reopen the panel, or try again after the site redeploys.";
+
 export const KODA_SIGN_IN =
   "Sign in to your ForgEd account to chat with KODA.";
 

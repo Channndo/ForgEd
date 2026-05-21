@@ -52,9 +52,11 @@ export function useKoda(initialContext?: KodaLearningContext) {
     const st = await fetchKodaStatus();
     const signedIn = Boolean(user) || hasActiveSession();
     const backendUp = st.responded && st.enabled;
-    const up =
+    const up = Boolean(
       backendUp &&
-      (st.available || (signedIn && st.requiresSignIn && hasActiveSession()));
+        (st.available ||
+          (signedIn && Boolean(st.requiresSignIn) && hasActiveSession()))
+    );
     setAvailable(up);
     setStatusNote(
       up

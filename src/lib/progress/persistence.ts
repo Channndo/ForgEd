@@ -2,7 +2,7 @@ import type { UserProgress } from "@/lib/types";
 import { DEFAULT_PROGRESS } from "@/lib/progress";
 import { levelFromXp } from "@/lib/xp";
 import { syncCourseProgressFromLessons } from "@/lib/courseProgress";
-import { getAccessToken } from "@/lib/forged-account/session";
+import { getAccessToken, hasActiveSession } from "@/lib/forged-account/session";
 import {
   loadUserDashboard,
   saveUserProgress as saveProgressToAccount,
@@ -40,7 +40,7 @@ export function clearLocalProgress(): void {
 
 /** Progress is only stored locally and in the cloud for signed-in users. */
 export function isProgressPersistenceEnabled(): boolean {
-  return Boolean(getAccessToken());
+  return hasActiveSession();
 }
 
 export async function fetchRemoteProgress(): Promise<UserProgress | null> {

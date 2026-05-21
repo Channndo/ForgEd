@@ -8,8 +8,8 @@ import { titleForPath } from "@/lib/navigation";
 import { UserMenu } from "./UserMenu";
 export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
+  const { user } = useAuth();
   const { progress, xpBar, syncing } = useProgress();
-  useAuth();
   const title = titleForPath(pathname);
 
   return (
@@ -41,19 +41,21 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
-        <div className="hidden items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 sm:flex">
-          <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
-            <Flame className="h-3.5 w-3.5 text-[var(--gold)]" />
-            {progress.streak}
-          </span>
-          <span className="h-3 w-px bg-white/10" />
-          <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
-            <Zap className="h-3.5 w-3.5 text-[var(--gold)]" />
-            {progress.xp} XP
-          </span>
-          <span className="h-3 w-px bg-white/10" />
-          <span className="text-xs font-medium text-[var(--silver)]">Lv {xpBar.level}</span>
-        </div>
+        {user && (
+          <div className="hidden items-center gap-3 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 sm:flex">
+            <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
+              <Flame className="h-3.5 w-3.5 text-[var(--gold)]" />
+              {progress.streak}
+            </span>
+            <span className="h-3 w-px bg-white/10" />
+            <span className="flex items-center gap-1.5 text-xs text-[var(--muted)]">
+              <Zap className="h-3.5 w-3.5 text-[var(--gold)]" />
+              {progress.xp} XP
+            </span>
+            <span className="h-3 w-px bg-white/10" />
+            <span className="text-xs font-medium text-[var(--silver)]">Lv {xpBar.level}</span>
+          </div>
+        )}
 
         <button
           type="button"

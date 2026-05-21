@@ -13,6 +13,11 @@ export function getAccessToken(): string | null {
   }
 }
 
+/** True only when both token and cached profile exist — matches signed-in UI state. */
+export function hasActiveSession(): boolean {
+  return Boolean(getAccessToken() && readSession());
+}
+
 export function readSession(): ForgedAccountUser | null {
   if (typeof window === "undefined") return null;
   try {

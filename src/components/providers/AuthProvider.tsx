@@ -23,6 +23,7 @@ import {
   updateLocalProfile,
   writeSession,
 } from "@/lib/forged-account/session";
+import { clearLocalProgress } from "@/lib/progress/persistence";
 import { updateUserProfile } from "@/lib/forged-account/authApi";
 import type { ForgedAccountUser, SignUpInput } from "@/lib/forged-account/types";
 
@@ -73,6 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const token = getAccessToken();
     const cached = readSession();
     if (!token) {
+      clearLocalProgress();
       setUser(null);
       setLoading(false);
       return;
@@ -111,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(() => {
     clearSession();
+    clearLocalProgress();
     setUser(null);
   }, []);
 

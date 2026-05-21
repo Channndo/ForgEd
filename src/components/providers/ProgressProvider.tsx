@@ -22,7 +22,7 @@ import {
   saveRemoteProgress,
   writeLocalProgress,
 } from "@/lib/progress/persistence";
-import { getAccessToken } from "@/lib/forged-account/session";
+import { hasActiveSession } from "@/lib/forged-account/session";
 import { xpProgressInLevel } from "@/lib/xp";
 import { useAuth } from "./AuthProvider";
 
@@ -32,41 +32,50 @@ interface ProgressContextValue {
   setProgress: (data: UserProgress) => void;
   xpBar: ReturnType<typeof xpProgressInLevel>;
   syncing: boolean;
+  isSignedIn: boolean;
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
 
+const EMPTY_PROGRESS = (): UserProgress => ({ ...DEFAULT_PROGRESS });
+
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth();
-  const [progress, setProgressState] = useState<UserProgress>(DEFAULT_PROGRESS);
+  const [progress, setProgressState] = useState<UserProgress>(EMPTY_PROGRESS);
   const [mounted, setMounted] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hadSignedInUser = useRef(false);
+  const isSignedIn = Boolean(user);
 
   const refresh = useCallback(() => {
-    setProgressState(getAccessToken() ? readProgress() : { ...DEFAULT_PROGRESS });
-  }, []);
+    if (!user) {
+      setProgressState(EMPTY_PROGRESS());
+      return;
+    }
+    setProgressState(readProgress());
+  }, [user]);
 
-  const setProgress = useCallback((data: UserProgress) => {
-    if (!getAccessToken()) return;
-    writeProgress(data);
-  }, []);
+  const setProgress = useCallback(
+    (data: UserProgress) => {
+      if (!user) return;
+      writeProgress(data);
+    },
+    [user]
+  );
 
   useEffect(() => {
     registerProgressSync((data) => {
+      if (!hasActiveSession()) return;
       setProgressState(data);
-      if (getAccessToken()) {
-        if (syncTimer.current) clearTimeout(syncTimer.current);
-        syncTimer.current = setTimeout(async () => {
-          setSyncing(true);
-          try {
-            await saveRemoteProgress(data);
-          } finally {
-            setSyncing(false);
-          }
-        }, 800);
-      }
+      if (syncTimer.current) clearTimeout(syncTimer.current);
+      syncTimer.current = setTimeout(async () => {
+        setSyncing(true);
+        try {
+          await saveRemoteProgress(data);
+        } finally {
+          setSyncing(false);
+        }
+      }, 800);
     });
     return () => registerProgressSync(null);
   }, []);
@@ -76,18 +85,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
     (async () => {
       if (user?.email) {
-        hadSignedInUser.current = true;
         const data = await migrateGuestProgress(user.email);
         if (!cancelled) {
           writeLocalProgress(data);
           setProgressState(data);
         }
       } else {
-        if (hadSignedInUser.current) {
-          clearLocalProgress();
-          hadSignedInUser.current = false;
-        }
-        if (!cancelled) setProgressState({ ...DEFAULT_PROGRESS });
+        clearLocalProgress();
+        if (!cancelled) setProgressState(EMPTY_PROGRESS());
       }
       if (!cancelled) setMounted(true);
     })();
@@ -96,22 +101,31 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     };
   }, [user?.email, authLoading]);
 
-  const xpBar = useMemo(() => xpProgressInLevel(progress.xp), [progress.xp]);
+  const progressForUi = isSignedIn ? progress : EMPTY_PROGRESS();
+  const xpBar = useMemo(() => xpProgressInLevel(progressForUi.xp), [progressForUi.xp]);
 
   const value = useMemo(
-    () => ({ progress, refresh, setProgress, xpBar, syncing }),
-    [progress, refresh, setProgress, xpBar, syncing]
+    () => ({
+      progress: progressForUi,
+      refresh,
+      setProgress,
+      xpBar,
+      syncing,
+      isSignedIn,
+    }),
+    [progressForUi, refresh, setProgress, xpBar, syncing, isSignedIn]
   );
 
   if (!mounted) {
     return (
       <ProgressContext.Provider
         value={{
-          progress: DEFAULT_PROGRESS,
+          progress: EMPTY_PROGRESS(),
           refresh,
           setProgress,
           xpBar: xpProgressInLevel(0),
           syncing: false,
+          isSignedIn: false,
         }}
       >
         {children}

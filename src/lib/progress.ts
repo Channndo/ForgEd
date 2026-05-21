@@ -12,7 +12,7 @@ import {
 import { COURSES } from "./courses/catalog";
 import { syncPathFromCourseComplete } from "./paths/pathProgress";
 
-import { getAccessToken } from "@/lib/forged-account/session";
+import { hasActiveSession } from "@/lib/forged-account/session";
 import {
   readLocalProgress,
   writeLocalProgress,
@@ -63,12 +63,12 @@ function emptyProgress(): UserProgress {
 }
 
 export function readProgress(): UserProgress {
-  if (!getAccessToken()) return emptyProgress();
+  if (!hasActiveSession()) return emptyProgress();
   return readLocalProgress();
 }
 
 export function writeProgress(data: UserProgress): void {
-  if (!getAccessToken()) return;
+  if (!hasActiveSession()) return;
   data.level = levelFromXp(data.xp);
   const synced = syncCourseProgressFromLessons(data);
   writeLocalProgress(synced);

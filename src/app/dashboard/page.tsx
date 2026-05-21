@@ -27,7 +27,7 @@ import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
 
 export default function DashboardPage() {
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const { progress, xpBar } = useProgress();
   const firstName =
     profile?.displayName?.split(" ")[0] ?? profile?.username ?? "Learner";
@@ -55,25 +55,38 @@ export default function DashboardPage() {
           <div>
             <ForgEdBrandStack size="lg" priority />
             <p className="mt-4 font-serif text-lg text-[var(--silver)]">
-              Welcome back, {firstName}.
+              {user ? `Welcome back, ${firstName}.` : "Welcome to ForgEd."}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-              Your progress saves to your account — pick up paths, courses, and XP exactly where
-              you left off. KODA is available on every chapter for explanations and practice.
+              {user ? (
+                <>
+                  Your progress saves to your account — pick up paths, courses, and XP exactly where
+                  you left off. KODA is available on every chapter for explanations and practice.
+                </>
+              ) : (
+                <>
+                  <Link href={withBasePath("/login")} className="text-[var(--gold)] hover:underline">
+                    Sign in
+                  </Link>{" "}
+                  to save XP, streaks, and course progress. Browse courses freely as a guest.
+                </>
+              )}
             </p>
             <CourseSpotlight />
           </div>
-          <div className="grid w-full max-w-[17rem] grid-cols-2 gap-3 sm:max-w-none sm:grid-cols-4 lg:max-w-[17rem] lg:grid-cols-2 [&>*]:min-w-0">
-            <StatChip icon={Zap} label="XP" value={String(progress.xp)} />
-            <StatChip icon={Target} label="Level" value={String(xpBar.level)} />
-            <StatChip icon={Flame} label="Streak" value={`${progress.streak}d`} />
-            <StatChip
-              icon={BookOpen}
-              label="Sections"
-              value={formatSectionsProgress(completedLessons, totalLessons)}
-              compactValue
-            />
-          </div>
+          {user && (
+            <div className="grid w-full max-w-[17rem] grid-cols-2 gap-3 sm:max-w-none sm:grid-cols-4 lg:max-w-[17rem] lg:grid-cols-2 [&>*]:min-w-0">
+              <StatChip icon={Zap} label="XP" value={String(progress.xp)} />
+              <StatChip icon={Target} label="Level" value={String(xpBar.level)} />
+              <StatChip icon={Flame} label="Streak" value={`${progress.streak}d`} />
+              <StatChip
+                icon={BookOpen}
+                label="Sections"
+                value={formatSectionsProgress(completedLessons, totalLessons)}
+                compactValue
+              />
+            </div>
+          )}
         </div>
       </section>
 

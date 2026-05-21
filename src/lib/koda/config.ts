@@ -1,7 +1,7 @@
 export const KODA_BRAND = "KODA";
 
 export const KODA_WELCOME =
-  "Hi — I'm KODA, your learning companion on ForgEd. Ask me to explain a lesson, review a quiz answer, or suggest what to study next.";
+  "Hey — I'm KODA, your learning companion on ForgEd. Ask about this lesson, a quiz answer, what to study next, or anything you're curious about. I'll keep it clear and conversational.";
 
 export const KODA_OFFLINE =
   "KODA is unavailable. Sign in to ForgEd, or the AI host may be updating — try again shortly.";
@@ -17,4 +17,5 @@ export const KODA_QUICK_PROMPTS = [
   "Give me a real-world example",
   "What should I study next?",
   "Help me understand this quiz answer",
+  "Walk me through this like we're chatting",
 ] as const;

@@ -1,6 +1,9 @@
 /**
  * KODA via Syntrix API — same Hetzner Ollama host as MIRA/CoverIQ.
  * ForgEd Netlify validates the learner session, then calls Syntrix with FORGED_SERVER_SECRET.
+ *
+ * FORGED ONLY: every chat sends system_prompt from buildKodaSystemPrompt() (ForgEd kodaPrompt.ts).
+ * Do not rely on Syntrix koda_prompt.py — that fallback is narrower and shared with legacy routes.
  */
 
 import { buildKodaSystemPrompt } from "./kodaPrompt";

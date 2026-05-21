@@ -62,7 +62,7 @@ export function useKoda(initialContext?: KodaLearningContext) {
       up
         ? st.degraded
           ? "KODA is connected in limited mode — responses may be slow or fail until the AI host is fully online."
-          : "KODA is ready — powered by Omnistrata AI."
+          : "KODA is ready — powered by Mindroot AI."
         : !signedIn && st.requiresSignIn
           ? KODA_SIGN_IN
           : signedIn && st.detail

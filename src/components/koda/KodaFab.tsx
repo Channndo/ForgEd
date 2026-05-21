@@ -4,9 +4,11 @@ import { X } from "lucide-react";
 import { useKodaPanel } from "./KodaProvider";
 import { KodaLogo } from "./KodaLogo";
 
-/** Sole entry point for KODA chat — fixed bottom-right */
+/** Sole entry point for KODA chat — fixed bottom-right (hidden while panel is open; use header X) */
 export function KodaFloatingButton() {
   const { toggle, open } = useKodaPanel();
+
+  if (open) return null;
 
   return (
     <button

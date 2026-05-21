@@ -43,6 +43,13 @@ export function useForgedGasOllama(): boolean {
   return flag === "true" || flag === "1";
 }
 
+/** Direct Hetzner Ollama (same URL + API key as Render MIRA) — Netlify fallback when Syntrix bridge lacks secret. */
+export function useDirectHetznerOllama(): boolean {
+  return Boolean(
+    process.env.OLLAMA_API_KEY?.trim() && process.env.OLLAMA_BASE_URL?.trim()
+  );
+}
+
 export function extractBearer(authHeader: string | null | undefined): string | null {
   if (!authHeader) return null;
   const m = authHeader.match(/^Bearer\s+(.+)$/i);

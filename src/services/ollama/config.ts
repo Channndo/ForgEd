@@ -56,6 +56,9 @@ export function isKodaFeatureEnabled(): boolean {
 export function defaultOllamaBaseUrl(): string {
   const raw = process.env.OLLAMA_BASE_URL?.trim();
   if (raw) return raw.replace(/\/$/, "");
+  if (process.env.NETLIFY === "true" || process.env.FORGED_WEB_APP_URL?.trim()) {
+    return "https://ollama.syntrix.solutions:11434";
+  }
   return "http://127.0.0.1:11434";
 }
 

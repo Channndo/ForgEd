@@ -19,6 +19,7 @@ import {
   getForgedSyntrixKodaStatus,
 } from "./forgedSyntrixKoda";
 import {
+  useDirectHetznerOllama,
   useForgedAccountKoda,
   useForgedGasOllama,
   useSyntrixForgedKoda,
@@ -99,20 +100,30 @@ export async function getKodaStatus(
     const st = await getForgedSyntrixKodaStatus();
     const token = extractBearerFromHeader(authHeader);
     const hasToken = Boolean(token);
-    const stackUp = st.enabled;
+    let stackUp = st.enabled;
+    let model = st.model || settings.model;
+    let detail = st.detail;
+
+    if (!stackUp && useDirectHetznerOllama()) {
+      const direct = await ollamaHealth();
+      stackUp = direct.ok;
+      if (direct.model) model = direct.model;
+      if (stackUp) detail = undefined;
+    }
+
     return {
       enabled: settings.kodaEnabled,
       available:
         settings.kodaEnabled && (!requiresSignIn || hasToken),
-      model: st.model || settings.model,
+      model,
       cognitiveStack: "Omnistrata-Ollama",
       assistant: "KODA",
       requiresSignIn,
       degraded: hasToken && settings.kodaEnabled && !stackUp,
       detail: stackUp
         ? undefined
-        : st.detail ||
-          "Deploy the latest Syntrix API (Render) with FORGED_SERVER_SECRET matching Netlify.",
+        : detail ||
+          "Add FORGED_SERVER_SECRET on Render (Syntrix) or OLLAMA_API_KEY on Netlify (same Hetzner key as MIRA).",
     };
   }
 
@@ -201,23 +212,6 @@ export async function kodaChat(
     }
   }
 
-  if (useSyntrixForgedKoda()) {
-    try {
-      const result = await forgedSyntrixKodaChat(request);
-      const sessionId = request.sessionId ?? crypto.randomUUID();
-      await saveSession(sessionId, [
-        ...request.messages,
-        { role: "assistant", content: result.message },
-      ]);
-      return { ...result, sessionId };
-    } catch (e) {
-      if (e instanceof ForgedSyntrixKodaError) {
-        throw new KodaServiceError(e.status, e.message);
-      }
-      throw e;
-    }
-  }
-
   const mode = request.mode ?? "chat";
   const systemPrompt = buildKodaSystemPrompt(mode, request.context);
   const sessionId = request.sessionId ?? crypto.randomUUID();
@@ -233,6 +227,27 @@ export async function kodaChat(
   const ollamaMessages = toOllamaMessages(systemPrompt, messages);
   if (ollamaMessages.length < 2) {
     throw new KodaServiceError(400, "A user message is required.");
+  }
+
+  if (useSyntrixForgedKoda()) {
+    try {
+      const result = await forgedSyntrixKodaChat(request);
+      await saveSession(sessionId, [
+        ...messages,
+        { role: "assistant", content: result.message },
+      ]);
+      return { ...result, sessionId };
+    } catch (e) {
+      if (
+        !(e instanceof ForgedSyntrixKodaError) ||
+        !useDirectHetznerOllama()
+      ) {
+        if (e instanceof ForgedSyntrixKodaError) {
+          throw new KodaServiceError(e.status, e.message);
+        }
+        throw e;
+      }
+    }
   }
 
   const settings = getOllamaSettings();
@@ -302,10 +317,15 @@ export async function* kodaChatStreamGenerator(
       if (result.message) yield result.message;
       return;
     } catch (e) {
-      if (e instanceof ForgedSyntrixKodaError) {
-        throw new KodaServiceError(e.status, e.message);
+      if (
+        !(e instanceof ForgedSyntrixKodaError) ||
+        !useDirectHetznerOllama()
+      ) {
+        if (e instanceof ForgedSyntrixKodaError) {
+          throw new KodaServiceError(e.status, e.message);
+        }
+        throw e;
       }
-      throw e;
     }
   }
 

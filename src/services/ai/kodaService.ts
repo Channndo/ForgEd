@@ -89,13 +89,17 @@ export async function getKodaStatus(
     };
   }
 
-  const health = useForgedGasOllama()
-    ? await forgedGasKodaHealth().then((h) => ({
-        ok: h.ok,
-        model: h.model || settings.model,
-        baseUrl: h.configured ? "forged-gas" : "",
-      }))
-    : await ollamaHealth();
+  let health = await ollamaHealth();
+  if (useForgedGasOllama()) {
+    const gas = await forgedGasKodaHealth();
+    if (gas.configured || gas.ok) {
+      health = {
+        ok: gas.ok,
+        model: gas.model || settings.model,
+        baseUrl: "forged-gas",
+      };
+    }
+  }
   const token = extractBearerFromHeader(authHeader);
   const hasToken = Boolean(token);
   const ollamaUp = health.ok && !!settings.baseUrl;
@@ -184,15 +188,31 @@ export async function kodaChat(
     throw new KodaServiceError(400, "A user message is required.");
   }
 
+  const settings = getOllamaSettings();
+
   try {
     const token = extractBearerFromHeader(authHeader);
-    const { content, model } = useForgedGasOllama()
-      ? await forgedGasKodaChat({
-          accessToken: token ?? "",
+    let content = "";
+    let model = settings.model;
+    if (useForgedGasOllama() && token) {
+      try {
+        const gas = await forgedGasKodaChat({
+          accessToken: token,
           messages: ollamaMessages,
-          model: getOllamaSettings().model,
-        })
-      : await ollamaChatAggregate(ollamaMessages);
+          model: settings.model,
+        });
+        content = gas.content;
+        model = gas.model;
+      } catch {
+        const direct = await ollamaChatAggregate(ollamaMessages);
+        content = direct.content;
+        model = direct.model;
+      }
+    } else {
+      const direct = await ollamaChatAggregate(ollamaMessages);
+      content = direct.content;
+      model = direct.model;
+    }
     const reply = content || "I'm here to help — could you rephrase that?";
     await saveSession(sessionId, [
       ...messages,

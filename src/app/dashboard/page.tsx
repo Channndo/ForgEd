@@ -58,7 +58,7 @@ export default function DashboardPage() {
               alt="ForgEd — Learn Skills That Matter"
               width={800}
               height={800}
-              className="h-auto w-56 object-contain object-left sm:w-64 md:w-72"
+              className="h-auto w-[15.5rem] object-contain object-left sm:w-[17.5rem] md:w-[19.5rem]"
               priority
             />
             <p className="mt-4 font-serif text-lg text-[var(--silver)]">
@@ -78,6 +78,7 @@ export default function DashboardPage() {
               icon={BookOpen}
               label="Sections"
               value={`${completedLessons}/${totalLessons}`}
+              compactValue
             />
           </div>
         </div>
@@ -272,15 +273,27 @@ function StatChip({
   icon: Icon,
   label,
   value,
+  compactValue = false,
 }: {
   icon: typeof Zap;
   label: string;
   value: string;
+  compactValue?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-black/40 px-3 py-3 text-center transition hover:border-[var(--gold)]/15">
-      <Icon className="mx-auto h-4 w-4 text-[var(--gold)]" />
-      <p className="mt-1 text-lg font-bold text-[var(--silver)]">{value}</p>
+    <div
+      className={`rounded-xl border border-white/[0.06] bg-black/40 py-3 text-center transition hover:border-[var(--gold)]/15 ${
+        compactValue ? "min-w-0 px-2.5 sm:min-w-[8.25rem] sm:px-3" : "px-3"
+      }`}
+    >
+      <Icon className="mx-auto h-4 w-4 shrink-0 text-[var(--gold)]" />
+      <p
+        className={`mt-1 font-bold tabular-nums leading-tight text-[var(--silver)] ${
+          compactValue ? "text-xs sm:text-sm" : "text-lg"
+        }`}
+      >
+        {value}
+      </p>
       <p className="text-[10px] uppercase tracking-wider text-[var(--muted)]">{label}</p>
     </div>
   );

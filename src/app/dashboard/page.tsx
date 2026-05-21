@@ -49,16 +49,16 @@ export default function DashboardPage() {
   return (
     <div className="space-y-10">
       {/* Command center hero */}
-      <section className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/12 bg-gradient-to-br from-[#0a0a0a] via-[#101010] to-[#0a0a0a] p-6 sm:p-8">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[var(--gold)]/8 blur-[100px]" />
+      <section className="relative rounded-2xl border border-[var(--gold)]/12 bg-gradient-to-br from-[#0a0a0a] via-[#101010] to-[#0a0a0a] p-6 sm:p-8">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 overflow-hidden rounded-full bg-[var(--gold)]/8 blur-[100px]" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
+          <div>
             <Image
               src={withBasePath("/forged-wordmark.png")}
               alt="ForgEd — Learn Skills That Matter"
-              width={1200}
-              height={600}
-              className="h-auto w-full max-w-[min(100%,22rem)] object-contain object-left sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[44rem]"
+              width={800}
+              height={800}
+              className="h-auto w-64 object-contain object-left sm:w-72 md:w-80"
               priority
             />
             <p className="mt-5 font-serif text-lg text-[var(--silver)]">

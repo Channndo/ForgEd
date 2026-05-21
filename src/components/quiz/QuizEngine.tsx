@@ -7,12 +7,15 @@ import { isPassingScore } from "@/lib/quizTypes";
 import { Button } from "@/components/ui/Button";
 import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
 import { KodaQuizHelp } from "@/components/koda/KodaQuizHelp";
+import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
 import type { KodaLearningContext } from "@/lib/koda/types";
 
 interface QuizEngineProps {
   questions: QuizQuestion[];
   title?: string;
   onComplete?: (score: number, total: number) => void;
+  /** Draw a new random set from the course bank (parent bumps attempt key). */
+  onNewAttempt?: () => void;
   kodaContext?: KodaLearningContext;
 }
 
@@ -20,6 +23,7 @@ export function QuizEngine({
   questions,
   title = "Quiz",
   onComplete,
+  onNewAttempt,
   kodaContext,
 }: QuizEngineProps) {
   const shuffled = useMemo(() => {
@@ -59,6 +63,10 @@ export function QuizEngine({
   }
 
   function retry() {
+    if (onNewAttempt) {
+      onNewAttempt();
+      return;
+    }
     setIndex(0);
     setSelected(null);
     setRevealed(false);
@@ -149,13 +157,12 @@ export function QuizEngine({
             })}
           </ul>
 
-          {revealed && (
+          {revealed && selected !== null && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-[var(--muted)]"
             >
-              {q.explanation}
+              <QuizAnswerExplanation question={q} selectedIndex={selected} />
             </motion.div>
           )}
 

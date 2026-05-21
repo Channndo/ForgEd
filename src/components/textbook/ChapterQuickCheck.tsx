@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import type { QuizQuestion } from "@/lib/quizTypes";
 import { CHAPTER_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
 import { pickChapterQuiz } from "@/lib/courses/textbook/quizUtils";
+import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
 import {
   isChapterQuickCheckPassed,
   markChapterQuickCheckPassed,
@@ -199,8 +200,11 @@ export function ChapterQuickCheck({
                   );
                 })}
               </fieldset>
-              {currentRevealed && (
-                <p className="mt-4 text-sm text-[var(--muted)]">{current.explanation}</p>
+              {currentRevealed && answers[current.id] !== undefined && (
+                <QuizAnswerExplanation
+                  question={current}
+                  selectedIndex={answers[current.id]}
+                />
               )}
               <div className="mt-6 flex flex-wrap gap-2">
                 <button

@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import type { QuizQuestion } from "@/lib/quizTypes";
 import { SECTION_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
 import { pickSectionQuiz } from "@/lib/courses/textbook/quizUtils";
+import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
 import { isSectionQuizPassed, markSectionQuizPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 
@@ -181,8 +182,12 @@ export function SectionQuiz({
                   );
                 })}
               </fieldset>
-              {currentRevealed && (
-                <p className="mt-3 text-xs text-[var(--muted)]">{current.explanation}</p>
+              {currentRevealed && answers[current.id] !== undefined && (
+                <QuizAnswerExplanation
+                  question={current}
+                  selectedIndex={answers[current.id]}
+                  compact
+                />
               )}
               <div className="mt-4 flex gap-2">
                 {!currentRevealed ? (

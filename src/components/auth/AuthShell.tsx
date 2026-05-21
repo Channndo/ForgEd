@@ -7,15 +7,17 @@ export function AuthShell({
   title,
   subtitle,
   children,
+  maxWidthClass = "max-w-md",
 }: {
   title: string;
   subtitle: string;
   children: React.ReactNode;
+  maxWidthClass?: string;
 }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#050505] px-4 py-12">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.08),transparent_55%)]" />
-      <div className="relative w-full max-w-md">
+      <div className={`relative w-full ${maxWidthClass}`}>
         <Link href="/dashboard" className="mb-8 flex flex-col items-center">
           <Image
             src={withBasePath("/forged-wordmark.png")}

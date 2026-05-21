@@ -24,7 +24,7 @@ import {
   writeSession,
 } from "@/lib/forged-account/session";
 import { updateUserProfile } from "@/lib/forged-account/authApi";
-import type { ForgedAccountUser } from "@/lib/forged-account/types";
+import type { ForgedAccountUser, SignUpInput } from "@/lib/forged-account/types";
 
 interface AuthContextValue {
   user: ForgedAccountUser | null;
@@ -32,12 +32,7 @@ interface AuthContextValue {
   loading: boolean;
   configured: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
-  signUp: (input: {
-    displayName: string;
-    username: string;
-    email: string;
-    password: string;
-  }) => Promise<{ error?: string }>;
+  signUp: (input: SignUpInput) => Promise<{ error?: string }>;
   signOut: () => void;
   resetPasswordRequest: (email: string) => Promise<{ error?: string; message?: string }>;
   resetPasswordWithToken: (
@@ -99,13 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const signUp = useCallback(
-    async (input: {
-      displayName: string;
-      username: string;
-      email: string;
-      password: string;
-    }) => {
+  const signUp = useCallback(async (input: SignUpInput) => {
       try {
         const result = await registerUser(input);
         writeSession(result.accessToken, result.user);

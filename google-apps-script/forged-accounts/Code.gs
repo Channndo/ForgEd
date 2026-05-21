@@ -2,20 +2,56 @@
  * ForgEd — Accounts & persistence (Google Apps Script + Sheets)
  *
  * FIRST TIME:
- * 1. Run createForgEdDatabase() once in the editor (authorize when prompted).
- * 2. Script Properties → FORGED_SERVER_SECRET (openssl rand -hex 32)
- * 3. Deploy → Web app → Execute as: Me, Who has access: Anyone
- * 4. Copy Web App URL → ForgEd .env FORGED_WEB_APP_URL
+ * 1. Paste your Spreadsheet ID into FORGED_SETUP.SPREADSHEET_ID below (from the sheet URL).
+ * 2. Run bootstrapForgEdOnce() once in the editor (or rely on auto-setup on first Web App hit).
+ * 3. If no sheet yet, run createForgEdDatabase() once instead of step 1.
+ * 4. Deploy → Web app → Execute as: Me, Who has access: Anyone
+ * 5. Web App URL (ForgEd + Netlify FORGED_WEB_APP_URL):
+ *    https://script.google.com/macros/s/AKfycbyMUFkHPuSN2ajb-09lXAZvxt1n7M59dZ4L2NlpLTy8H3l3Ay_Nyx3iIP19XhwA7x-Q/exec
  */
 
 var PROP_SPREADSHEET_ID = 'FORGED_SPREADSHEET_ID';
 var PROP_SERVER_SECRET = 'FORGED_SERVER_SECRET';
 
+/**
+ * Paste values here — copied into Script Properties on every Web App request.
+ * SPREADSHEET_URL: paste the full link, e.g.
+ *   https://docs.google.com/spreadsheets/d/1abc...xyz/edit
+ * Or set SPREADSHEET_ID to the ID between /d/ and /edit only.
+ */
+var FORGED_SETUP = {
+  SPREADSHEET_URL:
+    'https://docs.google.com/spreadsheets/d/15uwWuA94k0DKAORYkEXq2BbW7QVpfrC38G7d7uqQjTo/edit',
+  SPREADSHEET_ID: '15uwWuA94k0DKAORYkEXq2BbW7QVpfrC38G7d7uqQjTo',
+  SERVER_SECRET: 'a704546b065d1e4dfc3dcd60f37f8dc8395068697012dab4104fce456698824a'
+};
+
+function parseSpreadsheetId_(value) {
+  var s = String(value || '').trim();
+  if (!s) return '';
+  var match = s.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  if (match) return match[1];
+  if (/^[a-zA-Z0-9-_]{20,}$/.test(s)) return s;
+  return '';
+}
+
+function getForgedSpreadsheetIdFromSetup_() {
+  return (
+    parseSpreadsheetId_(FORGED_SETUP.SPREADSHEET_ID) ||
+    parseSpreadsheetId_(FORGED_SETUP.SPREADSHEET_URL) ||
+    ''
+  );
+}
+
 var CONFIG = {
   SPREADSHEET_TITLE: 'ForgEd Accounts Database',
-  DEFAULT_SECRET: '',
+  WEBSITE_URL: 'https://forgedlearn.com',
   SESSION_DAYS: 30,
-  RESET_HOURS: 24
+  RESET_HOURS: 24,
+  SEND_EMAIL_NOTIFICATIONS: true,
+  EMAIL_RECIPIENTS: ['chandler.hill.24@gmail.com', 'chandler@forgedlearn.com'],
+  /** These emails receive isAdmin: true on login/profile */
+  ADMIN_EMAILS: ['chandler@forgedlearn.com']
 };
 
 var SHEETS = {
@@ -23,8 +59,20 @@ var SHEETS = {
     name: 'USERS',
     headers: [
       'User ID',
+      'First Name',
+      'Last Name',
       'Username',
       'Email',
+      'Phone',
+      'Street',
+      'City',
+      'State',
+      'ZIP',
+      'Security Q1',
+      'Security A1 Hash',
+      'Security Q2',
+      'Security A2 Hash',
+      'Referral Source',
       'Password Hash',
       'Salt',
       'XP',
@@ -81,17 +129,28 @@ var SHEETS = {
       'Retry Required',
       'Last Updated'
     ]
+  },
+  EMAIL_LOG: {
+    name: 'EMAIL_LOG',
+    headers: ['Timestamp', 'Event', 'Recipients', 'Status', 'Error Detail', 'User ID', 'Email']
   }
 };
 
 // ─── Entry points ───────────────────────────────────────────────────────────
 
 function doGet(e) {
-  return jsonResponse_({ ok: true, service: 'ForgEd Accounts API', version: 1 });
+  ensureForgEdProperties_();
+  return jsonResponse_({
+    ok: true,
+    service: 'ForgEd Accounts API',
+    version: 2,
+    configured: getForgEdConfigStatus_()
+  });
 }
 
 function doPost(e) {
   try {
+    ensureForgEdProperties_();
     var raw = {};
     if (e && e.postData && e.postData.contents) {
       raw = JSON.parse(e.postData.contents);
@@ -104,6 +163,39 @@ function doPost(e) {
     if (action === 'createForgEdDatabase' || action === 'initializeSheets') {
       requireServerSecret_(raw);
       return jsonResponse_(createForgEdDatabase_());
+    }
+
+    if (action === 'upgradeUsersSheet') {
+      requireServerSecret_(raw);
+      return jsonResponse_(upgradeUsersSheetHeaders_());
+    }
+
+    if (action === 'notifySignup' || action === 'sendSignupEmail') {
+      requireServerSecret_(raw);
+      return jsonResponse_(
+        sendSignupNotification_(
+          {
+            userId: String(raw.userId || raw.user_id || ''),
+            email: String(raw.email || ''),
+            username: String(raw.username || ''),
+            displayName: String(raw.displayName || raw.display_name || ''),
+            firstName: String(raw.firstName || raw.first_name || ''),
+            lastName: String(raw.lastName || raw.last_name || ''),
+            phone: String(raw.phone || ''),
+            street: String(raw.street || ''),
+            city: String(raw.city || ''),
+            state: String(raw.state || ''),
+            zip: String(raw.zip || ''),
+            referralSource: String(raw.referralSource || raw.referral_source || '')
+          },
+          nowIso_()
+        )
+      );
+    }
+
+    if (action === 'diagnoseEmail') {
+      requireServerSecret_(raw);
+      return jsonResponse_(diagnoseForgedEmail_());
     }
 
     if (action === 'registerUser') {
@@ -183,16 +275,95 @@ function initializeSheets() {
   return initializeSheets_();
 }
 
+/**
+ * Run ONCE in the Apps Script editor after pasting this project.
+ * Writes FORGED_SERVER_SECRET + FORGED_SPREADSHEET_ID to Script Properties.
+ */
+function bootstrapForgEdOnce() {
+  ensureForgEdProperties_(true);
+  var status = getForgEdConfigStatus_();
+  Logger.log(JSON.stringify(status));
+  if (!status.spreadsheetId) {
+    return {
+      ok: false,
+      message:
+        'Set FORGED_SETUP.SPREADSHEET_ID in Code.gs (from your sheet URL) or run createForgEdDatabase() once.',
+      configured: status
+    };
+  }
+  return { ok: true, message: 'ForgEd Script Properties configured.', configured: status };
+}
+
+/** @deprecated Use bootstrapForgEdOnce() */
+function setForgedServerSecretOnce() {
+  return bootstrapForgEdOnce();
+}
+
+function setForgedSpreadsheetIdOnce() {
+  ensureForgEdProperties_(true);
+  return { ok: true, configured: getForgEdConfigStatus_() };
+}
+
+function getForgEdConfigStatus_() {
+  var props = PropertiesService.getScriptProperties();
+  var spreadsheetId = getSpreadsheetId_();
+  var secret = getServerSecret_();
+  return {
+    spreadsheetId: spreadsheetId,
+    hasSpreadsheet: !!spreadsheetId,
+    hasServerSecret: !!secret,
+    sendEmailNotifications: CONFIG.SEND_EMAIL_NOTIFICATIONS,
+    emailRecipients: getNotificationRecipients_()
+  };
+}
+
+function ensureForgEdProperties_(force) {
+  var props = PropertiesService.getScriptProperties();
+  if ((force || !props.getProperty(PROP_SERVER_SECRET)) && FORGED_SETUP.SERVER_SECRET) {
+    props.setProperty(PROP_SERVER_SECRET, FORGED_SETUP.SERVER_SECRET);
+  }
+  var sheetId = getForgedSpreadsheetIdFromSetup_();
+  // Code.gs FORGED_SETUP always wins when set (overrides stale Script Properties).
+  if (sheetId) {
+    props.setProperty(PROP_SPREADSHEET_ID, sheetId);
+  }
+}
+
+function getSpreadsheetId_() {
+  ensureForgEdProperties_();
+  var id = getForgedSpreadsheetIdFromSetup_() || '';
+  if (id) return id;
+  var props = PropertiesService.getScriptProperties();
+  id = props.getProperty(PROP_SPREADSHEET_ID) || '';
+  if (id) return id;
+  try {
+    var iter = DriveApp.getFilesByName(CONFIG.SPREADSHEET_TITLE);
+    if (iter.hasNext()) {
+      id = iter.next().getId();
+      props.setProperty(PROP_SPREADSHEET_ID, id);
+      Logger.log('Auto-linked spreadsheet: ' + id);
+      return id;
+    }
+  } catch (driveErr) {
+    Logger.log('Drive lookup failed: ' + driveErr);
+  }
+  return '';
+}
+
 function createForgEdDatabase_() {
   var ss = SpreadsheetApp.create(CONFIG.SPREADSHEET_TITLE);
   var id = ss.getId();
+  FORGED_SETUP.SPREADSHEET_ID = id;
+  FORGED_SETUP.SPREADSHEET_URL =
+    'https://docs.google.com/spreadsheets/d/' + id + '/edit';
   PropertiesService.getScriptProperties().setProperty(PROP_SPREADSHEET_ID, id);
+  ensureForgEdProperties_(true);
   initializeSheetsInSpreadsheet_(ss);
   return {
     ok: true,
     spreadsheetId: id,
     spreadsheetUrl: ss.getUrl(),
-    message: 'ForgEd database created. Set FORGED_SERVER_SECRET in Script Properties and deploy as Web App.'
+    message: 'ForgEd database created. SPREADSHEET_ID and SERVER_SECRET saved. Deploy as Web App.'
   };
 }
 
@@ -224,39 +395,97 @@ function initializeSheetsInSpreadsheet_(ss) {
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
 
-function registerUser_(data) {
-  var email = normalizeEmail_(data.email);
-  var username = normalizeUsername_(data.username);
-  var password = String(data.password || '');
-  var displayName = String(data.displayName || data.display_name || username).trim();
-
-  if (!email || !isValidEmail_(email)) {
-    throw new Error('Valid email is required.');
+function parseRegisterPayload_(data) {
+  var q1 =
+    String(data.securityQuestion1 || data.securityQ1 || data.security_question_1 || '').trim();
+  var q2 =
+    String(data.securityQuestion2 || data.securityQ2 || data.security_question_2 || '').trim();
+  if (!q1 && data.securityQuestion1Id) {
+    q1 = 'id:' + String(data.securityQuestion1Id);
   }
-  if (!username || username.length < 3) {
+  if (!q2 && data.securityQuestion2Id) {
+    q2 = 'id:' + String(data.securityQuestion2Id);
+  }
+  return {
+    firstName: trim_(data.firstName || data.first_name, 80),
+    lastName: trim_(data.lastName || data.last_name, 80),
+    email: normalizeEmail_(data.email),
+    username: normalizeUsername_(data.username),
+    password: String(data.password || ''),
+    phone: cleanPhone_(data.phone),
+    street: trim_(data.street || data.address, 120),
+    city: trim_(data.city, 80),
+    state: trim_(data.state, 2).toUpperCase(),
+    zip: trim_(data.zip || data.zipCode, 10),
+    securityQ1: trim_(q1, 200),
+    securityA1: trim_(data.securityAnswer1 || data.securityA1, 200),
+    securityQ2: trim_(q2, 200),
+    securityA2: trim_(data.securityAnswer2 || data.securityA2, 200),
+    referralSource: trim_(data.referralSource || data.howHeardAboutUs || data.referral, 80)
+  };
+}
+
+function validateRegisterPayload_(p) {
+  if (!p.firstName) throw new Error('First name is required.');
+  if (!p.lastName) throw new Error('Last name is required.');
+  if (!p.email || !isValidEmail_(p.email)) throw new Error('Valid email is required.');
+  if (!p.username || p.username.length < 3) {
     throw new Error('Username must be at least 3 characters.');
   }
-  if (password.length < 8) {
-    throw new Error('Password must be at least 8 characters.');
+  if (p.password.length < 8) throw new Error('Password must be at least 8 characters.');
+  if (!p.phone || p.phone.length < 10) throw new Error('Valid phone number is required.');
+  if (!p.street) throw new Error('Street address is required.');
+  if (!p.city) throw new Error('City is required.');
+  if (!p.state || p.state.length !== 2) throw new Error('State is required (2 letters).');
+  if (!p.zip) throw new Error('ZIP code is required.');
+  if (!p.securityQ1 || !p.securityA1) {
+    throw new Error('Security question 1 and answer are required.');
   }
+  if (!p.securityQ2 || !p.securityA2) {
+    throw new Error('Security question 2 and answer are required.');
+  }
+  if (p.securityQ1 === p.securityQ2) {
+    throw new Error('Choose two different security questions.');
+  }
+  if (!p.referralSource) throw new Error('Please tell us how you heard about ForgEd.');
+}
 
-  if (findUserByEmail_(email)) {
+function registerUser_(data) {
+  var p = parseRegisterPayload_(data);
+  validateRegisterPayload_(p);
+
+  if (findUserByEmail_(p.email)) {
     throw new Error('An account with this email already exists.');
   }
-  if (findUserByUsername_(username)) {
+  if (findUserByUsername_(p.username)) {
     throw new Error('Username is already taken.');
   }
 
   var userId = 'FE-' + Utilities.getUuid().slice(0, 12);
   var salt = Utilities.getUuid();
-  var hash = hashPassword_(password, salt);
+  var passwordHash = hashPassword_(p.password, salt);
+  var secHash1 = hashPassword_(normalizeSecurityAnswer_(p.securityA1), salt);
+  var secHash2 = hashPassword_(normalizeSecurityAnswer_(p.securityA2), salt);
   var now = nowIso_();
+  var displayName = trim_(p.firstName + ' ' + p.lastName, 80);
 
   appendUserRow_({
     userId: userId,
-    username: username,
-    email: email,
-    passwordHash: hash,
+    firstName: p.firstName,
+    lastName: p.lastName,
+    username: p.username,
+    email: p.email,
+    phone: p.phone,
+    street: p.street,
+    city: p.city,
+    state: p.state,
+    zip: p.zip,
+    securityQ1: p.securityQ1,
+    securityA1Hash: secHash1,
+    securityQ2: p.securityQ2,
+    securityA2Hash: secHash2,
+    referralSource: p.referralSource,
+    passwordHash: passwordHash,
     salt: salt,
     xp: 0,
     level: 1,
@@ -265,14 +494,24 @@ function registerUser_(data) {
     certifications: '',
     createdDate: now,
     lastLogin: now,
-    displayName: displayName
+    displayName: displayName,
+    sessionToken: '',
+    sessionExpires: '',
+    resetToken: '',
+    resetExpires: ''
   });
 
-  var session = createSession_(userId, email);
+  var session = createSession_(userId, p.email);
+  var emailResult = { emailSent: false, emailError: '' };
+  if (CONFIG.SEND_EMAIL_NOTIFICATIONS) {
+    emailResult = sendSignupNotification_(session.user, now);
+  }
   return {
     ok: true,
     accessToken: session.token,
-    user: publicUser_(session.user)
+    user: publicUser_(session.user),
+    emailSent: emailResult.emailSent,
+    emailError: emailResult.emailError || ''
   };
 }
 
@@ -543,10 +782,11 @@ function requireServerSecret_(data) {
 // ─── Sheet helpers ──────────────────────────────────────────────────────────
 
 function getSpreadsheet_() {
-  var props = PropertiesService.getScriptProperties();
-  var id = props.getProperty(PROP_SPREADSHEET_ID);
+  var id = getSpreadsheetId_();
   if (!id) {
-    throw new Error('Database not initialized. Run createForgEdDatabase() first.');
+    throw new Error(
+      'Database not linked. Paste your sheet ID into FORGED_SETUP.SPREADSHEET_ID in Code.gs, run bootstrapForgEdOnce(), or run createForgEdDatabase().'
+    );
   }
   return SpreadsheetApp.openById(id);
 }
@@ -561,35 +801,109 @@ function getSheet_(name) {
   return sheet;
 }
 
-function appendUserRow_(u) {
+function getUsersHeaderMap_() {
   var sheet = getSheet_(SHEETS.USERS.name);
-  sheet.appendRow([
-    u.userId,
-    u.username,
-    u.email,
-    u.passwordHash,
-    u.salt,
-    u.xp,
-    u.level,
-    u.streak,
-    u.activePaths,
-    u.certifications,
-    u.createdDate,
-    u.lastLogin,
-    u.displayName,
-    '',
-    '',
-    '',
-    ''
-  ]);
+  var lastCol = Math.max(sheet.getLastColumn(), SHEETS.USERS.headers.length);
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var map = {};
+  for (var i = 0; i < headers.length; i++) {
+    var h = String(headers[i] || '').trim();
+    if (h) map[h] = i;
+  }
+  return map;
 }
 
-function userFromRow_(row, rowIndex) {
+function usersSheetIsExpanded_() {
+  return getUsersHeaderMap_()['First Name'] !== undefined;
+}
+
+function upgradeUsersSheetHeaders_() {
+  var sheet = getSheet_(SHEETS.USERS.name);
+  if (usersSheetIsExpanded_()) {
+    return { ok: true, message: 'USERS sheet already has expanded columns.' };
+  }
+
+  var last = sheet.getLastRow();
+  var oldRows = [];
+  if (last >= 2) {
+    var oldColCount = sheet.getLastColumn();
+    oldRows = sheet.getRange(2, 1, last, oldColCount).getValues();
+  }
+
+  sheet.getRange(1, 1, 1, SHEETS.USERS.headers.length).setValues([SHEETS.USERS.headers]);
+
+  for (var i = 0; i < oldRows.length; i++) {
+    var legacy = userFromRowLegacy_(oldRows[i], i + 2);
+    sheet.getRange(i + 2, 1, 1, SHEETS.USERS.headers.length).setValues([
+      [
+        legacy.userId,
+        legacy.firstName,
+        legacy.lastName,
+        legacy.username,
+        legacy.email,
+        legacy.phone,
+        legacy.street,
+        legacy.city,
+        legacy.state,
+        legacy.zip,
+        legacy.securityQ1,
+        legacy.securityA1Hash,
+        legacy.securityQ2,
+        legacy.securityA2Hash,
+        legacy.referralSource,
+        legacy.passwordHash,
+        legacy.salt,
+        legacy.xp,
+        legacy.level,
+        legacy.streak,
+        legacy.activePaths,
+        legacy.certifications,
+        legacy.createdDate,
+        legacy.lastLogin,
+        legacy.displayName,
+        legacy.sessionToken,
+        legacy.sessionExpires,
+        legacy.resetToken,
+        legacy.resetExpires
+      ]
+    ]);
+  }
+
+  return {
+    ok: true,
+    message: 'USERS sheet upgraded.',
+    migratedRows: oldRows.length
+  };
+}
+
+function splitDisplayName_(displayName) {
+  var parts = String(displayName || '')
+    .trim()
+    .split(/\s+/);
+  if (!parts.length) return { first: '', last: '' };
+  if (parts.length === 1) return { first: parts[0], last: '' };
+  return { first: parts[0], last: parts.slice(1).join(' ') };
+}
+
+function userFromRowLegacy_(row, rowIndex) {
+  var names = splitDisplayName_(String(row[12] || ''));
   return {
     rowIndex: rowIndex,
     userId: String(row[0] || ''),
+    firstName: names.first,
+    lastName: names.last,
     username: String(row[1] || ''),
     email: String(row[2] || ''),
+    phone: '',
+    street: '',
+    city: '',
+    state: '',
+    zip: '',
+    securityQ1: '',
+    securityA1Hash: '',
+    securityQ2: '',
+    securityA2Hash: '',
+    referralSource: '',
     passwordHash: String(row[3] || ''),
     salt: String(row[4] || ''),
     xp: Number(row[5]) || 0,
@@ -605,6 +919,101 @@ function userFromRow_(row, rowIndex) {
     resetToken: String(row[15] || ''),
     resetExpires: String(row[16] || '')
   };
+}
+
+function cell_(row, map, header, fallback) {
+  if (map[header] === undefined) return fallback === undefined ? '' : fallback;
+  return row[map[header]];
+}
+
+function userFromRowNew_(row, rowIndex, map) {
+  return {
+    rowIndex: rowIndex,
+    userId: String(cell_(row, map, 'User ID', '')),
+    firstName: String(cell_(row, map, 'First Name', '')),
+    lastName: String(cell_(row, map, 'Last Name', '')),
+    username: String(cell_(row, map, 'Username', '')),
+    email: String(cell_(row, map, 'Email', '')),
+    phone: String(cell_(row, map, 'Phone', '')),
+    street: String(cell_(row, map, 'Street', '')),
+    city: String(cell_(row, map, 'City', '')),
+    state: String(cell_(row, map, 'State', '')),
+    zip: String(cell_(row, map, 'ZIP', '')),
+    securityQ1: String(cell_(row, map, 'Security Q1', '')),
+    securityA1Hash: String(cell_(row, map, 'Security A1 Hash', '')),
+    securityQ2: String(cell_(row, map, 'Security Q2', '')),
+    securityA2Hash: String(cell_(row, map, 'Security A2 Hash', '')),
+    referralSource: String(cell_(row, map, 'Referral Source', '')),
+    passwordHash: String(cell_(row, map, 'Password Hash', '')),
+    salt: String(cell_(row, map, 'Salt', '')),
+    xp: Number(cell_(row, map, 'XP', 0)) || 0,
+    level: Number(cell_(row, map, 'Level', 1)) || 1,
+    streak: Number(cell_(row, map, 'Current Streak', 0)) || 0,
+    activePaths: String(cell_(row, map, 'Active Paths', '')),
+    certifications: String(cell_(row, map, 'Certifications', '')),
+    createdDate: String(cell_(row, map, 'Created Date', '')),
+    lastLogin: String(cell_(row, map, 'Last Login', '')),
+    displayName: String(cell_(row, map, 'Display Name', '')),
+    sessionToken: String(cell_(row, map, 'Session Token', '')),
+    sessionExpires: String(cell_(row, map, 'Session Expires', '')),
+    resetToken: String(cell_(row, map, 'Reset Token', '')),
+    resetExpires: String(cell_(row, map, 'Reset Expires', ''))
+  };
+}
+
+function userFromRow_(row, rowIndex) {
+  if (usersSheetIsExpanded_()) {
+    return userFromRowNew_(row, rowIndex, getUsersHeaderMap_());
+  }
+  return userFromRowLegacy_(row, rowIndex);
+}
+
+function valueForUserHeader_(header, u) {
+  var map = {
+    'User ID': u.userId,
+    'First Name': u.firstName,
+    'Last Name': u.lastName,
+    Username: u.username,
+    Email: u.email,
+    Phone: u.phone,
+    Street: u.street,
+    City: u.city,
+    State: u.state,
+    ZIP: u.zip,
+    'Security Q1': u.securityQ1,
+    'Security A1 Hash': u.securityA1Hash,
+    'Security Q2': u.securityQ2,
+    'Security A2 Hash': u.securityA2Hash,
+    'Referral Source': u.referralSource,
+    'Password Hash': u.passwordHash,
+    Salt: u.salt,
+    XP: u.xp,
+    Level: u.level,
+    'Current Streak': u.streak,
+    'Active Paths': u.activePaths,
+    Certifications: u.certifications,
+    'Created Date': u.createdDate,
+    'Last Login': u.lastLogin,
+    'Display Name': u.displayName,
+    'Session Token': u.sessionToken,
+    'Session Expires': u.sessionExpires,
+    'Reset Token': u.resetToken,
+    'Reset Expires': u.resetExpires
+  };
+  return map[header] !== undefined && map[header] !== null ? map[header] : '';
+}
+
+function appendUserRow_(u) {
+  var sheet = getSheet_(SHEETS.USERS.name);
+  if (!usersSheetIsExpanded_()) {
+    upgradeUsersSheetHeaders_();
+  }
+  var row = [];
+  var headers = SHEETS.USERS.headers;
+  for (var i = 0; i < headers.length; i++) {
+    row.push(valueForUserHeader_(headers[i], u));
+  }
+  sheet.appendRow(row);
 }
 
 function findUserByEmail_(email) {
@@ -641,7 +1050,8 @@ function findUserWhere_(predicate) {
   var sheet = getSheet_(SHEETS.USERS.name);
   var last = sheet.getLastRow();
   if (last < 2) return null;
-  var rows = sheet.getRange(2, 1, last, SHEETS.USERS.headers.length).getValues();
+  var colCount = Math.max(sheet.getLastColumn(), SHEETS.USERS.headers.length);
+  var rows = sheet.getRange(2, 1, last, colCount).getValues();
   for (var i = 0; i < rows.length; i++) {
     var u = userFromRow_(rows[i], i + 2);
     if (predicate(u)) return u;
@@ -655,27 +1065,43 @@ function findUserRowIndex_(userId) {
   return u.rowIndex;
 }
 
+function userCol_(headerName) {
+  var map = getUsersHeaderMap_();
+  return map[headerName] !== undefined ? map[headerName] + 1 : 0;
+}
+
 function updateUserFields_(rowIndex, fields) {
   var sheet = getSheet_(SHEETS.USERS.name);
-  var col = {
-    xp: 6,
-    level: 7,
-    streak: 8,
-    activePaths: 9,
-    certifications: 10,
-    lastLogin: 12,
-    displayName: 13,
-    sessionToken: 14,
-    sessionExpires: 15,
-    salt: 5,
-    passwordHash: 4,
-    resetToken: 16,
-    resetExpires: 17
+  var keyToHeader = {
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    username: 'Username',
+    email: 'Email',
+    phone: 'Phone',
+    street: 'Street',
+    city: 'City',
+    state: 'State',
+    zip: 'ZIP',
+    referralSource: 'Referral Source',
+    xp: 'XP',
+    level: 'Level',
+    streak: 'Current Streak',
+    activePaths: 'Active Paths',
+    certifications: 'Certifications',
+    lastLogin: 'Last Login',
+    displayName: 'Display Name',
+    sessionToken: 'Session Token',
+    sessionExpires: 'Session Expires',
+    salt: 'Salt',
+    passwordHash: 'Password Hash',
+    resetToken: 'Reset Token',
+    resetExpires: 'Reset Expires'
   };
   for (var key in fields) {
-    if (fields.hasOwnProperty(key) && col[key]) {
-      sheet.getRange(rowIndex, col[key]).setValue(fields[key]);
-    }
+    if (!fields.hasOwnProperty(key)) continue;
+    var header = keyToHeader[key] || key;
+    var ci = userCol_(header);
+    if (ci) sheet.getRange(rowIndex, ci).setValue(fields[key]);
   }
 }
 
@@ -691,7 +1117,7 @@ function getCourseProgressJson_(userId, courseId) {
   var sheet = getSheet_(SHEETS.COURSE_PROGRESS.name);
   var last = sheet.getLastRow();
   if (last < 2) return null;
-  var rows = sheet.getRange(2, 1, last - 1, 8).getValues();
+  var rows = sheet.getRange(2, 1, last, 8).getValues();
   for (var i = 0; i < rows.length; i++) {
     if (String(rows[i][0]) === userId && String(rows[i][1]) === courseId) {
       return String(rows[i][7] || '');
@@ -705,7 +1131,7 @@ function upsertCourseProgressRow_(userId, courseId, patch) {
   var last = sheet.getLastRow();
   var rowIndex = -1;
   if (last >= 2) {
-    var rows = sheet.getRange(2, 1, last - 1, 2).getValues();
+    var rows = sheet.getRange(2, 1, last, 2).getValues();
     for (var i = 0; i < rows.length; i++) {
       if (String(rows[i][0]) === userId && String(rows[i][1]) === courseId) {
         rowIndex = i + 2;
@@ -739,7 +1165,7 @@ function upsertPathProgress_(userId, pathName, patch) {
   var last = sheet.getLastRow();
   var rowIndex = -1;
   if (last >= 2) {
-    var rows = sheet.getRange(2, 1, last - 1, 2).getValues();
+    var rows = sheet.getRange(2, 1, last, 2).getValues();
     for (var i = 0; i < rows.length; i++) {
       if (String(rows[i][0]) === userId && String(rows[i][1]) === pathName) {
         rowIndex = i + 2;
@@ -771,7 +1197,7 @@ function listPathProgress_(userId) {
   var last = sheet.getLastRow();
   var out = [];
   if (last < 2) return out;
-  var rows = sheet.getRange(2, 1, last - 1, 7).getValues();
+  var rows = sheet.getRange(2, 1, last, 7).getValues();
   for (var i = 0; i < rows.length; i++) {
     if (String(rows[i][0]) === userId) {
       out.push({
@@ -790,7 +1216,7 @@ function upsertLabProgress_(userId, labName, patch) {
   var last = sheet.getLastRow();
   var rowIndex = -1;
   if (last >= 2) {
-    var rows = sheet.getRange(2, 1, last - 1, 2).getValues();
+    var rows = sheet.getRange(2, 1, last, 2).getValues();
     for (var i = 0; i < rows.length; i++) {
       if (String(rows[i][0]) === userId && String(rows[i][1]) === labName) {
         rowIndex = i + 2;
@@ -821,7 +1247,7 @@ function tryUnlockAchievement_(userId, name, xp) {
   var sheet = getSheet_(SHEETS.ACHIEVEMENTS.name);
   var last = sheet.getLastRow();
   if (last >= 2) {
-    var rows = sheet.getRange(2, 1, last - 1, 2).getValues();
+    var rows = sheet.getRange(2, 1, last, 2).getValues();
     for (var i = 0; i < rows.length; i++) {
       if (String(rows[i][0]) === userId && String(rows[i][1]) === name) {
         return;
@@ -836,7 +1262,7 @@ function listAchievements_(userId) {
   var last = sheet.getLastRow();
   var out = [];
   if (last < 2) return out;
-  var rows = sheet.getRange(2, 1, last - 1, 4).getValues();
+  var rows = sheet.getRange(2, 1, last, 4).getValues();
   for (var i = 0; i < rows.length; i++) {
     if (String(rows[i][0]) === userId) {
       out.push({
@@ -852,20 +1278,260 @@ function listAchievements_(userId) {
 // ─── Utilities ──────────────────────────────────────────────────────────────
 
 function publicUser_(user) {
+  var display =
+    user.displayName ||
+    trim_(String(user.firstName || '') + ' ' + String(user.lastName || ''), 80) ||
+    user.username;
   return {
     id: user.userId,
     userId: user.userId,
     email: user.email,
     username: user.username,
-    displayName: user.displayName || user.username,
+    displayName: display,
+    firstName: user.firstName || '',
+    lastName: user.lastName || '',
+    phone: user.phone || '',
+    street: user.street || '',
+    city: user.city || '',
+    state: user.state || '',
+    zip: user.zip || '',
+    referralSource: user.referralSource || '',
     xp: user.xp,
     level: user.level,
     streak: user.streak,
     activePaths: user.activePaths,
     certifications: user.certifications,
     createdDate: user.createdDate,
-    lastLogin: user.lastLogin
+    lastLogin: user.lastLogin,
+    isAdmin: isAdminEmail_(user.email)
   };
+}
+
+function isAdminEmail_(email) {
+  var e = normalizeEmail_(email);
+  var list = CONFIG.ADMIN_EMAILS || [];
+  for (var i = 0; i < list.length; i++) {
+    if (normalizeEmail_(list[i]) === e) return true;
+  }
+  return false;
+}
+
+function getNotificationRecipients_() {
+  var raw = CONFIG.EMAIL_RECIPIENTS;
+  var list = Array.isArray(raw)
+    ? raw
+    : String(raw || '')
+        .split(',')
+        .map(function (x) {
+          return x.trim();
+        });
+  return list.filter(function (x) {
+    return x && x.indexOf('@') > 0;
+  });
+}
+
+/**
+ * Run in Apps Script editor to test signup emails (re-authorize Gmail if prompted).
+ */
+function testSendForgedSignupEmail() {
+  var result = sendSignupNotification_(
+    {
+      userId: 'FE-TEST-EMAIL',
+      email: 'test@forgedlearn.com',
+      username: 'testuser',
+      displayName: 'Email Test'
+    },
+    nowIso_()
+  );
+  Logger.log(JSON.stringify(result));
+  return {
+    recipients: getNotificationRecipients_(),
+    result: result
+  };
+}
+
+/**
+ * Run once to create chandler@forgedlearn.com if missing.
+ * Temp password is logged — use Forgot Password on the site to set a new one.
+ */
+function ensureForgedAdminAccount() {
+  var email = normalizeEmail_('chandler@forgedlearn.com');
+  var existing = findUserByEmail_(email);
+  if (existing) {
+    return {
+      ok: true,
+      message: 'Admin account already exists.',
+      userId: existing.userId,
+      isAdmin: true
+    };
+  }
+  var tempPass = Utilities.getUuid().replace(/-/g, '').slice(0, 14);
+  var out = registerUser_({
+    email: email,
+    username: 'forgedadmin',
+    password: tempPass,
+    firstName: 'ForgEd',
+    lastName: 'Admin',
+    phone: '5555555555',
+    street: 'Internal',
+    city: 'Austin',
+    state: 'TX',
+    zip: '78701',
+    securityQuestion1: 'id:1',
+    securityAnswer1: Utilities.getUuid(),
+    securityQuestion2: 'id:2',
+    securityAnswer2: Utilities.getUuid(),
+    referralSource: 'internal'
+  });
+  Logger.log(
+    'Admin account created for ' +
+      email +
+      '. Temporary password (use Forgot Password to change): ' +
+      tempPass
+  );
+  return {
+    ok: true,
+    message: 'Admin created. See execution log for temporary password.',
+    userId: out.user.userId,
+    isAdmin: true
+  };
+}
+
+function logEmailAttempt_(event, recipients, status, detail, user) {
+  try {
+    var sheet = getSheet_(SHEETS.EMAIL_LOG.name);
+    sheet.appendRow([
+      nowIso_(),
+      event,
+      Array.isArray(recipients) ? recipients.join(', ') : String(recipients || ''),
+      status,
+      String(detail || '').slice(0, 500),
+      user && user.userId ? user.userId : '',
+      user && user.email ? user.email : ''
+    ]);
+  } catch (logErr) {
+    Logger.log('EMAIL_LOG write failed: ' + logErr);
+  }
+}
+
+function diagnoseForgedEmail_() {
+  var recipients = getNotificationRecipients_();
+  var owner = '';
+  try {
+    owner = Session.getEffectiveUser().getEmail() || '';
+  } catch (e) {
+    owner = '(unknown)';
+  }
+  var quota = -1;
+  try {
+    quota = MailApp.getRemainingDailyQuota();
+  } catch (qErr) {
+    quota = -1;
+  }
+  var test = sendSignupNotification_(
+    {
+      userId: 'FE-DIAGNOSE',
+      email: 'diagnose@forgedlearn.com',
+      username: 'diagnose',
+      displayName: 'Email Diagnose'
+    },
+    nowIso_()
+  );
+  return {
+    ok: true,
+    owner: owner,
+    recipients: recipients,
+    mailDailyQuotaRemaining: quota,
+    sendEmailNotifications: CONFIG.SEND_EMAIL_NOTIFICATIONS,
+    testResult: test
+  };
+}
+
+function sendSignupNotification_(user, createdAt) {
+  if (!CONFIG.SEND_EMAIL_NOTIFICATIONS) {
+    return { ok: true, emailSent: false, emailError: 'SEND_EMAIL_NOTIFICATIONS is false.' };
+  }
+
+  var recipients = getNotificationRecipients_();
+  if (!recipients.length) {
+    logEmailAttempt_('signup', '', 'skipped', 'No EMAIL_RECIPIENTS', user);
+    return { ok: true, emailSent: false, emailError: 'No EMAIL_RECIPIENTS configured.' };
+  }
+
+  var tz = Session.getScriptTimeZone();
+  var when = new Date();
+  var subject =
+    'New ForgEd signup — ' +
+    (user.displayName || user.username || 'learner') +
+    ' [' +
+    (user.userId || 'unknown') +
+    ']';
+
+  var body = [
+    'New learner account on ' + (CONFIG.WEBSITE_URL || 'forgedlearn.com'),
+    '',
+    'User ID: ' + (user.userId || '—'),
+    'Time: ' + Utilities.formatDate(when, tz, 'yyyy-MM-dd h:mm:ss a z'),
+    '',
+    'Profile',
+    '  Name: ' +
+      (user.firstName || user.lastName
+        ? (user.firstName || '') + ' ' + (user.lastName || '')
+        : user.displayName || '—'),
+    '  Display name: ' + (user.displayName || '—'),
+    '  Username: @' + (user.username || '—'),
+    '  Email: ' + (user.email || '—'),
+    '  Phone: ' + (user.phone || '—'),
+    '  Address: ' +
+      [user.street, user.city, user.state, user.zip].filter(Boolean).join(', ') || '—',
+    '  Referral: ' + (user.referralSource || '—'),
+    '  Admin: ' + (isAdminEmail_(user.email) ? 'yes' : 'no'),
+    '',
+    '—',
+    'ForgEd Accounts (Google Sheets)'
+  ].join('\n');
+
+  var toList = recipients.join(',');
+  var errors = [];
+
+  // MailApp is reliable for Web App deployments (Execute as: Me).
+  try {
+    MailApp.sendEmail({
+      to: toList,
+      subject: subject,
+      body: body,
+      name: 'ForgEd Signups',
+      noReply: false
+    });
+    Logger.log('MailApp sent to: ' + toList);
+    logEmailAttempt_('signup', recipients, 'sent', 'MailApp OK', user);
+    return { ok: true, emailSent: true, emailError: '', recipients: recipients };
+  } catch (mailErr) {
+    var mailMsg = mailErr && mailErr.message ? mailErr.message : String(mailErr);
+    Logger.log('MailApp failed: ' + mailMsg);
+    errors.push('MailApp: ' + mailMsg);
+  }
+
+  // Fallback: one email per recipient via GmailApp.
+  for (var i = 0; i < recipients.length; i++) {
+    var to = recipients[i];
+    try {
+      GmailApp.sendEmail(to, subject, body, { name: 'ForgEd Signups' });
+      Logger.log('GmailApp sent to: ' + to);
+    } catch (gmailErr) {
+      var gMsg = gmailErr && gmailErr.message ? gmailErr.message : String(gmailErr);
+      Logger.log('GmailApp failed for ' + to + ': ' + gMsg);
+      errors.push(to + ': ' + gMsg);
+    }
+  }
+
+  if (errors.length >= recipients.length + 1) {
+    logEmailAttempt_('signup', recipients, 'failed', errors.join(' | '), user);
+    return { ok: true, emailSent: false, emailError: errors.join(' | ') };
+  }
+
+  logEmailAttempt_('signup', recipients, 'sent', 'GmailApp fallback', user);
+  return { ok: true, emailSent: true, emailError: '', recipients: recipients };
 }
 
 function hashPassword_(password, salt) {
@@ -894,6 +1560,22 @@ function normalizeUsername_(username) {
     .slice(0, 24);
 }
 
+function trim_(value, maxLen) {
+  var s = String(value || '').trim();
+  if (maxLen && s.length > maxLen) s = s.slice(0, maxLen);
+  return s;
+}
+
+function cleanPhone_(phone) {
+  return String(phone || '').replace(/\D/g, '').slice(0, 15);
+}
+
+function normalizeSecurityAnswer_(answer) {
+  return String(answer || '')
+    .trim()
+    .toLowerCase();
+}
+
 function isValidEmail_(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -909,9 +1591,10 @@ function parseBearer_(header) {
 }
 
 function getServerSecret_() {
+  ensureForgEdProperties_();
   return (
     PropertiesService.getScriptProperties().getProperty(PROP_SERVER_SECRET) ||
-    CONFIG.DEFAULT_SECRET ||
+    FORGED_SETUP.SERVER_SECRET ||
     ''
   );
 }

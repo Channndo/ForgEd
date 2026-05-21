@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { callForgedGas, notifySignupEmail } from "@/lib/forged-account/gasClient";
 
-const WEB_APP_URL = process.env.FORGED_WEB_APP_URL ?? "";
 const SERVER_SECRET = process.env.FORGED_SERVER_SECRET ?? "";
 
 const PUBLIC_ACTIONS = new Set([
@@ -10,28 +10,17 @@ const PUBLIC_ACTIONS = new Set([
   "resetPassword",
 ]);
 
-const SERVER_ACTIONS = new Set(["createForgEdDatabase", "initializeSheets"]);
-
-async function callAppsScript(payload: Record<string, unknown>) {
-  if (!WEB_APP_URL) {
-    throw new Error("FORGED_WEB_APP_URL is not configured.");
-  }
-  const res = await fetch(WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    redirect: "follow",
-  });
-  const text = await res.text();
-  try {
-    return JSON.parse(text) as Record<string, unknown>;
-  } catch {
-    throw new Error("Invalid response from ForgEd database.");
-  }
-}
+const SERVER_ACTIONS = new Set([
+  "createForgEdDatabase",
+  "initializeSheets",
+  "upgradeUsersSheet",
+  "notifySignup",
+  "sendSignupEmail",
+  "diagnoseEmail",
+]);
 
 export async function POST(req: NextRequest) {
-  if (!WEB_APP_URL || !SERVER_SECRET) {
+  if (!process.env.FORGED_WEB_APP_URL || !SERVER_SECRET) {
     return NextResponse.json(
       {
         ok: false,
@@ -75,8 +64,38 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const data = await callAppsScript(payload);
+    const data = await callForgedGas(payload);
     const ok = Boolean(data.ok);
+
+    // Always send signup email from server after register (works even if GAS deploy is old).
+    if (ok && action === "registerUser" && data.user && typeof data.user === "object") {
+      const u = data.user as Record<string, unknown>;
+      const notify = await notifySignupEmail({
+        userId: String(u.userId || u.id || ""),
+        email: String(u.email || body.email || ""),
+        username: String(u.username || body.username || ""),
+        displayName: String(u.displayName || ""),
+        firstName: String(u.firstName || body.firstName || ""),
+        lastName: String(u.lastName || body.lastName || ""),
+        phone: String(u.phone || body.phone || ""),
+        street: String(u.street || body.street || ""),
+        city: String(u.city || body.city || ""),
+        state: String(u.state || body.state || ""),
+        zip: String(u.zip || body.zip || ""),
+        referralSource: String(u.referralSource || body.referralSource || ""),
+      });
+
+      const gasSent = data.emailSent === true;
+      data.emailSent = gasSent || notify.emailSent;
+      if (!data.emailSent) {
+        data.emailError =
+          (typeof data.emailError === "string" && data.emailError) ||
+          notify.emailError ||
+          "Signup email could not be sent. Run diagnoseEmail in Apps Script.";
+        console.error("[forged-account] signup email failed:", data.emailError);
+      }
+    }
+
     return NextResponse.json(data, { status: ok ? 200 : 400 });
   } catch (e) {
     console.error("[forged-account]", e);

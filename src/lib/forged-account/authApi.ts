@@ -1,6 +1,6 @@
 import { apiUrl } from "@/lib/basePath";
 import type { UserProgress } from "@/lib/types";
-import type { ForgedAccountResponse, ForgedAccountUser } from "./types";
+import type { ForgedAccountResponse, ForgedAccountUser, SignUpInput } from "./types";
 import { getAccessToken } from "./session";
 
 export class ForgedAccountError extends Error {
@@ -47,18 +47,12 @@ async function callForgedAccount<T extends ForgedAccountResponse>(
   return data;
 }
 
-export async function registerUser(input: {
-  email: string;
-  username: string;
-  password: string;
-  displayName: string;
-}): Promise<{ accessToken: string; user: ForgedAccountUser }> {
+export async function registerUser(
+  input: SignUpInput
+): Promise<{ accessToken: string; user: ForgedAccountUser }> {
   const data = await callForgedAccount<ForgedAccountResponse>({
     action: "registerUser",
-    email: input.email,
-    username: input.username,
-    password: input.password,
-    displayName: input.displayName,
+    ...input,
   });
   if (!data.accessToken || !data.user) {
     throw new ForgedAccountError("Registration succeeded but no session returned.", 500);

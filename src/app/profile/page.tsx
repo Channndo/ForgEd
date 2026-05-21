@@ -80,7 +80,14 @@ export default function ProfilePage() {
             <h1 className="font-serif text-2xl font-bold text-[var(--silver)]">
               {profile?.displayName ?? "ForgEd Learner"}
             </h1>
-            <p className="text-sm text-[var(--muted)]">@{profile?.username}</p>
+            <p className="text-sm text-[var(--muted)]">
+              @{profile?.username}
+              {profile?.isAdmin && (
+                <span className="ml-2 rounded-md border border-[var(--gold)]/35 bg-[var(--gold)]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--gold)]">
+                  Admin
+                </span>
+              )}
+            </p>
             <p className="mt-2 text-sm text-[var(--muted)]">{profile?.email}</p>
             <div className="mt-2 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
               <span className="inline-flex items-center gap-1">

@@ -22,7 +22,6 @@ import {
   computeCourseProgressPercent,
 } from "@/lib/courseProgress";
 import { withBasePath } from "@/lib/basePath";
-import { ForgEdTagline } from "@/components/brand/ForgEdLogo";
 import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
@@ -57,13 +56,12 @@ export default function DashboardPage() {
             <Image
               src={withBasePath("/forged-wordmark.png")}
               alt="ForgEd"
-              width={240}
-              height={120}
-              className="h-auto w-44 object-contain sm:w-52"
+              width={420}
+              height={210}
+              className="h-auto w-64 object-contain sm:w-80 md:w-96"
               priority
             />
-            <ForgEdTagline className="mt-3 justify-start" />
-            <p className="mt-4 font-serif text-lg text-[var(--silver)]">
+            <p className="mt-6 font-serif text-lg text-[var(--silver)]">
               Welcome back, {firstName}.
             </p>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] sm:text-base">

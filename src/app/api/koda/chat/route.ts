@@ -45,7 +45,8 @@ export async function POST(request: NextRequest) {
       const readable = new ReadableStream({
         async start(controller) {
           try {
-            for await (const token of kodaChatStreamGenerator(body!)) {
+            const auth = request.headers.get("authorization");
+            for await (const token of kodaChatStreamGenerator(body!, auth)) {
               full += token;
               controller.enqueue(
                 encoder.encode(`data: ${JSON.stringify({ content: token })}\n\n`)
@@ -79,7 +80,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const result = await kodaChat(body);
+    const auth = request.headers.get("authorization");
+    const result = await kodaChat(body, auth);
     return NextResponse.json(result);
   } catch (e) {
     if (e instanceof KodaServiceError) {

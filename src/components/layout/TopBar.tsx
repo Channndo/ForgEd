@@ -3,10 +3,13 @@
 import { usePathname } from "next/navigation";
 import { Menu, Flame, Zap, Bell, Search } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { titleForPath } from "@/lib/navigation";
+import { UserMenu } from "./UserMenu";
 export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = usePathname();
-  const { progress, xpBar } = useProgress();
+  const { progress, xpBar, syncing } = useProgress();
+  useAuth();
   const title = titleForPath(pathname);
 
   return (
@@ -60,9 +63,10 @@ export function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
           <Bell className="h-4 w-4" />
         </button>
 
-        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--gold)]/30 bg-gradient-to-br from-[var(--gold-dark)] to-[var(--gold)] text-xs font-bold text-[#050505]">
-          {xpBar.level}
-        </div>
+        {syncing && (
+          <span className="hidden text-[10px] text-[var(--muted)] sm:inline">Saving…</span>
+        )}
+        <UserMenu />
       </div>
     </header>
   );

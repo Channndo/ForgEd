@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Award, Clock, Lock, Route, Zap } from "lucide-react";
+import { Award, BookOpen, Clock, Lock, Route, Zap } from "lucide-react";
 import type { LearningPath } from "@/lib/paths/learningPaths";
+import { getPathCourseCount } from "@/lib/paths/learningPaths";
 import {
   isPathUnlocked,
   pathCompletionPercent,
@@ -53,6 +54,10 @@ export function PathCard({ path }: { path: LearningPath }) {
         </p>
         <div className="mt-4 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
           <span className="capitalize">{path.skillLevel}</span>
+          <span className="flex items-center gap-1">
+            <BookOpen className="h-3.5 w-3.5" />
+            {getPathCourseCount(path)} courses
+          </span>
           <span className="flex items-center gap-1">
             <Clock className="h-3.5 w-3.5" />~{path.estimatedWeeks} wks
           </span>

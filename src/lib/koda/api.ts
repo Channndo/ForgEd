@@ -6,10 +6,21 @@ import type {
   KodaStatusResponse,
 } from "./types";
 import { apiUrl } from "@/lib/basePath";
+import { getAccessToken } from "@/lib/forged-account/session";
+
+function authHeaders(): HeadersInit {
+  const headers: Record<string, string> = { Accept: "application/json" };
+  const token = getAccessToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
 
 export async function fetchKodaStatus(): Promise<KodaStatusResponse & { responded: boolean }> {
   try {
-    const r = await fetch(apiUrl("/api/koda/status"), { cache: "no-store" });
+    const r = await fetch(apiUrl("/api/koda/status"), {
+      cache: "no-store",
+      headers: authHeaders(),
+    });
     const data = (await r.json()) as KodaStatusResponse;
     return { ...data, responded: true };
   } catch {
@@ -43,7 +54,11 @@ export async function sendKodaChat(params: {
     try {
       const r = await fetch(apiUrl("/api/koda/chat?stream=1"), {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+          ...authHeaders(),
+        },
         body: JSON.stringify({ ...body, stream: true }),
       });
       if (!r.ok) {
@@ -113,7 +128,7 @@ export async function sendKodaChat(params: {
   try {
     const r = await fetch(apiUrl("/api/koda/chat"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify(body),
     });
     const data = (await r.json().catch(() => ({}))) as KodaChatResponse & {

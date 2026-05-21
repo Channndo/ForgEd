@@ -16,6 +16,7 @@ import { TextbookSectionContent } from "./TextbookSectionContent";
 import { ChapterQuickCheck } from "./ChapterQuickCheck";
 import { LockedSection } from "./LockedSection";
 import { getCourseBySlug } from "@/lib/courses/catalog";
+import { KodaChapterHelp } from "@/components/koda/KodaChapterHelp";
 
 export function TextbookChapterArticle({
   chapter,
@@ -37,7 +38,15 @@ export function TextbookChapterArticle({
   const { progress } = useProgress();
   const course = getCourseBySlug(courseSlug);
   const meta = getChapterMeta(courseSlug, chapter.id) ?? defaultChapterMeta(chapter.title);
+  const objectives =
+    chapter.learningObjectives?.length ? chapter.learningObjectives : meta.objectives;
   const roman = toRoman(chapter.number);
+  const kodaContext = {
+    courseSlug,
+    courseTitle: course?.title,
+    moduleId: chapter.id,
+    moduleTitle: `Chapter ${chapter.number}: ${chapter.title}`,
+  };
   const chapterUnlocked = isChapterUnlocked(progress, courseId, chapters, chapterIndex);
 
   if (!chapterUnlocked) {
@@ -87,7 +96,7 @@ export function TextbookChapterArticle({
         </p>
       </header>
 
-      {meta.objectives.length > 0 && (
+      {objectives.length > 0 && (
         <aside className="mt-8 textbook-callout">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/90">
             Learning objectives
@@ -96,10 +105,21 @@ export function TextbookChapterArticle({
             After this chapter, you should be able to:
           </p>
           <ul className="textbook-objectives mt-4 list-disc space-y-2 pl-5 text-[15px] leading-relaxed text-[var(--muted)]">
-            {meta.objectives.map((obj) => (
+            {objectives.map((obj) => (
               <li key={obj}>{obj}</li>
             ))}
           </ul>
+        </aside>
+      )}
+
+      {chapter.realWorldRelevance && (
+        <aside className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/80">
+            Why this matters
+          </p>
+          <p className="font-textbook mt-2 text-[15px] leading-relaxed text-[var(--muted)]">
+            {chapter.realWorldRelevance}
+          </p>
         </aside>
       )}
 
@@ -111,6 +131,37 @@ export function TextbookChapterArticle({
             leadDropCap={sectionIndex === 0}
           />
         ))}
+      </div>
+
+      {(chapter.chapterSummary || (chapter.keyConcepts?.length ?? 0) > 0) && (
+        <aside className="mt-12 space-y-6 border-t border-white/[0.06] pt-10">
+          {chapter.chapterSummary && (
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/90">
+                Chapter summary
+              </p>
+              <p className="font-textbook mt-3 text-[15px] leading-relaxed text-[var(--muted)]">
+                {chapter.chapterSummary}
+              </p>
+            </div>
+          )}
+          {chapter.keyConcepts && chapter.keyConcepts.length > 0 && (
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--gold)]/90">
+                Key concepts
+              </p>
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-[var(--muted)]">
+                {chapter.keyConcepts.map((k) => (
+                  <li key={k}>{k}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </aside>
+      )}
+
+      <div className="mt-10">
+        <KodaChapterHelp context={kodaContext} chapterTitle={chapter.title} />
       </div>
 
       {course && (

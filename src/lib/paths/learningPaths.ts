@@ -76,6 +76,23 @@ export function resolveCatalogSlug(pathSlug: string): string {
   return PATH_COURSE_ALIASES[pathSlug] ?? pathSlug;
 }
 
+/** Every mastery path must include at least this many sequential courses */
+export const MIN_PATH_COURSES = 3;
+
+export function getPathCourseCount(path: LearningPath): number {
+  return path.courses.length;
+}
+
+function assertPathCourseMinimums() {
+  for (const path of LEARNING_PATHS) {
+    if (path.courses.length < MIN_PATH_COURSES) {
+      throw new Error(
+        `Path "${path.id}" has ${path.courses.length} courses; minimum is ${MIN_PATH_COURSES}`
+      );
+    }
+  }
+}
+
 export const LEARNING_PATHS: LearningPath[] = [
   {
     id: "ai-literacy",
@@ -84,8 +101,8 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Learn how to understand and use AI tools in the modern workforce — from prompting to automation without hype or jargon.",
     tagline: "Workforce-ready AI fluency",
     skillLevel: "beginner",
-    estimatedWeeks: 6,
-    totalXp: 4200,
+    estimatedWeeks: 4,
+    totalXp: 2100,
     badgeId: "path-ai-practitioner",
     badgeName: "AI Practitioner Badge",
     badgeDescription: "Completed the AI Literacy mastery path",
@@ -122,51 +139,9 @@ export const LEARNING_PATHS: LearningPath[] = [
         ],
       },
       {
-        slug: "ai-productivity-systems",
-        title: "AI Productivity Systems",
-        order: 3,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "ai",
-        description:
-          "Build repeatable workflows for email, meetings, documentation, and task triage using AI as a copilot, not a crutch.",
-        skills: [
-          { id: "workflows", name: "Workflow Design" },
-          { id: "templates", name: "Reusable Templates" },
-        ],
-      },
-      {
-        slug: "ai-research-skills",
-        title: "AI Research Skills",
-        order: 4,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "ai",
-        description:
-          "Synthesize sources, compare claims, and fact-check model outputs for market research, policy briefs, and decision support.",
-        skills: [
-          { id: "source-triage", name: "Source Triage" },
-          { id: "verification", name: "Verification" },
-        ],
-      },
-      {
-        slug: "ai-ethics-risks",
-        title: "AI Ethics & Risks",
-        order: 5,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "ai",
-        description:
-          "Navigate bias, privacy, IP, and workplace policies — know when AI is appropriate and when human judgment must lead.",
-        skills: [
-          { id: "risk-framework", name: "Risk Framework" },
-          { id: "policy", name: "Workplace Policy" },
-        ],
-      },
-      {
         slug: "ai-workflow-automation",
         title: "AI Workflow Automation",
-        order: 6,
+        order: 3,
         estimatedHours: 9,
         xpReward: 700,
         category: "ai",
@@ -193,15 +168,7 @@ export const LEARNING_PATHS: LearningPath[] = [
         description: "Design a three-step AI-assisted workflow with review gates.",
         type: "ai-workflow",
         xpReward: 120,
-        unlockAfterCourseSlug: "ai-productivity-systems",
-      },
-      {
-        id: "ai-lab-research",
-        title: "AI Research Lab",
-        description: "Run a guided research sprint with citation checks.",
-        type: "ai-research",
-        xpReward: 120,
-        unlockAfterCourseSlug: "ai-research-skills",
+        unlockAfterCourseSlug: "prompting-fundamentals",
       },
     ],
     masteryExamQuestions: 20,
@@ -213,8 +180,8 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Universal sales, communication, and persuasion skills for modern careers — from discovery to follow-up and CRM discipline.",
     tagline: "Revenue skills for any role",
     skillLevel: "beginner",
-    estimatedWeeks: 8,
-    totalXp: 5200,
+    estimatedWeeks: 4,
+    totalXp: 1950,
     badgeId: "path-sales-operator",
     badgeName: "Sales Operator Badge",
     badgeDescription: "Completed the Sales mastery path",
@@ -250,23 +217,9 @@ export const LEARNING_PATHS: LearningPath[] = [
         ],
       },
       {
-        slug: "customer-psychology",
-        title: "Customer Psychology",
-        order: 3,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "business",
-        description:
-          "Understand buyer motivation, trust signals, and decision friction without manipulative tactics.",
-        skills: [
-          { id: "motivation", name: "Buyer Motivation" },
-          { id: "trust", name: "Trust Building" },
-        ],
-      },
-      {
         slug: "objection-handling",
         title: "Objection Handling",
-        order: 4,
+        order: 3,
         estimatedHours: 7,
         xpReward: 600,
         category: "business",
@@ -277,62 +230,7 @@ export const LEARNING_PATHS: LearningPath[] = [
           { id: "reframes", name: "Value Reframes" },
         ],
       },
-      {
-        slug: "negotiation-basics",
-        title: "Negotiation Basics",
-        order: 5,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "business",
-        description:
-          "Prepare BATNA, trade concessions, and close win-win agreements in sales and everyday professional deals.",
-        skills: [
-          { id: "prep", name: "Negotiation Prep" },
-          { id: "closing", name: "Closing Techniques" },
-        ],
-      },
-      {
-        slug: "follow-up-systems",
-        title: "Follow-Up Systems",
-        order: 6,
-        estimatedHours: 6,
-        xpReward: 550,
-        category: "business",
-        description:
-          "Cadences, templates, and accountability that prevent deals from dying in silence after a good first call.",
-        skills: [
-          { id: "cadence", name: "Follow-Up Cadence" },
-          { id: "crm-hygiene", name: "CRM Hygiene" },
-        ],
-      },
-      {
-        slug: "crm-fundamentals",
-        title: "CRM Fundamentals",
-        order: 7,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "business",
-        description:
-          "Stages, fields, and reporting in modern CRMs — keep pipeline data trustworthy for you and your team.",
-        skills: [
-          { id: "crm-stages", name: "Pipeline Stages" },
-          { id: "reporting", name: "Sales Reporting" },
-        ],
-      },
-      {
-        slug: "ai-assisted-sales",
-        title: "AI-Assisted Sales",
-        order: 8,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "ai",
-        description:
-          "Use AI for research, call prep, and follow-up drafts while keeping authenticity and compliance front and center.",
-        skills: [
-          { id: "ai-prep", name: "AI Call Prep" },
-          { id: "ai-followup", name: "AI Follow-Up Drafts" },
-        ],
-      },
+
     ],
     labs: [
       {
@@ -351,14 +249,6 @@ export const LEARNING_PATHS: LearningPath[] = [
         xpReward: 120,
         unlockAfterCourseSlug: "communication-fundamentals",
       },
-      {
-        id: "sales-lab-negotiation",
-        title: "Negotiation Scenario Lab",
-        description: "Close a deal with structured trade-offs.",
-        type: "negotiation-scenario",
-        xpReward: 120,
-        unlockAfterCourseSlug: "negotiation-basics",
-      },
     ],
     masteryExamQuestions: 20,
   },
@@ -369,8 +259,8 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Practical real-world money management — budgets, credit, banking, taxes, investing, and retirement without Wall Street jargon.",
     tagline: "Money skills that compound",
     skillLevel: "beginner",
-    estimatedWeeks: 7,
-    totalXp: 4500,
+    estimatedWeeks: 4,
+    totalXp: 1900,
     badgeId: "path-financial-foundations",
     badgeName: "Financial Foundations Badge",
     badgeDescription: "Completed the Financial Literacy mastery path",
@@ -417,62 +307,6 @@ export const LEARNING_PATHS: LearningPath[] = [
           { id: "debt", name: "Debt Payoff" },
         ],
       },
-      {
-        slug: "banking-basics",
-        title: "Banking Basics",
-        order: 4,
-        estimatedHours: 6,
-        xpReward: 550,
-        category: "financial",
-        description:
-          "Checking, savings, fees, and digital banking safety — choose products that match how you actually live.",
-        skills: [
-          { id: "accounts", name: "Account Types" },
-          { id: "fees", name: "Fee Avoidance" },
-        ],
-      },
-      {
-        slug: "taxes-explained",
-        title: "Taxes Explained",
-        order: 5,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "financial",
-        description:
-          "W-2 vs 1099, withholdings, deductions, and filing basics — general education, not tax advice.",
-        skills: [
-          { id: "tax-forms", name: "Tax Forms" },
-          { id: "withholding", name: "Withholding" },
-        ],
-      },
-      {
-        slug: "investing-fundamentals",
-        title: "Investing Fundamentals",
-        order: 6,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "financial",
-        description:
-          "Risk, diversification, index funds, and time horizon — build long-term habits without speculation hype.",
-        skills: [
-          { id: "risk", name: "Risk & Return" },
-          { id: "diversification", name: "Diversification" },
-        ],
-      },
-      {
-        slug: "retirement-planning",
-        title: "Retirement Planning",
-        order: 7,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "financial",
-        description:
-          "401(k), IRA, employer match, and compound growth scenarios — start early, adjust often.",
-        skills: [
-          { id: "accounts-retire", name: "Retirement Accounts" },
-          { id: "compound", name: "Compound Growth" },
-        ],
-      },
     ],
     labs: [
       {
@@ -509,8 +343,8 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Foundational computer and technology knowledge for support, operations, and modern office roles.",
     tagline: "Tech confidence from zero",
     skillLevel: "beginner",
-    estimatedWeeks: 6,
-    totalXp: 4000,
+    estimatedWeeks: 4,
+    totalXp: 1950,
     badgeId: "path-it-foundations",
     badgeName: "IT Foundations Badge",
     badgeDescription: "Completed the IT Foundations mastery path",
@@ -557,48 +391,6 @@ export const LEARNING_PATHS: LearningPath[] = [
           { id: "wifi", name: "Wi‑Fi & VPN" },
         ],
       },
-      {
-        slug: "internet-infrastructure",
-        title: "Internet Infrastructure",
-        order: 4,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "it",
-        description:
-          "How data moves across ISPs, CDNs, and cloud regions — enough context to debug slow apps.",
-        skills: [
-          { id: "isp", name: "ISPs & Routing" },
-          { id: "cdn", name: "CDN Basics" },
-        ],
-      },
-      {
-        slug: "troubleshooting-basics",
-        title: "Troubleshooting Basics",
-        order: 5,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "it",
-        description:
-          "Structured diagnosis, logs, and escalation — fix common issues before opening a ticket.",
-        skills: [
-          { id: "diagnosis", name: "Structured Diagnosis" },
-          { id: "tickets", name: "Support Tickets" },
-        ],
-      },
-      {
-        slug: "cybersecurity-fundamentals",
-        title: "Cybersecurity Fundamentals",
-        order: 6,
-        estimatedHours: 10,
-        xpReward: 700,
-        category: "cybersecurity",
-        description:
-          "CIA triad, threats, and safe habits — bridge into dedicated security paths.",
-        skills: [
-          { id: "cia", name: "CIA Triad" },
-          { id: "threats", name: "Threat Awareness" },
-        ],
-      },
     ],
     labs: [],
     masteryExamQuestions: 20,
@@ -610,8 +402,8 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Introductory cybersecurity concepts and digital safety for every employee — not just SOC analysts.",
     tagline: "Defend your digital perimeter",
     skillLevel: "beginner",
-    estimatedWeeks: 6,
-    totalXp: 4000,
+    estimatedWeeks: 4,
+    totalXp: 1850,
     badgeId: "path-cyber-defense",
     badgeName: "Cyber Defense Badge",
     badgeDescription: "Completed the Cybersecurity mastery path",
@@ -659,48 +451,6 @@ export const LEARNING_PATHS: LearningPath[] = [
           { id: "managers", name: "Password Managers" },
         ],
       },
-      {
-        slug: "phishing-defense",
-        title: "Phishing Defense",
-        order: 4,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "cybersecurity",
-        description:
-          "Spot spear phishing, smishing, and BEC — report and contain without panic.",
-        skills: [
-          { id: "phishing", name: "Phishing Signals" },
-          { id: "reporting", name: "Incident Reporting" },
-        ],
-      },
-      {
-        slug: "network-security",
-        title: "Network Security",
-        order: 5,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "cybersecurity",
-        description:
-          "Firewalls, segmentation, zero trust basics, and secure remote access patterns.",
-        skills: [
-          { id: "firewall", name: "Firewalls" },
-          { id: "zt", name: "Zero Trust Intro" },
-        ],
-      },
-      {
-        slug: "incident-response-basics",
-        title: "Incident Response Basics",
-        order: 6,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "cybersecurity",
-        description:
-          "Containment, evidence preservation, and communication during a security incident.",
-        skills: [
-          { id: "ir-plan", name: "IR Playbooks" },
-          { id: "comms", name: "Stakeholder Comms" },
-        ],
-      },
     ],
     labs: [
       {
@@ -709,7 +459,7 @@ export const LEARNING_PATHS: LearningPath[] = [
         description: "Identify red flags in realistic message samples.",
         type: "phishing-detection",
         xpReward: 120,
-        unlockAfterCourseSlug: "phishing-defense",
+        unlockAfterCourseSlug: "password-security",
       },
       {
         id: "cyber-lab-password",
@@ -737,11 +487,12 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Learn the fundamentals of building and operating businesses — from brand to finance and AI leverage.",
     tagline: "Build with clarity",
     skillLevel: "intermediate",
-    estimatedWeeks: 8,
-    totalXp: 4800,
+    estimatedWeeks: 4,
+    totalXp: 1950,
     badgeId: "path-founder",
     badgeName: "Founder Badge",
     badgeDescription: "Completed the Entrepreneurship mastery path",
+    unlockRequirement: { type: "level", level: 3 },
     courses: [
       {
         slug: "entrepreneurship-basics",
@@ -785,62 +536,6 @@ export const LEARNING_PATHS: LearningPath[] = [
           { id: "experiments", name: "Growth Experiments" },
         ],
       },
-      {
-        slug: "business-operations",
-        title: "Business Operations",
-        order: 4,
-        estimatedHours: 9,
-        xpReward: 700,
-        category: "business",
-        description:
-          "Delivery, vendors, and internal processes that keep promises to customers at scale.",
-        skills: [
-          { id: "ops", name: "Operations" },
-          { id: "vendors", name: "Vendor Management" },
-        ],
-      },
-      {
-        slug: "digital-presence",
-        title: "Digital Presence",
-        order: 5,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "business",
-        description:
-          "Websites, social proof, and content cadence — show up credibly where buyers already look.",
-        skills: [
-          { id: "web", name: "Web Presence" },
-          { id: "content", name: "Content Cadence" },
-        ],
-      },
-      {
-        slug: "startup-finance",
-        title: "Startup Finance",
-        order: 6,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "financial",
-        description:
-          "Runway, unit economics, and basic cap table literacy — general education for founders.",
-        skills: [
-          { id: "runway", name: "Runway" },
-          { id: "unit-econ", name: "Unit Economics" },
-        ],
-      },
-      {
-        slug: "ai-for-entrepreneurs",
-        title: "AI For Entrepreneurs",
-        order: 7,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "ai",
-        description:
-          "Use AI for market research, copy, ops, and support — stay lean without losing quality control.",
-        skills: [
-          { id: "ai-ops", name: "AI in Operations" },
-          { id: "ai-gtm", name: "AI in GTM" },
-        ],
-      },
     ],
     labs: [],
     masteryExamQuestions: 20,
@@ -852,12 +547,11 @@ export const LEARNING_PATHS: LearningPath[] = [
       "Modern dealership and service communication mastery — repair orders, warranties, and difficult customers.",
     tagline: "Front-line service excellence",
     skillLevel: "intermediate",
-    estimatedWeeks: 7,
-    totalXp: 4500,
+    estimatedWeeks: 4,
+    totalXp: 1950,
     badgeId: "path-service-advisor",
     badgeName: "Service Advisor Certification",
     badgeDescription: "Completed the Service Advisor mastery path",
-    unlockRequirement: { type: "level", level: 2 },
     courses: [
       {
         slug: "service-advising-fundamentals",
@@ -901,62 +595,6 @@ export const LEARNING_PATHS: LearningPath[] = [
           { id: "expectations", name: "Set Expectations" },
         ],
       },
-      {
-        slug: "maintenance-selling",
-        title: "Maintenance Selling",
-        order: 4,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "automotive",
-        description:
-          "Recommend maintenance ethically — tie factory schedules to customer outcomes, not pressure.",
-        skills: [
-          { id: "maintenance", name: "Maintenance Menus" },
-          { id: "ethics", name: "Ethical Recommendations" },
-        ],
-      },
-      {
-        slug: "warranty-basics",
-        title: "Warranty Basics",
-        order: 5,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "automotive",
-        description:
-          "Factory vs extended coverage, claims, and documentation — reduce chargebacks and disputes.",
-        skills: [
-          { id: "warranty", name: "Warranty Types" },
-          { id: "claims", name: "Claims Process" },
-        ],
-      },
-      {
-        slug: "difficult-customer-scenarios",
-        title: "Difficult Customer Scenarios",
-        order: 6,
-        estimatedHours: 7,
-        xpReward: 600,
-        category: "communication",
-        description:
-          "De-escalation, delays, and comeback conversations — protect reputation and CSI scores.",
-        skills: [
-          { id: "deescalate", name: "De-escalation" },
-          { id: "comebacks", name: "Comeback Handling" },
-        ],
-      },
-      {
-        slug: "ai-automotive-service",
-        title: "AI in Automotive Service",
-        order: 7,
-        estimatedHours: 8,
-        xpReward: 650,
-        category: "ai",
-        description:
-          "AI for appointment prep, status updates, and internal notes — efficiency without losing the human touch.",
-        skills: [
-          { id: "ai-scheduling", name: "AI Scheduling" },
-          { id: "ai-updates", name: "Status Updates" },
-        ],
-      },
     ],
     labs: [
       {
@@ -981,12 +619,14 @@ export const LEARNING_PATHS: LearningPath[] = [
         description: "Recommend maintenance with transparent value.",
         type: "upsell-scenario",
         xpReward: 120,
-        unlockAfterCourseSlug: "maintenance-selling",
+        unlockAfterCourseSlug: "customer-communication-service",
       },
     ],
     masteryExamQuestions: 20,
   },
 ];
+
+assertPathCourseMinimums();
 
 export function getLearningPathById(id: string): LearningPath | undefined {
   return LEARNING_PATHS.find((p) => p.id === id);

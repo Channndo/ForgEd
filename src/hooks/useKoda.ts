@@ -8,7 +8,8 @@ import {
   kodaExplainQuiz,
   kodaRecommend,
 } from "@/lib/koda/api";
-import { KODA_OFFLINE, KODA_WELCOME } from "@/lib/koda/config";
+import { KODA_OFFLINE, KODA_SIGN_IN, KODA_WELCOME } from "@/lib/koda/config";
+import { getAccessToken } from "@/lib/forged-account/session";
 import type {
   KodaChatMessage,
   KodaLearningContext,
@@ -46,13 +47,15 @@ export function useKoda(initialContext?: KodaLearningContext) {
     (async () => {
       const st = await fetchKodaStatus();
       if (cancelled) return;
-      const up = st.responded && st.enabled && st.available;
+      const signedIn = Boolean(getAccessToken());
+      const backendUp = st.responded && st.enabled;
+      const up = backendUp && st.available;
       setAvailable(up);
       setStatusNote(
         up
           ? "KODA is ready — powered by Omnistrata AI."
-          : st.responded
-            ? KODA_OFFLINE
+          : !signedIn && st.requiresSignIn
+            ? KODA_SIGN_IN
             : KODA_OFFLINE
       );
       if (up) {

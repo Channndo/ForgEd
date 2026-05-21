@@ -4,6 +4,9 @@ import { useState } from "react";
 import { CheckCircle2, FlaskConical, XCircle } from "lucide-react";
 import type { PathLab } from "@/lib/paths/learningPaths";
 import { completePathLab } from "@/lib/paths/pathProgress";
+import { canEarnLabXp } from "@/lib/labs/labProgress";
+import { EXCEL_LAB_TYPES } from "@/lib/labs/excelScenarios";
+import { ExcelLab } from "@/components/labs/ExcelLab";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { Button } from "@/components/ui/Button";
 
@@ -146,7 +149,11 @@ export function PathLabSimulator({
   lab: PathLab;
   completed: boolean;
 }) {
-  const { refresh } = useProgress();
+  const { refresh, progress } = useProgress();
+
+  if (EXCEL_LAB_TYPES.has(lab.type)) {
+    return <ExcelLab pathId={pathId} lab={lab} />;
+  }
   const [selected, setSelected] = useState<number | null>(null);
   const [done, setDone] = useState(completed);
   const scenario = LAB_SCENARIOS[lab.type] ?? DEFAULT_SCENARIO;
@@ -154,7 +161,7 @@ export function PathLabSimulator({
   function handleSubmit() {
     if (selected === null) return;
     const choice = scenario.choices[selected];
-    if (choice.correct && !done) {
+    if (choice.correct && !done && canEarnLabXp(progress, lab.id)) {
       completePathLab(pathId, lab.id, lab.xpReward);
       setDone(true);
       refresh();

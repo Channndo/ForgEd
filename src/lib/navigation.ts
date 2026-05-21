@@ -6,6 +6,7 @@ import {
   Briefcase,
   BarChart3,
   Users,
+  User,
 } from "lucide-react";
 
 export interface NavItem {
@@ -22,6 +23,7 @@ export const PLATFORM_NAV: NavItem[] = [
   { href: "/paths", label: "Learning Paths", icon: Route },
   { href: "/career", label: "Career Hub", icon: Briefcase },
   { href: "/progress", label: "Progress", icon: BarChart3 },
+  { href: "/profile", label: "Profile", icon: User },
   { href: "/community", label: "Community", icon: Users },
 ];
 
@@ -32,7 +34,12 @@ export const PAGE_TITLES: Record<string, string> = {
   "/paths": "Learning Paths",
   "/career": "Career Hub",
   "/progress": "Progress",
+  "/profile": "Profile",
+  "/profile/settings": "Settings",
   "/community": "Community",
+  "/login": "Sign in",
+  "/signup": "Sign up",
+  "/forgot-password": "Reset password",
   "/assistant": "AI Tutor",
 };
 

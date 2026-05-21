@@ -104,4 +104,15 @@ export interface UserProgress {
   dailyXpGoal?: number;
   dailyXpEarnedToday?: number;
   dailyXpDate?: string | null;
+  /** Per-lab state (Excel labs, simulations) */
+  labProgress?: Record<
+    string,
+    {
+      completed: boolean;
+      solutionViewed: boolean;
+      retryRequired: boolean;
+      xpEarned: number;
+      completedAt?: string;
+    }
+  >;
 }

@@ -12,7 +12,17 @@ import {
 import { COURSES } from "./courses/catalog";
 import { syncPathFromCourseComplete } from "./paths/pathProgress";
 
-const STORAGE_KEY = "forged_progress_v1";
+import {
+  readLocalProgress,
+  writeLocalProgress,
+} from "@/lib/progress/persistence";
+
+let progressSyncHandler: ((data: UserProgress) => void) | null = null;
+
+/** ProgressProvider registers debounced cloud sync */
+export function registerProgressSync(handler: ((data: UserProgress) => void) | null) {
+  progressSyncHandler = handler;
+}
 
 export const DEFAULT_PROGRESS: UserProgress = {
   xp: 0,
@@ -30,6 +40,7 @@ export const DEFAULT_PROGRESS: UserProgress = {
   courseReviewQuizPassed: [],
   finalExamPassed: [],
   pathProgress: {},
+  labProgress: {},
   activePathId: null,
   dailyXpGoal: 150,
   dailyXpEarnedToday: 0,
@@ -47,23 +58,14 @@ function yesterdayKey(): string {
 }
 
 export function readProgress(): UserProgress {
-  if (typeof window === "undefined") return DEFAULT_PROGRESS;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PROGRESS;
-    const parsed = JSON.parse(raw) as UserProgress;
-    const data = { ...DEFAULT_PROGRESS, ...parsed };
-    data.level = levelFromXp(data.xp);
-    return syncCourseProgressFromLessons(data);
-  } catch {
-    return DEFAULT_PROGRESS;
-  }
+  return readLocalProgress();
 }
 
 export function writeProgress(data: UserProgress): void {
-  if (typeof window === "undefined") return;
   data.level = levelFromXp(data.xp);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const synced = syncCourseProgressFromLessons(data);
+  writeLocalProgress(synced);
+  progressSyncHandler?.(synced);
 }
 
 function updateStreak(data: UserProgress): UserProgress {

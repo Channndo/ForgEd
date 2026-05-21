@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cinzel, Lora } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
+import { AuthProvider } from "@/components/providers/AuthProvider";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 import { ProgressProvider } from "@/components/providers/ProgressProvider";
+import { AchievementProvider } from "@/components/providers/AchievementProvider";
 import { KodaProvider } from "@/components/koda/KodaProvider";
 import { KodaFloatingButton } from "@/components/koda/KodaFab";
 import { withBasePath } from "@/lib/basePath";
@@ -36,24 +39,19 @@ export const metadata: Metadata = {
     "Free AI-powered education platform. Learn across technology, business, finance, trades, healthcare, and more.",
   icons: {
     icon: [
-      {
-        url: withBasePath("/icon.svg"),
-        type: "image/svg+xml",
-      },
-      {
-        url: withBasePath("/forged-icon.png"),
-        sizes: "512x512",
-        type: "image/png",
-      },
+      { url: withBasePath("/favicon.ico?v=5"), sizes: "any" },
+      { url: withBasePath("/icon-32.png?v=5"), sizes: "32x32", type: "image/png" },
+      { url: withBasePath("/icon-16.png?v=5"), sizes: "16x16", type: "image/png" },
+      { url: withBasePath("/icon-48.png?v=5"), sizes: "48x48", type: "image/png" },
     ],
     apple: [
       {
-        url: withBasePath("/apple-touch-icon.png"),
+        url: withBasePath("/apple-touch-icon.png?v=5"),
         sizes: "180x180",
         type: "image/png",
       },
     ],
-    shortcut: [{ url: withBasePath("/icon.svg"), type: "image/svg+xml" }],
+    shortcut: [{ url: withBasePath("/favicon.ico?v=5") }],
   },
 };
 
@@ -65,20 +63,40 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${cinzel.variable} ${lora.variable}`}
+      className={`h-full ${geistSans.variable} ${geistMono.variable} ${cinzel.variable} ${lora.variable}`}
     >
       <head>
-        <link rel="icon" href={withBasePath("/icon.svg")} type="image/svg+xml" />
-        <link rel="alternate icon" href={withBasePath("/favicon.ico")} />
-        <link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
+        <link rel="icon" href={withBasePath("/favicon.ico?v=5")} sizes="any" />
+        <link
+          rel="icon"
+          href={withBasePath("/icon-32.png?v=5")}
+          sizes="32x32"
+          type="image/png"
+        />
+        <link
+          rel="icon"
+          href={withBasePath("/icon-16.png?v=5")}
+          sizes="16x16"
+          type="image/png"
+        />
+        <link
+          rel="apple-touch-icon"
+          href={withBasePath("/apple-touch-icon.png?v=5")}
+        />
       </head>
-      <body className="min-h-screen overflow-y-auto antialiased bg-[#050505]">
-        <ProgressProvider>
-          <KodaProvider>
-            <AppShell>{children}</AppShell>
-            <KodaFloatingButton />
-          </KodaProvider>
-        </ProgressProvider>
+      <body className="min-h-full antialiased bg-[#050505]">
+        <AuthProvider>
+          <AuthGuard>
+              <ProgressProvider>
+                <AchievementProvider>
+                  <KodaProvider>
+                    <AppShell>{children}</AppShell>
+                    <KodaFloatingButton />
+                  </KodaProvider>
+                </AchievementProvider>
+              </ProgressProvider>
+          </AuthGuard>
+        </AuthProvider>
       </body>
     </html>
   );

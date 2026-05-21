@@ -13,6 +13,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { Card } from "@/components/ui/Card";
 import { BADGES } from "@/lib/badges";
 import { COURSES } from "@/lib/courses/catalog";
@@ -27,7 +28,10 @@ import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
 
 export default function DashboardPage() {
+  const { profile } = useAuth();
   const { progress, xpBar } = useProgress();
+  const firstName =
+    profile?.displayName?.split(" ")[0] ?? profile?.username ?? "Learner";
 
   const totalLessons = COURSES.reduce(
     (n, c) => n + countCompletedLessons(progress, c.slug).total,
@@ -59,9 +63,12 @@ export default function DashboardPage() {
               priority
             />
             <ForgEdTagline className="mt-3 justify-start" />
-            <p className="mt-4 text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-              Your learning command center for a scalable education ecosystem — track mastery,
-              browse domains, and build skills across technology, business, finance, and beyond.
+            <p className="mt-4 font-serif text-lg text-[var(--silver)]">
+              Welcome back, {firstName}.
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] sm:text-base">
+              Your progress saves to your account — pick up paths, courses, and XP exactly where
+              you left off. KODA is available on every chapter for explanations and practice.
             </p>
             <CourseSpotlight />
           </div>

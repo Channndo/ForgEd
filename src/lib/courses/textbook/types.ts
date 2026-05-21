@@ -25,6 +25,14 @@ export interface TextbookChapter {
   title: string;
   subtitle?: string;
   sections: TextbookSection[];
+  /** What learners should be able to do after this chapter */
+  learningObjectives?: string[];
+  /** End-of-chapter synthesis */
+  chapterSummary?: string;
+  /** Core ideas to remember */
+  keyConcepts?: string[];
+  /** Why this chapter matters at work */
+  realWorldRelevance?: string;
 }
 
 export interface TextbookIntro {

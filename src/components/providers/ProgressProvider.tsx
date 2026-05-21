@@ -6,48 +6,93 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import type { UserProgress } from "@/lib/types";
 import {
   DEFAULT_PROGRESS,
   readProgress,
+  registerProgressSync,
   writeProgress,
 } from "@/lib/progress";
+import {
+  migrateGuestProgress,
+  saveRemoteProgress,
+  writeLocalProgress,
+} from "@/lib/progress/persistence";
+import { getAccessToken } from "@/lib/forged-account/session";
 import { xpProgressInLevel } from "@/lib/xp";
+import { useAuth } from "./AuthProvider";
 
 interface ProgressContextValue {
   progress: UserProgress;
   refresh: () => void;
   setProgress: (data: UserProgress) => void;
   xpBar: ReturnType<typeof xpProgressInLevel>;
+  syncing: boolean;
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
+  const { user, loading: authLoading } = useAuth();
   const [progress, setProgressState] = useState<UserProgress>(DEFAULT_PROGRESS);
   const [mounted, setMounted] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const refresh = useCallback(() => {
     setProgressState(readProgress());
   }, []);
 
-  useEffect(() => {
-    refresh();
-    setMounted(true);
-  }, [refresh]);
-
   const setProgress = useCallback((data: UserProgress) => {
     writeProgress(data);
-    setProgressState(data);
   }, []);
+
+  useEffect(() => {
+    registerProgressSync((data) => {
+      setProgressState(data);
+      if (getAccessToken()) {
+        if (syncTimer.current) clearTimeout(syncTimer.current);
+        syncTimer.current = setTimeout(async () => {
+          setSyncing(true);
+          try {
+            await saveRemoteProgress(data);
+          } finally {
+            setSyncing(false);
+          }
+        }, 800);
+      }
+    });
+    return () => registerProgressSync(null);
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    let cancelled = false;
+    (async () => {
+      if (user?.email) {
+        const data = await migrateGuestProgress(user.email);
+        if (!cancelled) {
+          writeLocalProgress(data);
+          setProgressState(data);
+        }
+      } else {
+        if (!cancelled) setProgressState(readProgress());
+      }
+      if (!cancelled) setMounted(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.email, authLoading]);
 
   const xpBar = useMemo(() => xpProgressInLevel(progress.xp), [progress.xp]);
 
   const value = useMemo(
-    () => ({ progress, refresh, setProgress, xpBar }),
-    [progress, refresh, setProgress, xpBar]
+    () => ({ progress, refresh, setProgress, xpBar, syncing }),
+    [progress, refresh, setProgress, xpBar, syncing]
   );
 
   if (!mounted) {
@@ -58,6 +103,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
           refresh,
           setProgress,
           xpBar: xpProgressInLevel(0),
+          syncing: false,
         }}
       >
         {children}

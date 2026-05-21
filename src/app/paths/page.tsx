@@ -22,8 +22,8 @@ export default function LearningPathsPage() {
               Mastery paths for modern careers
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-[var(--muted)] sm:text-base">
-              Structured progressions — not random courses. Each path sequences skills from
-              fundamentals to certification, with labs, XP milestones, and a final mastery exam.
+              Structured progressions — not random courses. Each path includes at least three
+              sequential courses, with labs, XP milestones, and a final mastery exam.
             </p>
           </div>
           <Card className="shrink-0 border-[var(--gold)]/20 bg-black/40 sm:max-w-xs" glow>

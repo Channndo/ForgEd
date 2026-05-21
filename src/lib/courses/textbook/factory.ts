@@ -14,12 +14,34 @@ export function section(
   return { id, title, paragraphs, ...extras };
 }
 
+type ChapterExtras = {
+  subtitle?: string;
+  learningObjectives?: string[];
+  chapterSummary?: string;
+  keyConcepts?: string[];
+  realWorldRelevance?: string;
+};
+
 export function chapter(
   id: string,
   number: number,
   title: string,
   sections: TextbookSection[],
-  subtitle?: string
+  subtitleOrExtras?: string | ChapterExtras
 ): TextbookChapter {
-  return { id, number, title, subtitle, sections };
+  const extras: ChapterExtras | undefined =
+    typeof subtitleOrExtras === "string"
+      ? { subtitle: subtitleOrExtras }
+      : subtitleOrExtras;
+  return {
+    id,
+    number,
+    title,
+    subtitle: extras?.subtitle,
+    sections,
+    learningObjectives: extras?.learningObjectives,
+    chapterSummary: extras?.chapterSummary,
+    keyConcepts: extras?.keyConcepts,
+    realWorldRelevance: extras?.realWorldRelevance,
+  };
 }

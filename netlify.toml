@@ -1,0 +1,34 @@
+[build]
+  command = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Production KODA uses Syntrix /api/koda (shared Ollama with MIRA)
+  KODA_USE_SYNTRIX = "true"
+
+# Force HTTPS (fixes browser "Not Secure" when cert is valid)
+[[redirects]]
+  from = "http://*"
+  to = "https://:splat"
+  status = 301
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    X-DNS-Prefetch-Control = "on"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+
+# Custom domain TLS: Netlify → Domain management → forgedlearn.com → Verify DNS → Provision certificate

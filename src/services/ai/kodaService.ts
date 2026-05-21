@@ -11,6 +11,9 @@ import {
   type OllamaMessage,
 } from "@/services/ollama";
 import { getOllamaSettings } from "@/services/ollama/config";
+import { assertKodaAuthorized, kodaRequiresSignIn, KodaAuthError } from "./kodaAuth";
+import { useForgedAccountKoda, useSyntrixKoda } from "./inference";
+import { getSyntrixKodaStatus, syntrixKodaChat, SyntrixKodaError } from "./syntrixKoda";
 import { loadSession, saveSession } from "./memory";
 import { buildKodaSystemPrompt } from "./kodaPrompt";
 import type {
@@ -49,15 +52,49 @@ function toOllamaMessages(
   return out;
 }
 
-export async function getKodaStatus(): Promise<KodaStatusResponse> {
+export async function getKodaStatus(
+  authHeader?: string | null
+): Promise<KodaStatusResponse> {
   const settings = getOllamaSettings();
+  if (!settings.kodaEnabled) {
+    return {
+      enabled: false,
+      available: false,
+      model: settings.model,
+      cognitiveStack: "Omnistrata-Ollama",
+      assistant: "KODA",
+    };
+  }
+
+  const requiresSignIn = await kodaRequiresSignIn();
+
+  if (useSyntrixKoda()) {
+    const st = await getSyntrixKodaStatus();
+    const hasToken = Boolean(authHeader?.replace(/^Bearer\s+/i, "").trim());
+    return {
+      ...st,
+      available: st.available && hasToken,
+      requiresSignIn: true,
+    };
+  }
+
   const health = await ollamaHealth();
+  let available =
+    settings.kodaEnabled && health.ok && !!settings.baseUrl;
+  if (requiresSignIn && available) {
+    try {
+      await assertKodaAuthorized(authHeader);
+    } catch {
+      available = false;
+    }
+  }
   return {
     enabled: settings.kodaEnabled,
-    available: settings.kodaEnabled && health.ok && !!settings.baseUrl,
+    available,
     model: settings.model,
     cognitiveStack: "Omnistrata-Ollama",
     assistant: "KODA",
+    requiresSignIn,
   };
 }
 
@@ -75,9 +112,32 @@ export function assertKodaEnabled(): void {
 }
 
 export async function kodaChat(
-  request: KodaChatRequest
+  request: KodaChatRequest,
+  authHeader?: string | null
 ): Promise<KodaChatResponse> {
   assertKodaEnabled();
+  if (useForgedAccountKoda() || (await kodaRequiresSignIn())) {
+    try {
+      await assertKodaAuthorized(authHeader);
+    } catch (e) {
+      if (e instanceof KodaAuthError) {
+        throw new KodaServiceError(e.status, e.message);
+      }
+      throw e;
+    }
+  }
+
+  if (useSyntrixKoda()) {
+    try {
+      return await syntrixKodaChat(request, authHeader ?? null);
+    } catch (e) {
+      if (e instanceof SyntrixKodaError) {
+        throw new KodaServiceError(e.status, e.message);
+      }
+      throw e;
+    }
+  }
+
   const mode = request.mode ?? "chat";
   const systemPrompt = buildKodaSystemPrompt(mode, request.context);
   const sessionId = request.sessionId ?? crypto.randomUUID();
@@ -112,9 +172,27 @@ export async function kodaChat(
 }
 
 export async function* kodaChatStreamGenerator(
-  request: KodaChatRequest
+  request: KodaChatRequest,
+  authHeader?: string | null
 ): AsyncGenerator<string> {
   assertKodaEnabled();
+  if (useForgedAccountKoda() || (await kodaRequiresSignIn())) {
+    try {
+      await assertKodaAuthorized(authHeader);
+    } catch (e) {
+      if (e instanceof KodaAuthError) {
+        throw new KodaServiceError(e.status, e.message);
+      }
+      throw e;
+    }
+  }
+
+  if (useSyntrixKoda()) {
+    const result = await syntrixKodaChat(request, authHeader ?? null);
+    if (result.message) yield result.message;
+    return;
+  }
+
   const mode = request.mode ?? "chat";
   const systemPrompt = buildKodaSystemPrompt(mode, request.context);
   const ollamaMessages = toOllamaMessages(systemPrompt, request.messages);

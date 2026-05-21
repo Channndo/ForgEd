@@ -9,10 +9,19 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const path = pathname?.replace(/\/$/, "") ?? "";
+  const isAuthPage =
+    path.endsWith("/login") ||
+    path.endsWith("/signup") ||
+    path.endsWith("/forgot-password");
   const isTextbookReader = /\/courses\/[^/]+\/read\/?$/.test(pathname ?? "");
 
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="flex h-dvh overflow-hidden bg-[var(--background)]">
+    <div className="flex min-h-screen w-full bg-[var(--background)]">
       <Sidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
@@ -20,9 +29,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         onMobileClose={() => setMobileOpen(false)}
       />
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col">
         <TopBar onMenuClick={() => setMobileOpen(true)} />
-        <main className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
+        <main className="flex-1">
           {isTextbookReader ? (
             <div className="w-full">{children}</div>
           ) : (

@@ -53,6 +53,8 @@ export interface KodaStatusResponse {
   available: boolean;
   model: string;
   /** Internal stack label — not shown to users as MIRA */
-  cognitiveStack: "Omnistrata-Ollama";
-  assistant: "KODA";
+  cognitiveStack: string;
+  assistant: string;
+  /** Syntrix-backed KODA requires Omnistrata sign-in */
+  requiresSignIn?: boolean;
 }

@@ -5,6 +5,10 @@
  */
 import fs from "fs";
 import path from "path";
+import {
+  buildChapterBlock,
+  introParagraphs,
+} from "./lib/quality-writing.mjs";
 
 const ROOT = process.cwd();
 const TEXTBOOKS = path.join(ROOT, "src/lib/courses/textbooks");
@@ -640,38 +644,22 @@ const COURSES = {
   },
 };
 
-function paragraphs(topic, sectionTitle, courseTitle) {
-  return [
-    `${sectionTitle} connects ${topic} to real workforce outcomes in ${courseTitle}. Learners apply concepts through scenarios, not theory alone.`,
-    `Progression is sequential: read each section, pass the section quiz, then advance. Assessment items draw from this chapter's question pool.`,
-    `Use this material to build confidence, employability, and modern skills — verify policies and regulations in your organization before acting.`,
-  ];
-}
-
 function buildTextbook(slug, cfg) {
+  const intro = introParagraphs(
+    cfg.title,
+    `${cfg.title} is part of a structured ForgEd Learning Path. Complete courses in order to unlock the next step and earn path certifications.`
+  );
   const blocks = cfg.chapters
-    .map(([id, title], idx) => {
-      const num = idx + 1;
-      const sections = [1, 2, 3, 4, 5]
-        .map((s) => {
-          const sid = `${id}-s${s}`;
-          const st = `${num}.${s} ${title} — applied practice (${s})`;
-          return `      section(${JSON.stringify(sid)}, ${JSON.stringify(st)}, ${JSON.stringify(paragraphs(title, st, cfg.title))}),`;
-        })
-        .join("\n");
-      return `  chapter(${JSON.stringify(id)}, ${num}, ${JSON.stringify(title)}, [\n${sections}\n  ])`;
-    })
+    .map(([id, title], idx) => buildChapterBlock(id, idx + 1, title, cfg.title))
     .join(",\n");
   return `import type { TextbookChapter, TextbookIntro } from "@/lib/courses/textbook/types";
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
 export const ${cfg.prefix}_TEXTBOOK_INTRO: TextbookIntro = {
   title: ${JSON.stringify(cfg.title)},
-  subtitle: ${JSON.stringify(`ForgEd path course — ${cfg.title}`)},
+  subtitle: ${JSON.stringify(`Workforce training — ${cfg.title}`)},
   paragraphs: [
-    ${JSON.stringify(`${cfg.title} is part of a structured ForgEd Learning Path. Complete courses in order to unlock the next step and earn path certifications.`)},
-    ${JSON.stringify("Each chapter includes five sections and section quizzes. Pass chapter quizzes, the course review, and final exam to mark the course complete.")},
-    ${JSON.stringify("Content is practical workforce education — not licensure, legal, or financial advice.")},
+    ${intro.map((p) => JSON.stringify(p)).join(",\n    ")},
   ],
 };
 

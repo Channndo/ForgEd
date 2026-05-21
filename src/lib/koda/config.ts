@@ -4,7 +4,10 @@ export const KODA_WELCOME =
   "Hi — I'm KODA, your learning companion on ForgEd. Ask me to explain a lesson, review a quiz answer, or suggest what to study next.";
 
 export const KODA_OFFLINE =
-  "KODA is offline right now. The shared Omnistrata AI host may be unreachable — check that Ollama is running and OLLAMA_BASE_URL is set on the server.";
+  "KODA is unavailable. Sign in to ForgEd, or the AI host may be updating — try again shortly.";
+
+export const KODA_SIGN_IN =
+  "Sign in to your ForgEd account to chat with KODA.";
 
 export const KODA_QUICK_PROMPTS = [
   "Explain this lesson more simply",

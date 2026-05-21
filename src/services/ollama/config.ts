@@ -45,16 +45,17 @@ export interface OllamaSettings {
 /** ForgEd production keeps KODA on unless explicitly turned off. */
 export function isKodaFeatureEnabled(): boolean {
   if (envBool("KODA_DISABLED", false)) return false;
+  if (process.env.NETLIFY === "true" || process.env.NODE_ENV === "production") {
+    return true;
+  }
   if (process.env.FORGED_WEB_APP_URL?.trim()) return true;
   return envBool("KODA_ENABLED", true);
 }
 
+/** Same Hetzner host as Syntrix MIRA (see /api/mira/status base_url). */
 export function defaultOllamaBaseUrl(): string {
   const raw = process.env.OLLAMA_BASE_URL?.trim();
   if (raw) return raw.replace(/\/$/, "");
-  if (process.env.FORGED_WEB_APP_URL?.trim()) {
-    return "https://ollama.syntrix.solutions";
-  }
   return "http://127.0.0.1:11434";
 }
 

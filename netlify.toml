@@ -6,12 +6,12 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  # ForgEd accounts + KODA (Ollama via Apps Script; optional direct override below)
+  # KODA → Syntrix API → Hetzner Ollama (same as MIRA / CoverIQ). Requires FORGED_SERVER_SECRET in Netlify UI.
   KODA_ENABLED = "true"
   KODA_USE_SYNTRIX = "false"
-  KODA_USE_GAS_OLLAMA = "true"
-  OLLAMA_BASE_URL = "https://ollama.syntrix.solutions"
-  # Also set OLLAMA_API_KEY in Netlify UI if using direct Ollama (KODA_USE_GAS_OLLAMA=false)
+  KODA_USE_GAS_OLLAMA = "false"
+  SYNTRIX_API_URL = "https://api.syntrix.solutions"
+  FORGED_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyMUFkHPuSN2ajb-09lXAZvxt1n7M59dZ4L2NlpLTy8H3l3Ay_Nyx3iIP19XhwA7x-Q/exec"
 
 # Force HTTPS (fixes browser "Not Secure" when cert is valid)
 [[redirects]]

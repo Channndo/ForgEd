@@ -381,7 +381,7 @@ const EXTENDED_CATALOG: Course[] = [
     "healthcare-fundamentals",
     "Healthcare Fundamentals",
     "healthcare",
-    "Ten-chapter textbook on healthcare systems, patient care, terminology, billing, pharmacy, public health, and HIPAA.",
+    "Ten-chapter academic survey: U.S. financing and delivery, clinical communication, medical terminology, revenue cycle, pharmacy safety, public health, ethics and HIPAA, emergency systems, careers, and digital health.",
     [
       { id: "health-systems", name: "Healthcare Systems" },
       { id: "patient-care", name: "Patient Care" },

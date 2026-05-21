@@ -14,8 +14,14 @@ import { getOllamaSettings } from "@/services/ollama/config";
 import { assertKodaAuthorized, kodaRequiresSignIn, KodaAuthError } from "./kodaAuth";
 import { forgedGasKodaChat, forgedGasKodaHealth } from "./forgedGasKoda";
 import {
+  forgedSyntrixKodaChat,
+  ForgedSyntrixKodaError,
+  getForgedSyntrixKodaStatus,
+} from "./forgedSyntrixKoda";
+import {
   useForgedAccountKoda,
   useForgedGasOllama,
+  useSyntrixForgedKoda,
   useSyntrixKoda,
 } from "./inference";
 import { getSyntrixKodaStatus, syntrixKodaChat, SyntrixKodaError } from "./syntrixKoda";
@@ -89,6 +95,27 @@ export async function getKodaStatus(
     };
   }
 
+  if (useSyntrixForgedKoda()) {
+    const st = await getForgedSyntrixKodaStatus();
+    const token = extractBearerFromHeader(authHeader);
+    const hasToken = Boolean(token);
+    const stackUp = st.enabled;
+    return {
+      enabled: settings.kodaEnabled,
+      available:
+        settings.kodaEnabled && (!requiresSignIn || hasToken),
+      model: st.model || settings.model,
+      cognitiveStack: "Omnistrata-Ollama",
+      assistant: "KODA",
+      requiresSignIn,
+      degraded: hasToken && settings.kodaEnabled && !stackUp,
+      detail: stackUp
+        ? undefined
+        : st.detail ||
+          "Deploy the latest Syntrix API (Render) with FORGED_SERVER_SECRET matching Netlify.",
+    };
+  }
+
   let health = await ollamaHealth();
   if (useForgedGasOllama()) {
     const gas = await forgedGasKodaHealth();
@@ -136,6 +163,9 @@ export function assertKodaEnabled(): void {
   if (!settings.kodaEnabled) {
     throw new KodaServiceError(503, "KODA is disabled on this deployment.");
   }
+  if (useSyntrixForgedKoda()) {
+    return;
+  }
   if (!settings.baseUrl) {
     throw new KodaServiceError(503, "OLLAMA_BASE_URL is not configured.");
   }
@@ -165,6 +195,23 @@ export async function kodaChat(
       return await syntrixKodaChat(request, authHeader ?? null);
     } catch (e) {
       if (e instanceof SyntrixKodaError) {
+        throw new KodaServiceError(e.status, e.message);
+      }
+      throw e;
+    }
+  }
+
+  if (useSyntrixForgedKoda()) {
+    try {
+      const result = await forgedSyntrixKodaChat(request);
+      const sessionId = request.sessionId ?? crypto.randomUUID();
+      await saveSession(sessionId, [
+        ...request.messages,
+        { role: "assistant", content: result.message },
+      ]);
+      return { ...result, sessionId };
+    } catch (e) {
+      if (e instanceof ForgedSyntrixKodaError) {
         throw new KodaServiceError(e.status, e.message);
       }
       throw e;
@@ -247,6 +294,19 @@ export async function* kodaChatStreamGenerator(
     const result = await syntrixKodaChat(request, authHeader ?? null);
     if (result.message) yield result.message;
     return;
+  }
+
+  if (useSyntrixForgedKoda()) {
+    try {
+      const result = await forgedSyntrixKodaChat(request);
+      if (result.message) yield result.message;
+      return;
+    } catch (e) {
+      if (e instanceof ForgedSyntrixKodaError) {
+        throw new KodaServiceError(e.status, e.message);
+      }
+      throw e;
+    }
   }
 
   const mode = request.mode ?? "chat";

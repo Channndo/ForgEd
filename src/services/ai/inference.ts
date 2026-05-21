@@ -1,7 +1,7 @@
 /**
  * Where KODA runs inference in this deployment.
- * Production (Netlify): Syntrix /api/koda/* → shared Omnistrata Ollama (same as MIRA).
- * Local dev: direct OLLAMA_BASE_URL unless KODA_USE_SYNTRIX=true.
+ * Production: Syntrix API → shared Hetzner Ollama (same path as MIRA / CoverIQ).
+ * Local dev: direct OLLAMA_BASE_URL when set, else Syntrix forged bridge when configured.
  */
 
 export function syntrixApiBase(): string {
@@ -11,37 +11,36 @@ export function syntrixApiBase(): string {
   );
 }
 
-function syntrixKodaEnabled(): boolean {
-  const flag = process.env.KODA_USE_SYNTRIX?.trim().toLowerCase();
-  if (flag === "false" || flag === "0") return false;
-  if (flag === "true" || flag === "1") return true;
-  if (process.env.NETLIFY === "true") return true;
-  if (process.env.VERCEL === "1") return true;
-  if (process.env.NODE_ENV === "production") return true;
-  return false;
-}
-
-/** ForgEd GAS session + server-side Ollama (see README — requires OLLAMA_BASE_URL on Netlify). */
+/** ForgEd Google Apps Script accounts (session token on chat). */
 export function useForgedAccountKoda(): boolean {
   return Boolean(process.env.FORGED_WEB_APP_URL?.trim());
 }
 
 /**
- * Route Ollama through the ForgEd Apps Script Web App (Script Properties hold URL + API key).
- * Default when ForgEd accounts are configured — Netlify cannot reach localhost Ollama.
+ * Syntrix server bridge — same Ollama as MIRA; uses FORGED_SERVER_SECRET (not learner JWT).
+ * This is how ForgEd reaches Hetzner without duplicating OLLAMA_API_KEY on Netlify.
  */
+export function useSyntrixForgedKoda(): boolean {
+  if (!useForgedAccountKoda()) return false;
+  const flag = process.env.KODA_USE_SYNTRIX_FORGED?.trim().toLowerCase();
+  if (flag === "false" || flag === "0") return false;
+  return Boolean(process.env.FORGED_SERVER_SECRET?.trim());
+}
+
+/** Legacy JWT KODA routes on Syntrix (/api/koda/*) — CoverIQ-style; not used when ForgEd GAS auth is on. */
+export function useSyntrixKoda(): boolean {
+  if (useForgedAccountKoda()) return false;
+  const flag = process.env.KODA_USE_SYNTRIX?.trim().toLowerCase();
+  if (flag === "false" || flag === "0") return false;
+  if (flag === "true" || flag === "1") return true;
+  return false;
+}
+
+/** Optional: call Ollama from Apps Script instead of Syntrix (not recommended). */
 export function useForgedGasOllama(): boolean {
   if (!useForgedAccountKoda()) return false;
   const flag = process.env.KODA_USE_GAS_OLLAMA?.trim().toLowerCase();
-  if (flag === "false" || flag === "0") return false;
-  if (flag === "true" || flag === "1") return true;
-  return true;
-}
-
-/** Syntrix KODA API — only when ForgEd accounts are not configured. */
-export function useSyntrixKoda(): boolean {
-  if (useForgedAccountKoda()) return false;
-  return syntrixKodaEnabled();
+  return flag === "true" || flag === "1";
 }
 
 export function extractBearer(authHeader: string | null | undefined): string | null {

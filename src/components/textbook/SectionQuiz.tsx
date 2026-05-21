@@ -7,6 +7,10 @@ import { pickSectionQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
 import { isSectionQuizPassed, markSectionQuizPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import {
+  queueTextbookScrollRestore,
+  scrollToTextbookAnchor,
+} from "@/lib/textbookScrollRestore";
 
 type Phase = "idle" | "quiz" | "results";
 
@@ -25,6 +29,7 @@ export function SectionQuiz({
   chapterId,
   lessonId,
   sectionTitle,
+  scrollRestoreAnchor,
 }: {
   courseId: string;
   courseSlug: string;
@@ -32,6 +37,7 @@ export function SectionQuiz({
   chapterId: string;
   lessonId: string;
   sectionTitle: string;
+  scrollRestoreAnchor: string;
 }) {
   const { refresh, progress } = useProgress();
   const alreadyPassed = (progress.sectionQuizzesPassed?.[courseId] ?? []).includes(
@@ -68,6 +74,7 @@ export function SectionQuiz({
     const result = gradeSession(questions, answers);
     setGraded(result);
     setPhase("results");
+    queueTextbookScrollRestore(courseSlug, scrollRestoreAnchor);
     if (isPassingScore(result.score, result.total)) {
       markSectionQuizPassed(courseId, lessonId, {
         courseSlug,
@@ -87,6 +94,8 @@ export function SectionQuiz({
   };
 
   const collapse = () => {
+    queueTextbookScrollRestore(courseSlug, scrollRestoreAnchor);
+    scrollToTextbookAnchor(scrollRestoreAnchor);
     setOpen(false);
     setPhase("idle");
     setQuestions([]);

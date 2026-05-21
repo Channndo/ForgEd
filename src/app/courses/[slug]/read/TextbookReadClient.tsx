@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { getCourseBySlug } from "@/lib/courses/catalog";
 import { getTextbookBundle } from "@/lib/courses/textbook/registry";
@@ -22,6 +22,8 @@ import {
   isChapterUnlocked,
 } from "@/lib/courses/textbook/gating";
 import { Button } from "@/components/ui/Button";
+import { TEXTBOOK_FOOTER_DISCLAIMER } from "@/lib/educationDisclaimer";
+import { consumeTextbookScrollRestore } from "@/lib/textbookScrollRestore";
 
 export default function TextbookReadClient() {
   const params = useParams();
@@ -44,15 +46,48 @@ export default function TextbookReadClient() {
     []
   );
 
+  const progressRef = useRef(progress);
+  const restoringScrollRef = useRef(false);
+  const [hashReady, setHashReady] = useState(false);
+
+  useEffect(() => {
+    progressRef.current = progress;
+  }, [progress]);
+
+  const canScrollToAnchor = useCallback(
+    (anchorId: string): boolean => {
+      if (!course || !anchorId) return false;
+      const chapterOnlyIndex = chapters.findIndex((c) => c.id === anchorId);
+      if (chapterOnlyIndex >= 0) {
+        return isChapterUnlocked(
+          progressRef.current,
+          course.id,
+          chapters,
+          chapterOnlyIndex
+        );
+      }
+      const located = findSectionBySectionId(chapters, anchorId);
+      if (!located) return false;
+      return isChapterUnlocked(
+        progressRef.current,
+        course.id,
+        chapters,
+        located.chapterIndex
+      );
+    },
+    [course, chapters]
+  );
+
   const enforceSequentialAccess = useCallback(() => {
     if (!course || chapters.length === 0) return;
+    const p = progressRef.current;
     const hash = window.location.hash.replace("#", "");
     if (!hash) return;
 
     const chapterOnlyIndex = chapters.findIndex((c) => c.id === hash);
     if (chapterOnlyIndex >= 0) {
-      if (!isChapterUnlocked(progress, course.id, chapters, chapterOnlyIndex)) {
-        const locked = firstLockedSectionAnchor(progress, course.id, chapters);
+      if (!isChapterUnlocked(p, course.id, chapters, chapterOnlyIndex)) {
+        const locked = firstLockedSectionAnchor(p, course.id, chapters);
         if (locked) {
           history.replaceState(null, "", `#${locked.sectionId}`);
           scrollToHash(locked.sectionId);
@@ -67,34 +102,108 @@ export default function TextbookReadClient() {
     const located = findSectionBySectionId(chapters, hash);
     if (located) {
       const allowed = isChapterUnlocked(
-        progress,
+        p,
         course.id,
         chapters,
         located.chapterIndex
       );
       if (!allowed) {
-        const locked = firstLockedSectionAnchor(progress, course.id, chapters);
+        const locked = firstLockedSectionAnchor(p, course.id, chapters);
         if (locked) {
           history.replaceState(null, "", `#${locked.sectionId}`);
           scrollToHash(locked.sectionId);
         }
         return;
       }
+      scrollToHash(hash);
+      return;
     }
 
     scrollToHash(hash);
-  }, [course, chapters, progress, scrollToHash]);
+  }, [course, chapters, scrollToHash]);
 
   useEffect(() => {
-    const t = setTimeout(() => enforceSequentialAccess(), 80);
+    const t = setTimeout(() => {
+      enforceSequentialAccess();
+      setHashReady(true);
+    }, 80);
     return () => clearTimeout(t);
-  }, [enforceSequentialAccess]);
+  }, [slug, enforceSequentialAccess]);
 
   useEffect(() => {
     const onHash = () => enforceSequentialAccess();
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, [enforceSequentialAccess]);
+
+  useEffect(() => {
+    if (!hashReady || !activeSectionId || restoringScrollRef.current) return;
+    const hash = window.location.hash.replace("#", "");
+    if (hash === activeSectionId) return;
+    const t = window.setTimeout(() => {
+      if (canScrollToAnchor(activeSectionId)) {
+        history.replaceState(null, "", `#${activeSectionId}`);
+      }
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [activeSectionId, hashReady, canScrollToAnchor]);
+
+  useEffect(() => {
+    if (!course || chapters.length === 0) return;
+    const pendingRestore = consumeTextbookScrollRestore(slug);
+    if (!pendingRestore) return;
+
+    const p = progressRef.current;
+    const chapterOnlyIndex = chapters.findIndex((c) => c.id === pendingRestore);
+    if (chapterOnlyIndex >= 0) {
+      if (!isChapterUnlocked(p, course.id, chapters, chapterOnlyIndex)) {
+        enforceSequentialAccess();
+        return;
+      }
+    } else {
+      const located = findSectionBySectionId(chapters, pendingRestore);
+      if (
+        located &&
+        !isChapterUnlocked(p, course.id, chapters, located.chapterIndex)
+      ) {
+        enforceSequentialAccess();
+        return;
+      }
+    }
+
+    restoringScrollRef.current = true;
+    history.replaceState(null, "", `#${pendingRestore}`);
+    const frame = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollToHash(pendingRestore, "instant");
+        restoringScrollRef.current = false;
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [progress, course, chapters, slug, enforceSequentialAccess, scrollToHash]);
+
+  useEffect(() => {
+    if (!course || chapters.length === 0) return;
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+    const p = progressRef.current;
+
+    const chapterOnlyIndex = chapters.findIndex((c) => c.id === hash);
+    if (chapterOnlyIndex >= 0) {
+      if (!isChapterUnlocked(p, course.id, chapters, chapterOnlyIndex)) {
+        enforceSequentialAccess();
+      }
+      return;
+    }
+
+    const located = findSectionBySectionId(chapters, hash);
+    if (
+      located &&
+      !isChapterUnlocked(p, course.id, chapters, located.chapterIndex)
+    ) {
+      enforceSequentialAccess();
+    }
+  }, [progress, course, chapters, enforceSequentialAccess]);
 
   if (!course || !bundle) {
     return (
@@ -165,9 +274,7 @@ export default function TextbookReadClient() {
             </div>
 
             <p className="mt-8 text-xs leading-relaxed text-[var(--muted)]">
-              ForgEd digital textbooks are general education — not legal, medical, licensing exam,
-              or professional advice. Verify current laws, rates, and product terms with official
-              sources before making decisions.
+              {TEXTBOOK_FOOTER_DISCLAIMER}
             </p>
           </div>
         </div>

@@ -171,6 +171,9 @@ export function TextbookChapterArticle({
           chapterNumber={chapter.number}
           chapterTitle={chapter.title}
           chapterId={chapter.id}
+          scrollRestoreAnchor={
+            chapter.sections[chapter.sections.length - 1]?.id ?? chapter.id
+          }
           sectionLessonIds={chapter.sections.map((s) =>
             sectionLessonId(chapter.id, s.id)
           )}

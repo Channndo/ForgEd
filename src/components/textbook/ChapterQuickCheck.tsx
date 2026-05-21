@@ -10,6 +10,10 @@ import {
   markChapterQuickCheckPassed,
 } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import {
+  queueTextbookScrollRestore,
+  scrollToTextbookAnchor,
+} from "@/lib/textbookScrollRestore";
 
 type Phase = "idle" | "quiz" | "results";
 
@@ -31,6 +35,7 @@ export function ChapterQuickCheck({
   chapterNumber,
   chapterTitle,
   chapterId,
+  scrollRestoreAnchor,
   sectionLessonIds = [],
 }: {
   courseId: string;
@@ -38,6 +43,7 @@ export function ChapterQuickCheck({
   chapterNumber: number;
   chapterTitle: string;
   chapterId: string;
+  scrollRestoreAnchor: string;
   sectionLessonIds?: string[];
 }) {
   const { refresh, progress } = useProgress();
@@ -75,6 +81,7 @@ export function ChapterQuickCheck({
     const result = gradeSession(questions, answers);
     setGraded(result);
     setPhase("results");
+    queueTextbookScrollRestore(courseSlug, scrollRestoreAnchor);
     if (isPassingScore(result.score, result.total)) {
       markChapterQuickCheckPassed(courseId, chapterNumber, 25, {
         sectionLessonIds,
@@ -94,6 +101,8 @@ export function ChapterQuickCheck({
   };
 
   const collapse = () => {
+    queueTextbookScrollRestore(courseSlug, scrollRestoreAnchor);
+    scrollToTextbookAnchor(scrollRestoreAnchor);
     setOpen(false);
     setPhase("idle");
     setQuestions([]);

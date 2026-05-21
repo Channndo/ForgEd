@@ -1,0 +1,29 @@
+---
+description: Build ForgEd post-signup welcome modal — brand theme, trigger, do-not-touch list
+globs: src/app/signup/**,src/app/dashboard/**,src/components/welcome/**,src/lib/welcome/**
+alwaysApply: false
+---
+
+# ForgEd welcome modal (post–account creation)
+
+**Read first:** `docs/prompts/welcome-account-modal.md` — full spec, copy, wireframe, and verification.
+
+## Summary
+
+Build a **one-time modal** (welcome “email” style popup) after successful signup when the user hits the dashboard. Match the **ForgEd metallic brand**: black background, silver/gold, serif headings, tagline **“Learn Skills That Matter.”**
+
+## Brand (required)
+
+- Reference art: `assets/887B4512-18D6-4BD9-81F5-5CD28B58C958-*.png`
+- Reuse: `ForgEdLogo`, `ForgEdTagline`, `ForgEdWordmarkText`, CSS vars in `globals.css`, `glass` / `withBasePath("/forged-wordmark.png")`
+- **DO NOT** replace or edit `public/forged-icon.png`, `public/forged-wordmark.png`, or `ForgEdLogo.tsx` asset paths
+
+## Trigger
+
+- Set `sessionStorage forged_show_welcome` on signup success (`src/app/signup/page.tsx`)
+- Show modal on dashboard (or auth layout); persist dismiss with `localStorage forged_welcome_seen_v1`
+
+## Scope limits
+
+- Do **not** change KODA prompts, Syntrix, CoverIQ, quiz banks, or unrelated pages
+- Modal only — no SMTP unless user explicitly asks for real email

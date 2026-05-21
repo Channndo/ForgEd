@@ -67,7 +67,7 @@ function SidebarInner({
   const activeDomain = searchParams.get("domain");
   const [expanded, setExpanded] = useState<Set<string>>(() => {
     if (activeDomain) return new Set([activeDomain]);
-    return new Set<LearningDomainId>(["technology", "finance"]);
+    return new Set();
   });
   const [futureOpen, setFutureOpen] = useState(false);
 

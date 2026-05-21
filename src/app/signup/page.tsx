@@ -14,6 +14,7 @@ import {
   US_STATES,
 } from "@/lib/forged-account/signupConstants";
 import type { SignUpInput } from "@/lib/forged-account/types";
+import { setWelcomePending } from "@/lib/welcome/constants";
 
 function digitsOnly(value: string) {
   return value.replace(/\D/g, "");
@@ -107,6 +108,7 @@ export default function SignupPage() {
       setError(res.error);
       return;
     }
+    setWelcomePending();
     router.replace(withBasePath("/dashboard"));
   }
 
@@ -116,7 +118,7 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Create your ForgEd account"
-      subtitle="Your progress, XP, paths, and certifications sync to your account — pick up exactly where you left off."
+      subtitle="Your progress, XP, paths, and completion badges sync to your account — pick up exactly where you left off."
       maxWidthClass="max-w-xl"
     >
       <form onSubmit={handleSubmit} className="max-h-[70vh] space-y-6 overflow-y-auto pr-1">

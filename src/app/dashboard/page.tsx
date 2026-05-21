@@ -25,6 +25,7 @@ import { withBasePath } from "@/lib/basePath";
 import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
+import { WelcomeAccountModal } from "@/components/welcome/WelcomeAccountModal";
 
 export default function DashboardPage() {
   const { profile, user } = useAuth();
@@ -47,6 +48,8 @@ export default function DashboardPage() {
   const weeklyGoal = Math.min(100, Math.round((completedLessons / Math.max(totalLessons, 1)) * 100));
 
   return (
+    <>
+    <WelcomeAccountModal firstName={firstName} />
     <div className="space-y-10">
       {/* Command center hero */}
       <section className="relative rounded-2xl border border-[var(--gold)]/12 bg-gradient-to-br from-[#0a0a0a] via-[#101010] to-[#0a0a0a] p-6 sm:p-8">
@@ -106,7 +109,7 @@ export default function DashboardPage() {
           </div>
           <p className="mt-2 text-2xl font-bold text-[var(--silver)]">{completedCourses}</p>
           <p className="text-sm text-[var(--muted)]">
-            {completedCourses === 1 ? "course" : "courses"} completed · certificates on pass
+            {completedCourses === 1 ? "course" : "courses"} completed · completion badges on pass
           </p>
         </Card>
         <Card className="transition hover:border-[var(--gold)]/20">
@@ -279,6 +282,7 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

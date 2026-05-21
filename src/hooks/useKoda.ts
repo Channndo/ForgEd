@@ -14,7 +14,7 @@ import {
   KODA_SIGN_IN,
   KODA_WELCOME,
 } from "@/lib/koda/config";
-import { hasActiveSession } from "@/lib/forged-account/session";
+import { clearSession, hasActiveSession } from "@/lib/forged-account/session";
 import { useAuth } from "@/components/providers/AuthProvider";
 import type {
   KodaChatMessage,
@@ -139,6 +139,10 @@ export function useKoda(initialContext?: KodaLearningContext) {
         setStreaming(false);
         setLoading(false);
         if (!res.ok) {
+          if (res.error?.includes("Session expired")) {
+            clearSession();
+            void refreshStatus();
+          }
           setMessages([
             ...nextMessages,
             {
@@ -162,6 +166,10 @@ export function useKoda(initialContext?: KodaLearningContext) {
       setLoading(false);
 
       if (!res.ok || !res.data?.message) {
+        if (res.error?.includes("Session expired")) {
+          clearSession();
+          void refreshStatus();
+        }
         setMessages([
           ...nextMessages,
           {

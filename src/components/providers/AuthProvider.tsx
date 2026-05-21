@@ -64,9 +64,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profile = await getUserProfile();
       writeSession(token, profile);
       setUser(profile);
-    } catch {
-      clearSession();
-      setUser(null);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "";
+      if (/session expired|sign in required/i.test(msg)) {
+        clearSession();
+        setUser(null);
+      }
+      /* Keep cached profile when GAS is slow or cold — do not log the user out. */
     }
   }, []);
 
@@ -80,7 +84,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     if (cached) setUser(cached);
-    void refreshProfile().finally(() => setLoading(false));
+    setLoading(false);
+    void refreshProfile();
   }, [refreshProfile]);
 
   const signIn = useCallback(async (email: string, password: string) => {

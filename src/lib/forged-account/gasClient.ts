@@ -12,12 +12,27 @@ export async function callForgedGas(
     throw new Error("FORGED_WEB_APP_URL is not configured.");
   }
 
-  const res = await fetch(WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    redirect: "follow",
-  });
+  let res: Response;
+  try {
+    res = await fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      redirect: "follow",
+      signal: AbortSignal.timeout(25_000),
+    });
+  } catch (e) {
+    const timedOut =
+      e instanceof Error &&
+      (e.name === "TimeoutError" || e.name === "AbortError");
+    throw new Error(
+      timedOut
+        ? "ForgEd accounts timed out — Google Apps Script may be waking up. Try again in a few seconds."
+        : e instanceof Error
+          ? e.message
+          : "Could not reach ForgEd accounts."
+    );
+  }
 
   const text = await res.text();
   const trimmed = text.trim();

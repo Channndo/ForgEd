@@ -58,10 +58,10 @@ export default function DashboardPage() {
               alt="ForgEd — Learn Skills That Matter"
               width={800}
               height={800}
-              className="h-auto w-64 object-contain object-left sm:w-72 md:w-80"
+              className="h-auto w-44 object-contain object-left sm:w-48 md:w-52"
               priority
             />
-            <p className="mt-5 font-serif text-lg text-[var(--silver)]">
+            <p className="mt-4 font-serif text-lg text-[var(--silver)]">
               Welcome back, {firstName}.
             </p>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)] sm:text-base">

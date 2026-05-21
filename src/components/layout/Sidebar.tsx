@@ -117,7 +117,9 @@ function SidebarInner({
             className="flex min-w-0 items-center gap-2.5"
             onClick={onMobileClose}
           >
-            <ForgEdLogo variant="icon" priority />
+            <span className="inline-flex shrink-0 items-center justify-center pb-0.5">
+              <ForgEdLogo variant="icon" priority />
+            </span>
             {!collapsed && <ForgEdWordmarkText size="sm" />}
           </Link>
           <button

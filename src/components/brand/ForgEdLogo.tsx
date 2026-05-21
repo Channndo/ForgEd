@@ -31,7 +31,7 @@ export function ForgEdLogo({
       width={width}
       height={height}
       className={`shrink-0 object-contain object-center ${
-        variant === "icon" ? "h-10 w-10" : "h-auto w-auto max-h-24 sm:max-h-32"
+        variant === "icon" ? "h-9 w-9 max-h-none" : "h-auto w-auto max-h-24 sm:max-h-32"
       } ${className}`}
       priority={priority}
     />

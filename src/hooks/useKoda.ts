@@ -9,7 +9,8 @@ import {
   kodaRecommend,
 } from "@/lib/koda/api";
 import { KODA_OFFLINE, KODA_SIGN_IN, KODA_WELCOME } from "@/lib/koda/config";
-import { getAccessToken } from "@/lib/forged-account/session";
+import { hasActiveSession } from "@/lib/forged-account/session";
+import { useAuth } from "@/components/providers/AuthProvider";
 import type {
   KodaChatMessage,
   KodaLearningContext,
@@ -29,6 +30,7 @@ function loadSessionId(): string {
 }
 
 export function useKoda(initialContext?: KodaLearningContext) {
+  const { user, loading: authLoading } = useAuth();
   const [available, setAvailable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -41,31 +43,41 @@ export function useKoda(initialContext?: KodaLearningContext) {
     contextRef.current = initialContext;
   }, [initialContext]);
 
+  const refreshStatus = useCallback(async () => {
+    const st = await fetchKodaStatus();
+    const signedIn = hasActiveSession();
+    const backendUp = st.responded && st.enabled;
+    const up = backendUp && st.available;
+    setAvailable(up);
+    setStatusNote(
+      up
+        ? "KODA is ready — powered by Omnistrata AI."
+        : !signedIn && st.requiresSignIn
+          ? KODA_SIGN_IN
+          : KODA_OFFLINE
+    );
+    if (up) {
+      setMessages((prev) =>
+        prev.length === 0 ? [{ role: "assistant", content: KODA_WELCOME }] : prev
+      );
+    }
+  }, []);
+
   useEffect(() => {
     setSessionId(loadSessionId());
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
     let cancelled = false;
-    (async () => {
-      const st = await fetchKodaStatus();
+    void (async () => {
+      await refreshStatus();
       if (cancelled) return;
-      const signedIn = Boolean(getAccessToken());
-      const backendUp = st.responded && st.enabled;
-      const up = backendUp && st.available;
-      setAvailable(up);
-      setStatusNote(
-        up
-          ? "KODA is ready — powered by Omnistrata AI."
-          : !signedIn && st.requiresSignIn
-            ? KODA_SIGN_IN
-            : KODA_OFFLINE
-      );
-      if (up) {
-        setMessages([{ role: "assistant", content: KODA_WELCOME }]);
-      }
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [authLoading, user?.email, refreshStatus]);
 
   const setContext = useCallback((ctx: KodaLearningContext) => {
     contextRef.current = ctx;
@@ -196,5 +208,6 @@ export function useKoda(initialContext?: KodaLearningContext) {
     setContext,
     reset,
     setMessages,
+    refreshStatus,
   };
 }

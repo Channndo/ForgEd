@@ -20,6 +20,7 @@ export function KodaChatPanel() {
     send,
     setContext,
     reset,
+    refreshStatus,
   } = useKoda(context);
 
   const [input, setInput] = useState("");
@@ -39,6 +40,10 @@ export function KodaChatPanel() {
       clearPendingPrompt();
     }
   }, [open, pendingPrompt, send, clearPendingPrompt]);
+
+  useEffect(() => {
+    if (open) void refreshStatus();
+  }, [open, refreshStatus]);
 
   useEffect(() => {
     if (!open) return;

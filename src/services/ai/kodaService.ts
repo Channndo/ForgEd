@@ -82,11 +82,8 @@ export async function getKodaStatus(
   let available =
     settings.kodaEnabled && health.ok && !!settings.baseUrl;
   if (requiresSignIn && available) {
-    try {
-      await assertKodaAuthorized(authHeader);
-    } catch {
-      available = false;
-    }
+    const token = authHeader?.match(/^Bearer\s+(.+)$/i)?.[1]?.trim();
+    available = Boolean(token);
   }
   return {
     enabled: settings.kodaEnabled,

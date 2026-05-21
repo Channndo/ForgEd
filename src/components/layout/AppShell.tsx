@@ -22,9 +22,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <TopBar onMenuClick={() => setMobileOpen(true)} />
-        <main
-          className={`min-h-0 flex-1 ${isTextbookReader ? "overflow-hidden" : "overflow-y-auto"}`}
-        >
+        <main className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
           {isTextbookReader ? (
             <div className="w-full">{children}</div>
           ) : (

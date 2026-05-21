@@ -2,9 +2,8 @@
 
 import type { TextbookChapter } from "@/lib/courses/textbook/types";
 import {
-  findSectionBySectionId,
   firstLockedSectionAnchor,
-  isSectionUnlocked,
+  isChapterUnlocked,
 } from "@/lib/courses/textbook/gating";
 import { useProgress } from "@/components/providers/ProgressProvider";
 
@@ -23,7 +22,7 @@ export function TextbookMobileChapterSelect({
         htmlFor="textbook-chapter-jump"
         className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)]"
       >
-        Jump to section (unlocked only)
+        Jump to section
       </label>
       <select
         id="textbook-chapter-jump"
@@ -32,19 +31,10 @@ export function TextbookMobileChapterSelect({
         onChange={(e) => {
           const id = e.target.value;
           if (!id) return;
-          const located = findSectionBySectionId(chapters, id);
-          if (!located) {
-            window.location.hash = id;
-            return;
-          }
-          const allowed = isSectionUnlocked(
-            progress,
-            courseId,
-            chapters,
-            located.chapterIndex,
-            located.sectionIndex
+          const chapterIndex = chapters.findIndex((c) =>
+            c.sections.some((s) => s.id === id)
           );
-          if (!allowed) {
+          if (chapterIndex >= 0 && !isChapterUnlocked(progress, courseId, chapters, chapterIndex)) {
             const locked = firstLockedSectionAnchor(progress, courseId, chapters);
             if (locked) window.location.hash = locked.sectionId;
             return;
@@ -53,24 +43,16 @@ export function TextbookMobileChapterSelect({
         }}
       >
         <option value="" disabled>
-          Select an unlocked section…
+          Select a section…
         </option>
         {chapters.map((ch, chapterIndex) =>
-          ch.sections.map((sec, sectionIndex) => {
-            const unlocked = isSectionUnlocked(
-              progress,
-              courseId,
-              chapters,
-              chapterIndex,
-              sectionIndex
-            );
-            if (!unlocked) return null;
-            return (
-              <option key={sec.id} value={sec.id}>
-                Ch. {ch.number} · {sec.title.replace(/^\d+\.\d+\s*/, "")}
-              </option>
-            );
-          })
+          isChapterUnlocked(progress, courseId, chapters, chapterIndex)
+            ? ch.sections.map((sec) => (
+                <option key={sec.id} value={sec.id}>
+                  Ch. {ch.number} · {sec.title.replace(/^\d+\.\d+\s*/, "")}
+                </option>
+              ))
+            : null
         )}
       </select>
     </div>

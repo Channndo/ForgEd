@@ -20,7 +20,6 @@ import {
   findSectionBySectionId,
   firstLockedSectionAnchor,
   isChapterUnlocked,
-  isSectionUnlocked,
 } from "@/lib/courses/textbook/gating";
 import { Button } from "@/components/ui/Button";
 
@@ -67,23 +66,17 @@ export default function TextbookReadClient() {
 
     const located = findSectionBySectionId(chapters, hash);
     if (located) {
-      const allowed = isSectionUnlocked(
+      const allowed = isChapterUnlocked(
         progress,
         course.id,
         chapters,
-        located.chapterIndex,
-        located.sectionIndex
+        located.chapterIndex
       );
       if (!allowed) {
         const locked = firstLockedSectionAnchor(progress, course.id, chapters);
         if (locked) {
-          const el =
-            document.getElementById(locked.sectionId) ??
-            document.getElementById(locked.chapterId);
-          if (el) {
-            history.replaceState(null, "", `#${el.id}`);
-            el.scrollIntoView({ behavior: "smooth" });
-          }
+          history.replaceState(null, "", `#${locked.sectionId}`);
+          scrollToHash(locked.sectionId);
         }
         return;
       }

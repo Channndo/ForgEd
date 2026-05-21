@@ -7,13 +7,11 @@ import {
   computeCourseProgressPercent,
   countCompletedLessons,
 } from "@/lib/courseProgress";
+import { isChapterUnlocked } from "@/lib/courses/textbook/gating";
 import {
-  countSectionQuizzesPassed,
-  isChapterUnlocked,
-  isSectionUnlocked,
-  sectionLessonId,
-} from "@/lib/courses/textbook/gating";
-import { isSectionQuizPassed } from "@/lib/progress";
+  countChapterQuickChecksPassed,
+  isChapterQuickCheckPassed,
+} from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { Lock } from "lucide-react";
 
@@ -33,7 +31,7 @@ export function TextbookTableOfContents({
   const { progress } = useProgress();
   const pct = computeCourseProgressPercent(progress, courseId);
   const { completed, total } = countCompletedLessons(progress, slug);
-  const sectionQuizzes = countSectionQuizzesPassed(progress, courseId, chapters);
+  const chapterQuizzes = countChapterQuickChecksPassed(courseId, chapters.length);
 
   return (
     <nav
@@ -41,7 +39,7 @@ export function TextbookTableOfContents({
       className="lg:sticky lg:top-24 lg:flex lg:max-h-[calc(100vh-7rem)] lg:w-72 lg:shrink-0 lg:flex-col"
     >
       <div className="rounded-2xl border border-white/[0.08] bg-[#0a0a0a]/90 p-5 backdrop-blur-sm lg:flex lg:flex-col lg:overflow-hidden">
-        <div className="mb-4">
+        <div className="mb-4 shrink-0">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">
             Table of contents
           </p>
@@ -67,16 +65,16 @@ export function TextbookTableOfContents({
               />
             </div>
             <p className="mt-1.5 text-xs text-[var(--muted)]">
-              Section quizzes{" "}
+              Chapter quizzes{" "}
               <span className="font-semibold text-[var(--silver)]">
-                {sectionQuizzes.passed}/{sectionQuizzes.total}
+                {chapterQuizzes.passed}/{chapterQuizzes.total}
               </span>
-              {" "}· {completed}/{total} sections
+              {" "}· {completed}/{total} sections read
             </p>
           </div>
         </div>
 
-        <ol className="mt-2 space-y-1 overflow-y-auto pr-1 lg:flex-1">
+        <ol className="mt-2 min-h-0 space-y-1 overflow-y-auto overscroll-contain pr-1 lg:flex-1">
           {chapters.map((ch, chapterIndex) => {
             const isChapterActive = activeChapterId === ch.id;
             const meta = getChapterMeta(slug, ch.id);
@@ -86,6 +84,7 @@ export function TextbookTableOfContents({
               chapters,
               chapterIndex
             );
+            const chapterQuizDone = isChapterQuickCheckPassed(courseId, ch.number);
 
             return (
               <li key={ch.id}>
@@ -98,9 +97,14 @@ export function TextbookTableOfContents({
                         : "text-[var(--muted)] hover:bg-white/[0.04] hover:text-[var(--silver)]"
                     }`}
                   >
-                    <span className="font-mono text-[10px] text-[var(--gold)]/70">
+                    <span className="flex items-center gap-1.5 font-mono text-[10px] text-[var(--gold)]/70">
                       Ch. {ch.number}
                       {meta ? ` · ${meta.readMinutes}m` : ""}
+                      {chapterQuizDone && (
+                        <span className="text-[var(--success)]" title="Chapter quiz passed">
+                          ✓
+                        </span>
+                      )}
                     </span>
                     <span className="mt-0.5 block text-sm leading-snug">{ch.title}</span>
                   </a>
@@ -115,43 +119,22 @@ export function TextbookTableOfContents({
                 )}
                 {isChapterActive && chapterOpen && (
                   <ul className="mb-2 ml-3 mt-0.5 space-y-0.5 border-l border-white/[0.06] pl-3">
-                    {ch.sections.map((sec, sectionIndex) => {
+                    {ch.sections.map((sec) => {
                       const sectionLabel = sec.title.replace(/^\d+\.\d+\s*/, "");
                       const isSectionActive = activeSectionId === sec.id;
-                      const lessonId = sectionLessonId(ch.id, sec.id);
-                      const secOpen = isSectionUnlocked(
-                        progress,
-                        courseId,
-                        chapters,
-                        chapterIndex,
-                        sectionIndex
-                      );
-                      const passed = isSectionQuizPassed(courseId, lessonId);
 
                       return (
                         <li key={sec.id}>
-                          {secOpen ? (
-                            <a
-                              href={`#${sec.id}`}
-                              className={`flex items-center gap-1.5 rounded py-1 pl-1 text-xs leading-snug transition ${
-                                isSectionActive
-                                  ? "font-medium text-[var(--gold)]"
-                                  : "text-[var(--muted)] hover:text-[var(--silver)]"
-                              }`}
-                            >
-                              {sectionLabel}
-                              {passed && (
-                                <span className="text-[var(--success)]" title="Section quiz passed">
-                                  ✓
-                                </span>
-                              )}
-                            </a>
-                          ) : (
-                            <span className="flex items-center gap-1 py-1 pl-1 text-xs text-[var(--muted)]/50">
-                              <Lock className="h-2.5 w-2.5" />
-                              {sectionLabel}
-                            </span>
-                          )}
+                          <a
+                            href={`#${sec.id}`}
+                            className={`block rounded py-1 pl-1 text-xs leading-snug transition ${
+                              isSectionActive
+                                ? "font-medium text-[var(--gold)]"
+                                : "text-[var(--muted)] hover:text-[var(--silver)]"
+                            }`}
+                          >
+                            {sectionLabel}
+                          </a>
                         </li>
                       );
                     })}
@@ -162,10 +145,9 @@ export function TextbookTableOfContents({
           })}
         </ol>
 
-        <div className="mt-5 hidden border-t border-white/[0.06] pt-4 text-xs leading-relaxed text-[var(--muted)] lg:block">
+        <div className="mt-5 shrink-0 border-t border-white/[0.06] pt-4 text-xs leading-relaxed text-[var(--muted)] lg:block">
           <p>
-            Read each section in order and pass its quiz before the next section unlocks. You cannot
-            skip ahead.
+            Read all sections in a chapter, then pass the chapter quiz to unlock the next chapter.
           </p>
           <Link
             href={`/courses/${slug}/quiz`}

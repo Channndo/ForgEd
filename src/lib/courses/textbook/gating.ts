@@ -1,6 +1,6 @@
 import type { TextbookChapter } from "./types";
 import type { UserProgress } from "@/lib/types";
-import { isSectionQuizPassed } from "@/lib/progress";
+import { isChapterQuickCheckPassed } from "@/lib/progress";
 
 export function sectionLessonId(chapterId: string, sectionId: string): string {
   return `${chapterId}-${sectionId}`;
@@ -40,30 +40,7 @@ export function findSectionIndex(
   return { chapterIndex, sectionIndex };
 }
 
-/** First section is always open; each next section requires the previous section quiz passed */
-export function isSectionUnlocked(
-  progress: UserProgress,
-  courseId: string,
-  chapters: TextbookChapter[],
-  chapterIndex: number,
-  sectionIndex: number
-): boolean {
-  if (sectionIndex === 0) {
-    if (chapterIndex === 0) return true;
-    const prevChapter = chapters[chapterIndex - 1];
-    const lastSection = prevChapter.sections[prevChapter.sections.length - 1];
-    if (!lastSection) return true;
-    const prevLessonId = sectionLessonId(prevChapter.id, lastSection.id);
-    return isSectionQuizPassed(courseId, prevLessonId);
-  }
-
-  const chapter = chapters[chapterIndex];
-  const prevSection = chapter.sections[sectionIndex - 1];
-  if (!prevSection) return true;
-  const prevLessonId = sectionLessonId(chapter.id, prevSection.id);
-  return isSectionQuizPassed(courseId, prevLessonId);
-}
-
+/** Chapter 1 is open; later chapters unlock after passing the previous chapter quiz */
 export function isChapterUnlocked(
   progress: UserProgress,
   courseId: string,
@@ -72,12 +49,19 @@ export function isChapterUnlocked(
 ): boolean {
   if (chapterIndex === 0) return true;
   const prevChapter = chapters[chapterIndex - 1];
-  const lastSection = prevChapter.sections[prevChapter.sections.length - 1];
-  if (!lastSection) return true;
-  return isSectionQuizPassed(
-    courseId,
-    sectionLessonId(prevChapter.id, lastSection.id)
-  );
+  if (!prevChapter) return true;
+  return isChapterQuickCheckPassed(courseId, prevChapter.number);
+}
+
+/** All sections in an unlocked chapter are readable — progression is per chapter quiz */
+export function isSectionUnlocked(
+  progress: UserProgress,
+  courseId: string,
+  chapters: TextbookChapter[],
+  chapterIndex: number,
+  _sectionIndex: number
+): boolean {
+  return isChapterUnlocked(progress, courseId, chapters, chapterIndex);
 }
 
 export function firstLockedSectionLessonId(
@@ -89,7 +73,7 @@ export function firstLockedSectionLessonId(
   return anchor ? sectionLessonId(anchor.chapterId, anchor.sectionId) : null;
 }
 
-/** DOM hash target for the first section the learner must complete */
+/** First chapter or section the learner must reach (chapter-gated) */
 export function firstLockedSectionAnchor(
   progress: UserProgress,
   courseId: string,
@@ -97,27 +81,10 @@ export function firstLockedSectionAnchor(
 ): { chapterId: string; sectionId: string } | null {
   for (let ci = 0; ci < chapters.length; ci++) {
     if (!isChapterUnlocked(progress, courseId, chapters, ci)) {
-      const first = chapters[ci].sections[0];
-      return first ? { chapterId: chapters[ci].id, sectionId: first.id } : null;
-    }
-    const ch = chapters[ci];
-    for (let si = 0; si < ch.sections.length; si++) {
-      if (!isSectionUnlocked(progress, courseId, chapters, ci, si)) {
-        return { chapterId: ch.id, sectionId: ch.sections[si].id };
-      }
+      const ch = chapters[ci];
+      const first = ch.sections[0];
+      return first ? { chapterId: ch.id, sectionId: first.id } : { chapterId: ch.id, sectionId: ch.id };
     }
   }
   return null;
-}
-
-export function countSectionQuizzesPassed(
-  progress: UserProgress,
-  courseId: string,
-  chapters: TextbookChapter[]
-): { passed: number; total: number } {
-  const ids = orderedSectionLessonIds(chapters);
-  const passed = (progress.sectionQuizzesPassed?.[courseId] ?? []).filter((id) =>
-    ids.includes(id)
-  ).length;
-  return { passed, total: ids.length };
 }

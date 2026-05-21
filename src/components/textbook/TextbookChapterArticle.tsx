@@ -8,13 +8,11 @@ import {
 } from "@/lib/courses/textbook/chapterMeta";
 import {
   isChapterUnlocked,
-  isSectionUnlocked,
   sectionLessonId,
 } from "@/lib/courses/textbook/gating";
-import { isSectionQuizPassed } from "@/lib/progress";
+import { isChapterQuickCheckPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { TextbookSectionContent } from "./TextbookSectionContent";
-import { SectionQuiz } from "./SectionQuiz";
 import { ChapterQuickCheck } from "./ChapterQuickCheck";
 import { LockedSection } from "./LockedSection";
 import { getCourseBySlug } from "@/lib/courses/catalog";
@@ -42,10 +40,6 @@ export function TextbookChapterArticle({
   const roman = toRoman(chapter.number);
   const chapterUnlocked = isChapterUnlocked(progress, courseId, chapters, chapterIndex);
 
-  const allSectionQuizzesPassed = chapter.sections.every((sec) =>
-    isSectionQuizPassed(courseId, sectionLessonId(chapter.id, sec.id))
-  );
-
   if (!chapterUnlocked) {
     const prevChapter = chapters[chapterIndex - 1];
     const lastSec = prevChapter?.sections[prevChapter.sections.length - 1];
@@ -57,7 +51,7 @@ export function TextbookChapterArticle({
       >
         <LockedSection
           title={`Chapter ${chapter.number}: ${chapter.title}`}
-          message="Pass the section quiz at the end of the previous chapter before opening this chapter."
+          message="Pass the chapter quiz at the end of the previous chapter before opening this chapter."
           ctaLabel="Go to previous chapter"
           ctaHref={anchor}
         />
@@ -89,7 +83,7 @@ export function TextbookChapterArticle({
           </p>
         )}
         <p className="mt-4 font-mono text-xs text-[var(--muted)]">
-          Estimated reading time · {meta.readMinutes} min · Complete each section quiz to advance
+          Estimated reading time · {meta.readMinutes} min · Pass the chapter quiz below to unlock the next chapter
         </p>
       </header>
 
@@ -110,53 +104,25 @@ export function TextbookChapterArticle({
       )}
 
       <div className="mt-12 space-y-14">
-        {chapter.sections.map((section, sectionIndex) => {
-          const lessonId = sectionLessonId(chapter.id, section.id);
-          const sectionUnlocked = isSectionUnlocked(
-            progress,
-            courseId,
-            chapters,
-            chapterIndex,
-            sectionIndex
-          );
-
-          if (!sectionUnlocked) {
-            const prevSec = chapter.sections[sectionIndex - 1];
-            return (
-              <LockedSection
-                key={section.id}
-                title={section.title}
-                message="Pass the section quiz on the previous section before continuing."
-                ctaLabel="Go to previous section"
-                ctaHref={prevSec ? `#${prevSec.id}` : `#${chapter.id}`}
-              />
-            );
-          }
-
-          return (
-            <div key={section.id}>
-              <TextbookSectionContent section={section} leadDropCap={sectionIndex === 0} />
-              {course && (
-                <SectionQuiz
-                  courseId={courseId}
-                  courseSlug={courseSlug}
-                  chapterNumber={chapter.number}
-                  chapterId={chapter.id}
-                  lessonId={lessonId}
-                  sectionTitle={section.title}
-                />
-              )}
-            </div>
-          );
-        })}
+        {chapter.sections.map((section, sectionIndex) => (
+          <TextbookSectionContent
+            key={section.id}
+            section={section}
+            leadDropCap={sectionIndex === 0}
+          />
+        ))}
       </div>
 
-      {course && allSectionQuizzesPassed && (
+      {course && (
         <ChapterQuickCheck
           courseId={course.id}
           courseSlug={courseSlug}
           chapterNumber={chapter.number}
           chapterTitle={chapter.title}
+          chapterId={chapter.id}
+          sectionLessonIds={chapter.sections.map((s) =>
+            sectionLessonId(chapter.id, s.id)
+          )}
         />
       )}
 
@@ -211,7 +177,7 @@ function ChapterNavLink({
     return (
       <span
         className={`max-w-[48%] rounded-lg border border-white/[0.04] bg-black/10 px-4 py-3 opacity-50 ${align}`}
-        title="Pass this chapter's final section quiz to unlock the next chapter"
+        title="Pass this chapter's quiz to unlock the next chapter"
       >
         <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)]">
           {label} (locked)

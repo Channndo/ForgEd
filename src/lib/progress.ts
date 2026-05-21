@@ -204,7 +204,8 @@ export function isChapterQuickCheckPassed(
 export function markChapterQuickCheckPassed(
   courseId: string,
   chapterNum: number,
-  xpAmount = 25
+  xpAmount = 25,
+  opts?: { sectionLessonIds?: string[]; courseSlug?: string; moduleId?: string }
 ): UserProgress {
   let data = updateStreak(readProgress());
   if (!data.chapterQuickChecks) data.chapterQuickChecks = {};
@@ -212,6 +213,17 @@ export function markChapterQuickCheckPassed(
   if (!list.includes(chapterNum)) {
     data.chapterQuickChecks[courseId] = [...list, chapterNum].sort((a, b) => a - b);
     data.xp += xpAmount;
+    for (const lessonId of opts?.sectionLessonIds ?? []) {
+      if (!data.completedLessons.includes(lessonId)) {
+        data.completedLessons.push(lessonId);
+      }
+    }
+    if (opts?.courseSlug && opts?.moduleId) {
+      data = maybeCompleteModule(data, opts.courseSlug, opts.moduleId);
+    }
+    if (opts?.courseSlug) {
+      data = syncCourseProgressFromLessons(data);
+    }
   }
   writeProgress(data);
   return data;

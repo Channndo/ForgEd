@@ -29,11 +29,15 @@ export function ChapterQuickCheck({
   courseSlug,
   chapterNumber,
   chapterTitle,
+  chapterId,
+  sectionLessonIds = [],
 }: {
   courseId: string;
   courseSlug: string;
   chapterNumber: number;
   chapterTitle: string;
+  chapterId: string;
+  sectionLessonIds?: string[];
 }) {
   const { refresh, progress } = useProgress();
   const alreadyPassed = (progress.chapterQuickChecks?.[courseId] ?? []).includes(
@@ -71,7 +75,11 @@ export function ChapterQuickCheck({
     setGraded(result);
     setPhase("results");
     if (isPassingScore(result.score, result.total)) {
-      markChapterQuickCheckPassed(courseId, chapterNumber);
+      markChapterQuickCheckPassed(courseId, chapterNumber, 25, {
+        sectionLessonIds,
+        courseSlug,
+        moduleId: chapterId,
+      });
       refresh();
     }
   };

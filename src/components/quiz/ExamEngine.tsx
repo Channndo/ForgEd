@@ -5,7 +5,11 @@ import { motion } from "framer-motion";
 import type { QuizQuestion } from "@/lib/quizTypes";
 import { isPassingScore } from "@/lib/quizTypes";
 import { Button } from "@/components/ui/Button";
-import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
+import {
+  QuizStickyFooter,
+  quizFooterPrimaryClass,
+  quizFooterSecondaryClass,
+} from "@/components/quiz/QuizStickyFooter";
 import { RotateCcw } from "lucide-react";
 
 interface ExamEngineProps {
@@ -159,18 +163,33 @@ export function ExamEngine({
       </ul>
 
       <QuizStickyFooter className="justify-between">
-        <Button variant="secondary" disabled={index === 0} onClick={handlePrev}>
+        <button
+          type="button"
+          disabled={index === 0}
+          onClick={handlePrev}
+          className={quizFooterSecondaryClass}
+        >
           Previous
-        </Button>
-        <div className="flex flex-col items-end gap-2">
+        </button>
+        <div className="ml-auto flex flex-col items-end gap-2">
           {index + 1 < total ? (
-            <Button disabled={selected === undefined} onClick={handleNext}>
+            <button
+              type="button"
+              disabled={selected === undefined}
+              onClick={handleNext}
+              className={quizFooterPrimaryClass}
+            >
               Next question
-            </Button>
+            </button>
           ) : (
-            <Button disabled={!allAnswered} onClick={submitExam}>
+            <button
+              type="button"
+              disabled={!allAnswered}
+              onClick={submitExam}
+              className={quizFooterPrimaryClass}
+            >
               Submit exam
-            </Button>
+            </button>
           )}
           <p className="text-xs text-[var(--muted)]">
             {Object.keys(answers).length}/{total} answered

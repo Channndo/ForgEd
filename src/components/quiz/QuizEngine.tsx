@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
 import { KodaQuizHelp } from "@/components/koda/KodaQuizHelp";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
-import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
+import {
+  QuizStickyFooter,
+  quizFooterPrimaryClass,
+} from "@/components/quiz/QuizStickyFooter";
 import { CourseReviewQuizComplete } from "@/components/quiz/CourseReviewQuizComplete";
 import type { KodaLearningContext } from "@/lib/koda/types";
 
@@ -201,10 +204,10 @@ export function QuizEngine({
                   </div>
                 )}
               </motion.div>
-              <QuizStickyFooter>
-                <Button onClick={handleNext}>
+              <QuizStickyFooter className="justify-end">
+                <button type="button" onClick={handleNext} className={quizFooterPrimaryClass}>
                   {index + 1 >= total ? "See results" : "Next question"}
-                </Button>
+                </button>
               </QuizStickyFooter>
             </>
           )}

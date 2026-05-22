@@ -5,7 +5,10 @@ import type { QuizQuestion } from "@/lib/quizTypes";
 import { SECTION_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
 import { pickSectionQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
-import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
+import {
+  QuizStickyFooter,
+  quizFooterPrimaryClass,
+} from "@/components/quiz/QuizStickyFooter";
 import { isSectionQuizPassed, markSectionQuizPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import {
@@ -213,13 +216,9 @@ export function SectionQuiz({
                   </button>
                 </div>
               ) : (
-                <QuizStickyFooter inset="compact">
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    className="rounded-lg bg-[var(--gold)] px-4 py-2 text-xs font-semibold text-[#050505]"
-                  >
-                    {index < questions.length - 1 ? "Next" : "Finish"}
+                <QuizStickyFooter inset="compact" className="justify-end">
+                  <button type="button" onClick={goNext} className={quizFooterPrimaryClass}>
+                    {index < questions.length - 1 ? "Next question" : "Finish"}
                   </button>
                 </QuizStickyFooter>
               )}

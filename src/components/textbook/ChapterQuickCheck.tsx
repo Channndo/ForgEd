@@ -5,7 +5,11 @@ import type { QuizQuestion } from "@/lib/quizTypes";
 import { CHAPTER_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
 import { pickChapterQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
-import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
+import {
+  QuizStickyFooter,
+  quizFooterPrimaryClass,
+  quizFooterSecondaryClass,
+} from "@/components/quiz/QuizStickyFooter";
 import {
   isChapterQuickCheckPassed,
   markChapterQuickCheckPassed,
@@ -235,15 +239,11 @@ export function ChapterQuickCheck({
                     type="button"
                     disabled={index === 0}
                     onClick={() => setIndex((i) => i - 1)}
-                    className="rounded-lg border border-white/15 px-4 py-2 text-xs text-[var(--muted)] hover:bg-white/5 disabled:opacity-40"
+                    className={quizFooterSecondaryClass}
                   >
                     Previous
                   </button>
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    className="rounded-lg bg-[var(--gold)] px-4 py-2 text-xs font-semibold text-[#050505] hover:opacity-90"
-                  >
+                  <button type="button" onClick={goNext} className={quizFooterPrimaryClass}>
                     {index < questions.length - 1 ? "Next question" : "See summary"}
                   </button>
                 </QuizStickyFooter>

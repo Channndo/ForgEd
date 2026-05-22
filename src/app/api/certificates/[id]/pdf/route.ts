@@ -7,6 +7,7 @@ import {
 import {
   buildVerificationUrl,
   FOUNDER_NAME,
+  FOUNDER_SIGNATURE,
 } from "@/lib/certificates/constants";
 import { isCertificateIdFormat } from "@/lib/certificates/id";
 import { MOCK_CERTIFICATES } from "@/lib/certificates/mockData";

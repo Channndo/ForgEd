@@ -32,11 +32,43 @@ const DEEP_SLUGS = new Set([
   "cybersecurity-basics",
   "financial-literacy",
   "it-fundamentals",
-  "legal-fundamentals",
   "technology-for-beginners",
   "plumbing-fundamentals",
   "electrical-trades-fundamentals",
   "hvac-fundamentals",
+]);
+
+/** Tier C — force rebuild to current generator depth (even if not placeholder) */
+const FORCE_UPGRADE_SLUGS = new Set([
+  "legal-fundamentals",
+  "ai-workflow-automation",
+  "ai-productivity-systems",
+  "ai-for-entrepreneurs",
+  "ai-research-skills",
+  "prompting-fundamentals",
+  "ai-ethics-risks",
+  "ai-assisted-sales",
+  "ai-automotive-service",
+  "phishing-defense",
+  "password-security",
+  "threat-awareness",
+  "network-security",
+  "incident-response-basics",
+  "sales-school-101",
+  "crm-fundamentals",
+  "objection-handling",
+  "negotiation-basics",
+  "customer-psychology",
+  "customer-acquisition",
+  "follow-up-systems",
+  "maintenance-selling",
+  "warranty-basics",
+  "repair-order-workflow",
+  "service-advising-fundamentals",
+  "customer-communication-service",
+  "difficult-customer-scenarios",
+  "digital-presence",
+  "branding-fundamentals",
 ]);
 
 function listTextbookFiles() {
@@ -146,6 +178,7 @@ ${chapters}
 
 function needsUpgrade(content, slug) {
   if (DEEP_SLUGS.has(slug)) return false;
+  if (FORCE_UPGRADE_SLUGS.has(slug)) return true;
   return PLACEHOLDER_RE.test(content) || WEAK_TEMPLATE_RE.test(content);
 }
 

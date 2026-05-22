@@ -276,7 +276,16 @@ function factPhrase(fact) {
 
 export function inferDomain(slug, courseTitle) {
   const s = `${slug} ${courseTitle}`.toLowerCase();
-  if (s.includes("law") || s.includes("tort") || s.includes("contract") || s.includes("constitution") || s.includes("criminal")) return "law";
+  if (
+    s.includes("law") ||
+    s.includes("legal") ||
+    s.includes("tort") ||
+    s.includes("contract") ||
+    s.includes("constitution") ||
+    s.includes("criminal")
+  ) {
+    return "law";
+  }
   if (s.includes("engineering") || s.includes("aero") || s.includes("mechanical") || s.includes("civil") || s.includes("chemical") || s.includes("industrial") || s.includes("electrical-engineering")) return "engineering";
   if (s.includes("science")) return "science";
   if (s.includes("cyber") || s.includes("phish") || s.includes("threat") || s.includes("password") || s.includes("incident") || s.includes("netsec")) return "cyber";

@@ -68,32 +68,32 @@ export async function POST(req: NextRequest) {
     const data = await callForgedGas(payload);
     const ok = Boolean(data.ok);
 
-    // Always send signup email from server after register (works even if GAS deploy is old).
+    // Fallback signup email only when GAS did not send (avoid second slow GAS round-trip on register).
     if (ok && action === "registerUser" && data.user && typeof data.user === "object") {
-      const u = data.user as Record<string, unknown>;
-      const notify = await notifySignupEmail({
-        userId: String(u.userId || u.id || ""),
-        email: String(u.email || body.email || ""),
-        username: String(u.username || body.username || ""),
-        displayName: String(u.displayName || ""),
-        firstName: String(u.firstName || body.firstName || ""),
-        lastName: String(u.lastName || body.lastName || ""),
-        phone: String(u.phone || body.phone || ""),
-        street: String(u.street || body.street || ""),
-        city: String(u.city || body.city || ""),
-        state: String(u.state || body.state || ""),
-        zip: String(u.zip || body.zip || ""),
-        referralSource: String(u.referralSource || body.referralSource || ""),
-      });
-
       const gasSent = data.emailSent === true;
-      data.emailSent = gasSent || notify.emailSent;
-      if (!data.emailSent) {
-        data.emailError =
-          (typeof data.emailError === "string" && data.emailError) ||
-          notify.emailError ||
-          "Signup email could not be sent. Run diagnoseEmail in Apps Script.";
-        console.error("[forged-account] signup email failed:", data.emailError);
+      if (!gasSent) {
+        const u = data.user as Record<string, unknown>;
+        void notifySignupEmail({
+          userId: String(u.userId || u.id || ""),
+          email: String(u.email || body.email || ""),
+          username: String(u.username || body.username || ""),
+          displayName: String(u.displayName || ""),
+          firstName: String(u.firstName || body.firstName || ""),
+          lastName: String(u.lastName || body.lastName || ""),
+          phone: String(u.phone || body.phone || ""),
+          street: String(u.street || body.street || ""),
+          city: String(u.city || body.city || ""),
+          state: String(u.state || body.state || ""),
+          zip: String(u.zip || body.zip || ""),
+          referralSource: String(u.referralSource || body.referralSource || ""),
+        }).then((notify) => {
+          if (!notify.emailSent) {
+            console.error(
+              "[forged-account] signup email failed:",
+              notify.emailError || "notifySignup failed"
+            );
+          }
+        });
       }
     }
 

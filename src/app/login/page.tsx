@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { normalizeLoginId } from "@/lib/forged-account/authApi";
 import { withBasePath } from "@/lib/basePath";
 
 export default function LoginPage() {
   const { signIn } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const res = await signIn(email, password);
+    const res = await signIn(normalizeLoginId(loginId), password);
     setLoading(false);
     if (res.error) {
       setError(res.error);
@@ -36,12 +37,12 @@ export default function LoginPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Email"
-          type="email"
-          autoComplete="email"
+          label="Email or username"
+          type="text"
+          autoComplete="username"
           required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={loginId}
+          onChange={(e) => setLoginId(e.target.value)}
         />
         <Input
           label="Password"
@@ -51,7 +52,26 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {error && <p className="text-sm text-red-400/90">{error}</p>}
+        {error && (
+          <p className="text-sm text-red-400/90">
+            {error}
+            {/no account exists/i.test(error) ? (
+              <span className="mt-2 block text-[var(--muted)]">
+                <Link href={withBasePath("/signup")} className="text-[var(--gold)] hover:underline">
+                  Create an account
+                </Link>{" "}
+                or try a different email or username.
+              </span>
+            ) : /incorrect password/i.test(error) ? (
+              <span className="mt-2 block text-[var(--muted)]">
+                <Link href={withBasePath("/forgot-password")} className="text-[var(--gold)] hover:underline">
+                  Reset your password
+                </Link>{" "}
+                if you forgot it.
+              </span>
+            ) : null}
+          </p>
+        )}
         <button
           type="submit"
           disabled={loading}

@@ -84,8 +84,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     if (authLoading) return;
     let cancelled = false;
     (async () => {
-      if (user?.email) {
-        const data = await migrateGuestProgress(user.email);
+      if (user?.userId) {
+        const data = await migrateGuestProgress(user.userId);
         if (!cancelled) {
           writeLocalProgress(data);
           setProgressState(data);
@@ -99,7 +99,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user?.email, authLoading]);
+  }, [user?.userId, authLoading]);
 
   const progressForUi = isSignedIn ? progress : EMPTY_PROGRESS();
   const xpBar = useMemo(() => xpProgressInLevel(progressForUi.xp), [progressForUi.xp]);

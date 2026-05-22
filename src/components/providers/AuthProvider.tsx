@@ -32,7 +32,7 @@ interface AuthContextValue {
   profile: ForgedAccountUser | null;
   loading: boolean;
   configured: boolean;
-  signIn: (email: string, password: string) => Promise<{ error?: string }>;
+  signIn: (login: string, password: string) => Promise<{ error?: string }>;
   signUp: (input: SignUpInput) => Promise<{ error?: string }>;
   signOut: () => void;
   resetPasswordRequest: (email: string) => Promise<{ error?: string; message?: string }>;
@@ -88,9 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     void refreshProfile();
   }, [refreshProfile]);
 
-  const signIn = useCallback(async (email: string, password: string) => {
+  const signIn = useCallback(async (login: string, password: string) => {
     try {
-      const result = await loginUser(email, password);
+      const result = await loginUser(login, password);
       writeSession(result.accessToken, result.user);
       setUser(result.user);
       return {};

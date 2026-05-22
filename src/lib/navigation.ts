@@ -39,6 +39,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/community": "Community",
   "/login": "Sign in",
   "/signup": "Sign up",
+  "/signup/success": "Account created",
   "/forgot-password": "Reset password",
   "/assistant": "AI Tutor",
 };

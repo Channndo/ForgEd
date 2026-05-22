@@ -10,14 +10,15 @@ const PROTECTED_PREFIXES = ["/profile"];
 
 const AUTH_PATHS = ["/login", "/signup", "/forgot-password"];
 
+function isAuthPath(path: string): boolean {
+  if (path.includes("/signup")) return true;
+  return AUTH_PATHS.some((p) => path === p || path.endsWith(p));
+}
+
 function isProtectedPath(path: string): boolean {
   return PROTECTED_PREFIXES.some(
     (prefix) => path === prefix || path.startsWith(`${prefix}/`)
   );
-}
-
-function isAuthPath(path: string): boolean {
-  return AUTH_PATHS.some((p) => path === p || path.endsWith(p));
 }
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {

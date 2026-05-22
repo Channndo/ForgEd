@@ -19,7 +19,7 @@ export async function callForgedGas(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
       redirect: "follow",
-      signal: AbortSignal.timeout(25_000),
+      signal: AbortSignal.timeout(45_000),
     });
   } catch (e) {
     const timedOut =

@@ -4,17 +4,22 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { useProgress } from "@/components/providers/ProgressProvider";
+import { restoreProgressFromArchive } from "@/lib/forged-account/authApi";
+import { writeLocalProgress } from "@/lib/progress/persistence";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { withBasePath } from "@/lib/basePath";
 
 export default function ProfileSettingsPage() {
   const { profile, updateProfile } = useAuth();
+  const { refresh: refreshProgress } = useProgress();
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [restoring, setRestoring] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -73,6 +78,39 @@ export default function ProfileSettingsPage() {
             {saving ? "Saving…" : "Save changes"}
           </button>
         </form>
+      </Card>
+      <Card>
+        <h2 className="text-sm font-semibold text-[var(--silver)]">Progress backup</h2>
+        <p className="mt-2 text-xs leading-relaxed text-[var(--muted)]">
+          ForgEd keeps append-only snapshots in the{" "}
+          <code className="text-[var(--gold)]/90">USER_ACCOUNT_ARCHIVE</code> tab whenever you
+          register, save progress, or update your profile. If progress looks empty, restore the
+          latest snapshot.
+        </p>
+        <button
+          type="button"
+          disabled={restoring}
+          onClick={async () => {
+            setRestoring(true);
+            setError("");
+            setMessage("");
+            try {
+              const res = await restoreProgressFromArchive();
+              if (res.progress) {
+                writeLocalProgress(res.progress);
+                refreshProgress();
+              }
+              setMessage(res.message);
+            } catch (e) {
+              setError(e instanceof Error ? e.message : "Could not restore from archive.");
+            } finally {
+              setRestoring(false);
+            }
+          }}
+          className="mt-4 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2.5 text-sm text-[var(--silver)] hover:border-[var(--gold)]/35 disabled:opacity-50"
+        >
+          {restoring ? "Restoring…" : "Restore progress from latest backup"}
+        </button>
       </Card>
       <p className="text-xs text-[var(--muted)]">
         Your profile and learning progress sync to your ForgEd account in Google Sheets.

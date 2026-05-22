@@ -60,13 +60,24 @@ export async function registerUser(
   return { accessToken: data.accessToken, user: data.user };
 }
 
+/** Normalize email or username the same way Apps Script does on login. */
+export function normalizeLoginId(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  if (trimmed.includes("@")) return trimmed.toLowerCase();
+  return trimmed
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g, "_")
+    .slice(0, 24);
+}
+
 export async function loginUser(
-  email: string,
+  login: string,
   password: string
 ): Promise<{ accessToken: string; user: ForgedAccountUser }> {
   const data = await callForgedAccount<ForgedAccountResponse>({
     action: "loginUser",
-    email,
+    login: normalizeLoginId(login),
     password,
   });
   if (!data.accessToken || !data.user) {
@@ -122,6 +133,24 @@ export async function saveUserProgress(progress: UserProgress): Promise<void> {
     accessToken: getAccessToken(),
     progress,
   });
+}
+
+export async function restoreProgressFromArchive(): Promise<{
+  progress: UserProgress | null;
+  message: string;
+}> {
+  const data = await callForgedAccount<ForgedAccountResponse & {
+    dashboard?: { progress?: UserProgress | null };
+    message?: string;
+  }>({
+    action: "restoreFromArchive",
+    accessToken: getAccessToken(),
+  });
+  const progress = data.dashboard?.progress ?? null;
+  return {
+    progress,
+    message: data.message || "Progress restored from archive.",
+  };
 }
 
 export async function updateUserProfile(input: {

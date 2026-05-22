@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { useAuth } from "@/components/providers/AuthProvider";
 import { withBasePath } from "@/lib/basePath";
+import { ForgedAccountError, registerUser } from "@/lib/forged-account/authApi";
 import {
   REFERRAL_SOURCES,
   SECURITY_QUESTIONS,
@@ -21,7 +21,6 @@ function digitsOnly(value: string) {
 }
 
 export default function SignupPage() {
-  const { signUp } = useAuth();
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -102,14 +101,21 @@ export default function SignupPage() {
     };
 
     setLoading(true);
-    const res = await signUp(payload);
-    setLoading(false);
-    if (res.error) {
-      setError(res.error);
-      return;
+    try {
+      await registerUser(payload);
+      setWelcomePending();
+      router.replace(withBasePath("/signup/success"));
+    } catch (e) {
+      const msg =
+        e instanceof ForgedAccountError ? e.message : "Registration failed.";
+      const maybeCreated =
+        /request failed|timed out|account service|non-json/i.test(msg)
+          ? " If you already submitted this form, try signing in — your account may already exist."
+          : "";
+      setError(msg + maybeCreated);
+    } finally {
+      setLoading(false);
     }
-    setWelcomePending();
-    router.replace(withBasePath("/dashboard"));
   }
 
   const q1Options = SECURITY_QUESTIONS.filter((q) => String(q.id) !== securityQ2);

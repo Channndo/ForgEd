@@ -34,7 +34,7 @@ function ForgotPasswordForm() {
     }
     setMessage(
       res.message ||
-        "If that email exists, we sent reset instructions. Use the token from your email below."
+        "If that email is registered, we sent a reset link to your inbox. Open the link in the email to set a new password."
     );
   }
 
@@ -106,13 +106,14 @@ function ForgotPasswordForm() {
             {loading ? "Sending…" : "Send reset link"}
           </button>
           <p className="text-xs text-[var(--muted)]">
-            After requesting, open the reset form with your token:{" "}
+            Check spam if you do not see the email within a few minutes. You can also paste a reset token from the email into{" "}
             <Link
-              href={withBasePath("/forgot-password?token=YOUR_TOKEN")}
+              href={withBasePath("/forgot-password?token=")}
               className="text-[var(--gold)] hover:underline"
             >
-              enter token manually
+              the reset form
             </Link>
+            .
           </p>
         </form>
       )}

@@ -7,7 +7,7 @@
  * 3. If no sheet yet, run createForgEdDatabase() once instead of step 1.
  * 4. Deploy → Web app → Execute as: Me, Who has access: Anyone
  * 5. Web App URL (ForgEd + Netlify FORGED_WEB_APP_URL):
- *    https://script.google.com/macros/s/AKfycbwnRegzOFqnbEqPOZ5ir60QN-zqazz6E_Ck7hL63oyp-JfZUBSmOBw__g3oWLSzC0jX/exec
+ *    https://script.google.com/macros/s/AKfycbxBofOqeRnQK1VyIsqsX5yvXx9EmmQ1LZOeRQZG_Y3PWAM4Shc5ARKgNyzFyBXEmEur/exec
  */
 
 var PROP_SPREADSHEET_ID = 'FORGED_SPREADSHEET_ID';
@@ -191,6 +191,25 @@ var SHEETS = {
   }
 };
 
+/**
+ * Append-only account memory — never cleared by initializeSheets.
+ * Each row is a full snapshot of profile + progress tabs for one user.
+ */
+var ARCHIVE_SHEET = {
+  name: 'USER_ACCOUNT_ARCHIVE',
+  headers: [
+    'Snapshot ID',
+    'Timestamp',
+    'User ID',
+    'Email',
+    'Display Name',
+    'Event',
+    'Payload JSON'
+  ]
+};
+
+var ARCHIVE_MAX_SNAPSHOTS_PER_USER = 48;
+
 // ─── Entry points ───────────────────────────────────────────────────────────
 
 function doGet(e) {
@@ -282,6 +301,16 @@ function doPost(e) {
     if (action === 'loadUserDashboard') {
       var u = requireSession_(raw);
       return jsonResponse_(loadUserDashboard_(u.userId));
+    }
+
+    if (action === 'restoreFromArchive') {
+      var uRestore = requireSession_(raw);
+      return jsonResponse_(restoreUserFromLatestArchive_(uRestore.userId));
+    }
+
+    if (action === 'listAccountArchive') {
+      var uList = requireSession_(raw);
+      return jsonResponse_(listAccountArchiveForUser_(uList.userId, Number(raw.limit) || 10));
     }
 
     if (action === 'saveUserProgress') {
@@ -483,6 +512,7 @@ function initializeSheetsInSpreadsheet_(ss) {
   var keys = Object.keys(SHEETS);
   for (var i = 0; i < keys.length; i++) {
     var def = SHEETS[keys[i]];
+    if (def.name === ARCHIVE_SHEET.name) continue;
     var sheet = ss.getSheetByName(def.name);
     if (!sheet) {
       sheet = ss.insertSheet(def.name);
@@ -492,6 +522,8 @@ function initializeSheetsInSpreadsheet_(ss) {
     sheet.setFrozenRows(1);
     used[def.name] = true;
   }
+  ensureArchiveSheet_();
+  used[ARCHIVE_SHEET.name] = true;
   if (first && !used[first.getName()]) {
     ss.deleteSheet(first);
   }
@@ -610,6 +642,7 @@ function registerUser_(data) {
   if (CONFIG.SEND_EMAIL_NOTIFICATIONS) {
     emailResult = sendSignupNotification_(session.user, now);
   }
+  archiveUserAccountSnapshot_(userId, 'register', null);
   return {
     ok: true,
     accessToken: session.token,
@@ -619,21 +652,30 @@ function registerUser_(data) {
   };
 }
 
+function findUserByLoginId_(login) {
+  var raw = String(login || '').trim();
+  if (!raw) return null;
+  if (raw.indexOf('@') >= 0) {
+    return findUserByEmail_(raw);
+  }
+  return findUserByUsername_(raw);
+}
+
 function loginUser_(data) {
-  var email = normalizeEmail_(data.email);
+  var login = String(data.login || data.email || data.username || '').trim();
   var password = String(data.password || '');
-  if (!email || !password) {
-    throw new Error('Email and password are required.');
+  if (!login || !password) {
+    throw new Error('Email/username and password are required.');
   }
 
-  var user = findUserByEmail_(email);
+  var user = findUserByLoginId_(login);
   if (!user) {
-    throw new Error('Invalid email or password.');
+    throw new Error('No account exists with those credentials.');
   }
 
   var hash = hashPassword_(password, user.salt);
   if (hash !== user.passwordHash) {
-    throw new Error('Invalid email or password.');
+    throw new Error('Incorrect password for this account.');
   }
 
   updateUserFields_(user.rowIndex, {
@@ -661,10 +703,54 @@ function requestPasswordReset_(data) {
     resetToken: token,
     resetExpires: expires.toISOString()
   });
+  var resetUrl = buildForgedPasswordResetUrl_(token);
+  var mailResult = sendPasswordResetEmail_(user, resetUrl, expires);
   return {
     ok: true,
-    message: 'If that email exists, reset instructions were sent.'
+    message: 'If that email exists, reset instructions were sent.',
+    emailSent: mailResult.emailSent,
+    emailError: mailResult.emailError || ''
   };
+}
+
+function buildForgedPasswordResetUrl_(token) {
+  var base = String(CONFIG.WEBSITE_URL || 'https://forgedlearn.com').replace(/\/$/, '');
+  return base + '/forgot-password?token=' + encodeURIComponent(token);
+}
+
+function sendPasswordResetEmail_(user, resetUrl, expires) {
+  var to = normalizeEmail_(user.email);
+  if (!to) {
+    return { emailSent: false, emailError: 'User has no email on file.' };
+  }
+  var tz = Session.getScriptTimeZone();
+  var when = Utilities.formatDate(expires, tz, 'yyyy-MM-dd h:mm a z');
+  var subject = 'ForgEd password reset';
+  var body = [
+    'You requested a password reset for your ForgEd account.',
+    '',
+    'Open this link to choose a new password (expires ' + when + '):',
+    resetUrl,
+    '',
+    'If you did not request this, you can ignore this email.',
+    '',
+    '— ForgEd'
+  ].join('\n');
+  try {
+    MailApp.sendEmail({
+      to: to,
+      subject: subject,
+      body: body,
+      name: 'ForgEd Accounts',
+      noReply: false
+    });
+    logEmailAttempt_('password_reset', [to], 'sent', resetUrl, user);
+    return { emailSent: true, emailError: '' };
+  } catch (mailErr) {
+    var msg = mailErr && mailErr.message ? mailErr.message : String(mailErr);
+    logEmailAttempt_('password_reset', [to], 'failed', msg, user);
+    return { emailSent: false, emailError: msg };
+  }
 }
 
 function resetPassword_(data) {
@@ -708,7 +794,9 @@ function updateUserProfile_(userId, data) {
     throw new Error('Nothing to update.');
   }
   updateUserFields_(findUserRowIndex_(userId), fields);
-  return { ok: true, user: publicUser_(findUserById_(userId)) };
+  var updated = findUserById_(userId);
+  archiveUserAccountSnapshot_(userId, 'profile_update', null);
+  return { ok: true, user: publicUser_(updated) };
 }
 
 // ─── Progress & dashboard ───────────────────────────────────────────────────
@@ -760,6 +848,7 @@ function saveUserProgress_(userId, progress) {
     }
   }
 
+  archiveUserAccountSnapshot_(userId, 'save_progress', progress);
   return { ok: true };
 }
 
@@ -895,14 +984,209 @@ function getSpreadsheet_() {
   return SpreadsheetApp.openById(id);
 }
 
-function getSheet_(name) {
+function getSheetDefByName_(name) {
+  var keys = Object.keys(SHEETS);
+  for (var i = 0; i < keys.length; i++) {
+    if (SHEETS[keys[i]].name === name) return SHEETS[keys[i]];
+  }
+  return null;
+}
+
+/** Create a missing operational tab with headers only — never wipes existing data. */
+function ensureOperationalSheet_(name) {
+  var def = getSheetDefByName_(name);
+  if (!def) {
+    throw new Error('Unknown sheet: ' + name);
+  }
   var ss = getSpreadsheet_();
   var sheet = ss.getSheetByName(name);
   if (!sheet) {
-    initializeSheetsInSpreadsheet_(ss);
-    sheet = ss.getSheetByName(name);
+    sheet = ss.insertSheet(name);
+    sheet.getRange(1, 1, 1, def.headers.length).setValues([def.headers]);
+    sheet.setFrozenRows(1);
   }
   return sheet;
+}
+
+function getSheet_(name) {
+  return ensureOperationalSheet_(name);
+}
+
+// ─── USER_ACCOUNT_ARCHIVE (append-only memory) ──────────────────────────────
+
+function ensureArchiveSheet_() {
+  var ss = getSpreadsheet_();
+  var sheet = ss.getSheetByName(ARCHIVE_SHEET.name);
+  if (!sheet) {
+    sheet = ss.insertSheet(ARCHIVE_SHEET.name);
+    sheet.getRange(1, 1, 1, ARCHIVE_SHEET.headers.length).setValues([ARCHIVE_SHEET.headers]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function buildUserArchivePayload_(userId, progressOverride) {
+  var user = findUserById_(userId);
+  if (!user) return null;
+  var progressJson = getCourseProgressJson_(userId, '_full');
+  var progressParsed = null;
+  if (progressOverride && typeof progressOverride === 'object') {
+    progressParsed = progressOverride;
+  } else if (progressJson) {
+    try {
+      progressParsed = JSON.parse(progressJson);
+    } catch (e) {
+      progressParsed = null;
+    }
+  }
+  return {
+    user: publicUser_(user),
+    progressJson: progressJson,
+    progress: progressParsed,
+    pathProgress: listPathProgress_(userId),
+    achievements: listAchievements_(userId),
+    courseProgressRows: listCourseProgressRowsForUser_(userId),
+    certificates: listCertificates_(userId).certificates || []
+  };
+}
+
+function archiveUserAccountSnapshot_(userId, event, progressOverride) {
+  try {
+    var user = findUserById_(userId);
+    if (!user) return;
+    var payload = buildUserArchivePayload_(userId, progressOverride);
+    if (!payload) return;
+    var json = JSON.stringify(payload);
+    if (json.length > 100000) {
+      payload.progress = { truncated: true, note: 'Progress object omitted from archive (too large).' };
+      json = JSON.stringify(payload);
+    }
+    var sheet = ensureArchiveSheet_();
+    var display =
+      user.displayName || trim_(String(user.firstName || '') + ' ' + String(user.lastName || ''), 80);
+    sheet.appendRow([
+      Utilities.getUuid(),
+      nowIso_(),
+      userId,
+      normalizeEmail_(user.email),
+      display,
+      String(event || 'snapshot'),
+      json
+    ]);
+    pruneAccountArchiveForUser_(userId);
+  } catch (err) {
+    Logger.log('archiveUserAccountSnapshot_ failed: ' + err);
+  }
+}
+
+function pruneAccountArchiveForUser_(userId) {
+  var sheet = ensureArchiveSheet_();
+  var last = sheet.getLastRow();
+  if (last < 3) return;
+  var data = sheet.getRange(2, 1, last - 1, ARCHIVE_SHEET.headers.length).getValues();
+  var rows = [];
+  for (var i = 0; i < data.length; i++) {
+    if (String(data[i][2]) === String(userId)) {
+      rows.push({ rowIndex: i + 2, timestamp: String(data[i][1] || '') });
+    }
+  }
+  if (rows.length <= ARCHIVE_MAX_SNAPSHOTS_PER_USER) return;
+  rows.sort(function (a, b) {
+    return String(a.timestamp).localeCompare(String(b.timestamp));
+  });
+  var toDelete = rows.length - ARCHIVE_MAX_SNAPSHOTS_PER_USER;
+  for (var j = 0; j < toDelete; j++) {
+    sheet.deleteRow(rows[j].rowIndex);
+  }
+}
+
+function listAccountArchiveForUser_(userId, limit) {
+  var sheet = ensureArchiveSheet_();
+  var last = sheet.getLastRow();
+  var out = [];
+  if (last < 2) return { ok: true, snapshots: out };
+  var max = Math.min(Math.max(limit, 1), 25);
+  var data = sheet.getRange(2, 1, last - 1, ARCHIVE_SHEET.headers.length).getValues();
+  for (var i = data.length - 1; i >= 0 && out.length < max; i--) {
+    if (String(data[i][2]) !== String(userId)) continue;
+    out.push({
+      snapshotId: String(data[i][0]),
+      timestamp: String(data[i][1]),
+      userId: String(data[i][2]),
+      email: String(data[i][3]),
+      displayName: String(data[i][4]),
+      event: String(data[i][5])
+    });
+  }
+  return { ok: true, snapshots: out };
+}
+
+function findArchiveSnapshotRow_(userId, snapshotId) {
+  var sheet = ensureArchiveSheet_();
+  var last = sheet.getLastRow();
+  if (last < 2) return null;
+  var data = sheet.getRange(2, 1, last - 1, ARCHIVE_SHEET.headers.length).getValues();
+  for (var i = data.length - 1; i >= 0; i--) {
+    if (String(data[i][2]) !== String(userId)) continue;
+    if (snapshotId && String(data[i][0]) !== String(snapshotId)) continue;
+    return { row: data[i], payloadJson: String(data[i][6] || '') };
+  }
+  return null;
+}
+
+function restoreUserFromLatestArchive_(userId, snapshotId) {
+  var found = findArchiveSnapshotRow_(userId, snapshotId || '');
+  if (!found || !found.payloadJson) {
+    return { ok: false, error: 'No archive snapshot found for this account.' };
+  }
+  var payload;
+  try {
+    payload = JSON.parse(found.payloadJson);
+  } catch (e) {
+    return { ok: false, error: 'Archive snapshot is corrupted.' };
+  }
+  if (payload.progressJson) {
+    upsertCourseProgressJson_(userId, '_full', payload.progressJson);
+  } else if (payload.progress) {
+    upsertCourseProgressJson_(userId, '_full', JSON.stringify(payload.progress));
+  }
+  if (payload.user) {
+    var fields = {};
+    if (payload.user.xp != null) fields.xp = Number(payload.user.xp) || 0;
+    if (payload.user.level != null) fields.level = Number(payload.user.level) || 1;
+    if (payload.user.streak != null) fields.streak = Number(payload.user.streak) || 0;
+    if (payload.user.activePaths) fields.activePaths = String(payload.user.activePaths || '');
+    if (payload.user.displayName) fields.displayName = String(payload.user.displayName);
+    if (Object.keys(fields).length) {
+      updateUserFields_(findUserRowIndex_(userId), fields);
+    }
+  }
+  return {
+    ok: true,
+    message: 'Progress restored from archive.',
+    dashboard: loadUserDashboard_(userId)
+  };
+}
+
+function listCourseProgressRowsForUser_(userId) {
+  var sheet = getSheet_(SHEETS.COURSE_PROGRESS.name);
+  var last = sheet.getLastRow();
+  var out = [];
+  if (last < 2) return out;
+  var rows = sheet.getRange(2, 1, last, SHEETS.COURSE_PROGRESS.headers.length).getValues();
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][0]) !== String(userId)) continue;
+    out.push({
+      courseId: String(rows[i][1] || ''),
+      sectionProgress: String(rows[i][2] || ''),
+      chapterProgress: String(rows[i][3] || ''),
+      quizScores: String(rows[i][4] || ''),
+      completionStatus: String(rows[i][5] || ''),
+      lastAccessed: String(rows[i][6] || ''),
+      progressJson: String(rows[i][7] || '')
+    });
+  }
+  return out;
 }
 
 function getUsersHeaderMap_() {
@@ -997,7 +1281,7 @@ function userFromRowLegacy_(row, rowIndex) {
     firstName: names.first,
     lastName: names.last,
     username: String(row[1] || ''),
-    email: String(row[2] || ''),
+    email: normalizeEmail_(String(row[2] || '')),
     phone: '',
     street: '',
     city: '',
@@ -1037,7 +1321,7 @@ function userFromRowNew_(row, rowIndex, map) {
     firstName: String(cell_(row, map, 'First Name', '')),
     lastName: String(cell_(row, map, 'Last Name', '')),
     username: String(cell_(row, map, 'Username', '')),
-    email: String(cell_(row, map, 'Email', '')),
+    email: normalizeEmail_(cell_(row, map, 'Email', '')),
     phone: String(cell_(row, map, 'Phone', '')),
     street: String(cell_(row, map, 'Street', '')),
     city: String(cell_(row, map, 'City', '')),
@@ -1121,14 +1405,16 @@ function appendUserRow_(u) {
 }
 
 function findUserByEmail_(email) {
+  var normalized = normalizeEmail_(email);
   return findUserWhere_(function (u) {
-    return u.email === email;
+    return normalizeEmail_(u.email) === normalized;
   });
 }
 
 function findUserByUsername_(username) {
+  var uname = normalizeUsername_(username);
   return findUserWhere_(function (u) {
-    return u.username === username;
+    return normalizeUsername_(u.username) === uname;
   });
 }
 
@@ -1452,6 +1738,14 @@ function testSendForgedSignupEmail() {
     recipients: getNotificationRecipients_(),
     result: result
   };
+}
+
+/**
+ * Run in the Apps Script editor to email a password-reset link to a learner.
+ * Example: sendForgedPasswordResetToEmail('chandler.hill.24@gmail.com');
+ */
+function sendForgedPasswordResetToEmail(email) {
+  return requestPasswordReset_({ email: email });
 }
 
 /**
@@ -2194,6 +2488,7 @@ function issueCertificate_(userId, defaultStudentName, raw) {
 
   var sheet = ensureCertificatesSheet_();
   sheet.appendRow(row);
+  archiveUserAccountSnapshot_(userId, 'issue_certificate', null);
 
   return {
     ok: true,

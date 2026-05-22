@@ -25,7 +25,7 @@ Signup emails go to `chandler.hill.24@gmail.com` and `chandler@forgedlearn.com` 
 6. Copy the Web App URL into ForgEd `.env.local`:
 
 ```bash
-FORGED_WEB_APP_URL=https://script.google.com/macros/s/AKfycbwnRegzOFqnbEqPOZ5ir60QN-zqazz6E_Ck7hL63oyp-JfZUBSmOBw__g3oWLSzC0jX/exec
+FORGED_WEB_APP_URL=https://script.google.com/macros/s/AKfycbxBofOqeRnQK1VyIsqsX5yvXx9EmmQ1LZOeRQZG_Y3PWAM4Shc5ARKgNyzFyBXEmEur/exec
 FORGED_SERVER_SECRET=your-secret-matching-script-property
 ```
 
@@ -39,8 +39,11 @@ FORGED_SERVER_SECRET=your-secret-matching-script-property
 | ACHIEVEMENTS | Unlocked badges |
 | LAB_PROGRESS | Path lab completions |
 | CERTIFICATES | Course completion certificates (auto-created on first issue) |
+| **USER_ACCOUNT_ARCHIVE** | **Append-only backups** (profile + progress JSON) — never wiped by `initializeSheets` |
 | KODA_FACTS / KODA_CHAT_LOG | KODA memory (optional) |
 | EMAIL_LOG | Signup notification log |
+
+**Never run `initializeSheets` on production** — it clears USERS, COURSE_PROGRESS, and other tabs (this is the usual cause of lost progress). Use `upgradeUsersSheet` for header migrations only.
 
 ## API actions (POST JSON)
 
@@ -50,12 +53,14 @@ FORGED_SERVER_SECRET=your-secret-matching-script-property
 | `initializeSheets` | Server secret | Rebuilds headers |
 | `upgradeUsersSheet` | Server secret | Migrates USERS to expanded signup columns |
 | `registerUser` | — | Sign up |
-| `loginUser` | — | Sign in |
+| `loginUser` | — | Sign in (email or username + password) |
 | `requestPasswordReset` | — | Email reset flow |
 | `resetPassword` | — | Set new password with token |
 | `getUserProfile` | Session | Profile |
 | `updateUserProfile` | Session | Update display name / username |
 | `loadUserDashboard` | Session | Profile + full progress |
+| `restoreFromArchive` | Session | Restore latest `USER_ACCOUNT_ARCHIVE` snapshot |
+| `listAccountArchive` | Session | List recent backup rows for signed-in user |
 | `saveUserProgress` | Session | Sync XP, paths, quizzes |
 | `updateXP` / `updateStreak` | Session | Partial updates |
 | `saveQuizResults` / `saveLabProgress` | Session | Granular saves |

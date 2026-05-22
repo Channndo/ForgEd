@@ -12,7 +12,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const path = pathname?.replace(/\/$/, "") ?? "";
   const isAuthPage =
     path.endsWith("/login") ||
-    path.endsWith("/signup") ||
+    path.includes("/signup") ||
     path.endsWith("/forgot-password");
   const isTextbookReader = /\/courses\/[^/]+\/read\/?$/.test(pathname ?? "");
 

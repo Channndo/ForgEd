@@ -11,6 +11,17 @@ import {
 const STORAGE_KEY = "forged_progress_v1";
 const GUEST_MIGRATED_KEY = "forged_guest_migrated";
 
+function hasMeaningfulProgress(data: UserProgress): boolean {
+  return (
+    data.xp > 0 ||
+    data.completedLessons.length > 0 ||
+    data.completedCourses.length > 0 ||
+    data.completedModules.length > 0 ||
+    Object.keys(data.quizScores ?? {}).length > 0 ||
+    Object.keys(data.courseProgress ?? {}).length > 0
+  );
+}
+
 function normalizeProgress(raw: Partial<UserProgress> | null): UserProgress {
   const data = { ...DEFAULT_PROGRESS, ...(raw ?? {}) };
   data.level = levelFromXp(data.xp);
@@ -90,19 +101,32 @@ export async function migrateGuestProgress(userId: string): Promise<UserProgress
   const flag = `${GUEST_MIGRATED_KEY}:${userId}`;
   if (typeof window !== "undefined" && localStorage.getItem(flag)) {
     const remote = await fetchRemoteProgress();
-    return remote ?? readLocalProgress();
+    const local = readLocalProgress();
+    if (remote && hasMeaningfulProgress(remote)) return remote;
+    if (hasMeaningfulProgress(local)) {
+      await saveRemoteProgress(local);
+      return local;
+    }
+    return remote ?? local;
   }
 
   const guest = readLocalProgress();
   const remote = await fetchRemoteProgress();
-  const merged = remote
-    ? mergeProgressRecords(remote, guest)
-    : guest.xp > 0 || guest.completedLessons.length > 0
-      ? guest
-      : DEFAULT_PROGRESS;
+  let merged: UserProgress;
+  if (remote && hasMeaningfulProgress(remote)) {
+    merged = mergeProgressRecords(remote, guest);
+  } else if (hasMeaningfulProgress(guest)) {
+    merged = guest;
+  } else if (remote) {
+    merged = remote;
+  } else {
+    merged = DEFAULT_PROGRESS;
+  }
 
   writeLocalProgress(merged);
-  await saveRemoteProgress(merged);
+  if (hasMeaningfulProgress(merged)) {
+    await saveRemoteProgress(merged);
+  }
   if (typeof window !== "undefined") localStorage.setItem(flag, "1");
   return merged;
 }

@@ -12,7 +12,7 @@
   KODA_USE_GAS_OLLAMA = "false"
   SYNTRIX_API_URL = "https://api.syntrix.solutions"
   OLLAMA_BASE_URL = "https://ollama.syntrix.solutions:11434"
-  FORGED_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwnRegzOFqnbEqPOZ5ir60QN-zqazz6E_Ck7hL63oyp-JfZUBSmOBw__g3oWLSzC0jX/exec"
+  FORGED_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxBofOqeRnQK1VyIsqsX5yvXx9EmmQ1LZOeRQZG_Y3PWAM4Shc5ARKgNyzFyBXEmEur/exec"
   # OLLAMA_API_KEY — set in Netlify UI (same bearer secret as Render Syntrix / Hetzner nginx)
 
 # Force HTTPS (fixes browser "Not Secure" when cert is valid)

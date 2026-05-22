@@ -1,3 +1,11 @@
+import {
+  getLawChapterQuizLength,
+  getLawFinalExamLength,
+  getLawPassRatio,
+  getLawSectionQuizLength,
+  isLawCourse,
+} from "./quizLaw";
+
 /** Cybersecurity courses use harder assessments than the global defaults. */
 
 export const CYBER_COURSE_SLUGS = new Set([
@@ -19,19 +27,27 @@ export function isCyberCourse(slug: string): boolean {
 }
 
 export function getPassRatio(slug?: string): number {
-  return slug && isCyberCourse(slug) ? CYBER_PASS_RATIO : 0.7;
+  if (slug && isCyberCourse(slug)) return CYBER_PASS_RATIO;
+  if (slug && isLawCourse(slug)) return getLawPassRatio(slug);
+  return 0.7;
 }
 
 export function getFinalExamLength(slug?: string): number {
-  return slug && isCyberCourse(slug) ? CYBER_FINAL_EXAM_LENGTH : 20;
+  if (slug && isCyberCourse(slug)) return CYBER_FINAL_EXAM_LENGTH;
+  if (slug && isLawCourse(slug)) return getLawFinalExamLength(slug);
+  return 20;
 }
 
 export function getChapterQuizLength(slug?: string): number {
-  return slug && isCyberCourse(slug) ? CYBER_CHAPTER_QUIZ_LENGTH : 5;
+  if (slug && isCyberCourse(slug)) return CYBER_CHAPTER_QUIZ_LENGTH;
+  if (slug && isLawCourse(slug)) return getLawChapterQuizLength(slug);
+  return 5;
 }
 
 export function getSectionQuizLength(slug?: string): number {
-  return slug && isCyberCourse(slug) ? CYBER_SECTION_QUIZ_LENGTH : 2;
+  if (slug && isCyberCourse(slug)) return CYBER_SECTION_QUIZ_LENGTH;
+  if (slug && isLawCourse(slug)) return getLawSectionQuizLength(slug);
+  return 2;
 }
 
 export function getExamPassMinimum(slug?: string): number {

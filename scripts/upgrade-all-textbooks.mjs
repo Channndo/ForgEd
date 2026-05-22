@@ -38,11 +38,11 @@ const DEEP_SLUGS = new Set([
   "hvac-fundamentals",
   "service-advising-fundamentals",
   "mechanical-engineering-basics",
+  "legal-fundamentals",
 ]);
 
 /** Tier C — force rebuild to current generator depth (even if not placeholder) */
 const FORCE_UPGRADE_SLUGS = new Set([
-  "legal-fundamentals",
   "ai-workflow-automation",
   "ai-productivity-systems",
   "ai-for-entrepreneurs",

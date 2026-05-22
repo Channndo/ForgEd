@@ -3,7 +3,35 @@
  * Must use redirect: "follow" — a manual redirect breaks POST body delivery.
  */
 
+import {
+  extractJsonFromGasText,
+  isForgedGasHealthPayload,
+} from "@/lib/forged-account/gasResponse";
+
 const WEB_APP_URL = process.env.FORGED_WEB_APP_URL ?? "";
+const GAS_POST_RETRIES = 2;
+
+async function postForgedGasOnce(
+  payload: Record<string, unknown>
+): Promise<Record<string, unknown>> {
+  const res = await fetch(WEB_APP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    redirect: "follow",
+    signal: AbortSignal.timeout(45_000),
+  });
+
+  const text = await res.text();
+  try {
+    return extractJsonFromGasText(text);
+  } catch {
+    const preview = text.trim().slice(0, 120);
+    throw new Error(
+      `ForgEd database returned non-JSON (HTTP ${res.status}). Redeploy Apps Script as Web App (Execute as: Me). Preview: ${preview}`
+    );
+  }
+}
 
 export async function callForgedGas(
   payload: Record<string, unknown>
@@ -12,38 +40,41 @@ export async function callForgedGas(
     throw new Error("FORGED_WEB_APP_URL is not configured.");
   }
 
-  let res: Response;
-  try {
-    res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      redirect: "follow",
-      signal: AbortSignal.timeout(45_000),
-    });
-  } catch (e) {
-    const timedOut =
-      e instanceof Error &&
-      (e.name === "TimeoutError" || e.name === "AbortError");
-    throw new Error(
-      timedOut
-        ? "ForgEd accounts timed out — Google Apps Script may be waking up. Try again in a few seconds."
-        : e instanceof Error
-          ? e.message
-          : "Could not reach ForgEd accounts."
-    );
+  const needsSession = payload.action === "loginUser" || payload.action === "registerUser";
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= GAS_POST_RETRIES; attempt++) {
+    try {
+      const data = await postForgedGasOnce(payload);
+      if (needsSession && isForgedGasHealthPayload(data)) {
+        lastError = new Error(
+          "ForgEd accounts returned a health check instead of a login response."
+        );
+        if (attempt < GAS_POST_RETRIES) {
+          await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+          continue;
+        }
+        throw lastError;
+      }
+      return data;
+    } catch (e) {
+      const err = e instanceof Error ? e : new Error(String(e));
+      const timedOut =
+        err.name === "TimeoutError" || err.name === "AbortError";
+      lastError = timedOut
+        ? new Error(
+            "ForgEd accounts timed out — Google Apps Script may be waking up. Try again in a few seconds."
+          )
+        : err;
+      if (attempt < GAS_POST_RETRIES) {
+        await new Promise((r) => setTimeout(r, 1200 * (attempt + 1)));
+        continue;
+      }
+      throw lastError;
+    }
   }
 
-  const text = await res.text();
-  const trimmed = text.trim();
-
-  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-    return JSON.parse(trimmed) as Record<string, unknown>;
-  }
-
-  throw new Error(
-    `ForgEd database returned non-JSON (HTTP ${res.status}). Redeploy Apps Script as Web App (Execute as: Me). Preview: ${trimmed.slice(0, 120)}`
-  );
+  throw lastError || new Error("Could not reach ForgEd accounts.");
 }
 
 export async function notifySignupEmail(user: {

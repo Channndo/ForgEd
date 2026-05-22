@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callForgedGas, notifySignupEmail } from "@/lib/forged-account/gasClient";
+import { normalizeAuthSessionResponse } from "@/lib/forged-account/gasResponse";
 
 const SERVER_SECRET = process.env.FORGED_SERVER_SECRET ?? "";
 
@@ -65,7 +66,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const data = await callForgedGas(payload);
+    let data = await callForgedGas(payload);
+    if (action === "loginUser" || action === "registerUser") {
+      data = normalizeAuthSessionResponse(data);
+    }
     const ok = Boolean(data.ok);
 
     // Fallback signup email only when GAS did not send (avoid second slow GAS round-trip on register).

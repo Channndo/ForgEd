@@ -62,6 +62,11 @@ export default function LoginPage() {
                 </Link>{" "}
                 or try a different email or username.
               </span>
+            ) : /incomplete|startup page|try again/i.test(error) ? (
+              <span className="mt-2 block text-[var(--muted)]">
+                This is usually a temporary Google Apps Script wake-up issue. Wait a few seconds and
+                try again.
+              </span>
             ) : /incorrect password/i.test(error) ? (
               <span className="mt-2 block text-[var(--muted)]">
                 <Link href={withBasePath("/forgot-password")} className="text-[var(--gold)] hover:underline">

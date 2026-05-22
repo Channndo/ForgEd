@@ -71,17 +71,32 @@ export function normalizeLoginId(value: string): string {
     .slice(0, 24);
 }
 
+function loginPayload(login: string, password: string): Record<string, unknown> {
+  const id = normalizeLoginId(login);
+  const body: Record<string, unknown> = {
+    action: "loginUser",
+    login: id,
+    password,
+  };
+  // Older GAS deployments only read `email` / `username`.
+  if (id.includes("@")) {
+    body.email = id;
+  } else {
+    body.username = id;
+  }
+  return body;
+}
+
 export async function loginUser(
   login: string,
   password: string
 ): Promise<{ accessToken: string; user: ForgedAccountUser }> {
-  const data = await callForgedAccount<ForgedAccountResponse>({
-    action: "loginUser",
-    login: normalizeLoginId(login),
-    password,
-  });
+  const data = await callForgedAccount<ForgedAccountResponse>(loginPayload(login, password));
   if (!data.accessToken || !data.user) {
-    throw new ForgedAccountError("Sign-in succeeded but no session returned.", 500);
+    throw new ForgedAccountError(
+      data.error || "Sign-in response was incomplete. Please try again.",
+      500
+    );
   }
   return { accessToken: data.accessToken, user: data.user };
 }

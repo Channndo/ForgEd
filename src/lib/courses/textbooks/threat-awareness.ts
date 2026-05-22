@@ -6,7 +6,7 @@ export const THREAT_TEXTBOOK_INTRO: TextbookIntro = {
   subtitle: "Workforce training — Threat Awareness",
   paragraphs: [
     "Threat Awareness is built for professionals who want usable skill—not trivia. Each chapter moves from why the topic matters, through structured explanation, to quizzes that check judgment rather than memorization.",
-    "Threat Awareness is part of a structured ForgEd Learning Path. Complete courses in order to unlock the next step and earn path certifications.",
+    "Threat Awareness is part of a structured ForgEd Learning Path. Complete courses in order to unlock the next step and earn ForgEd path completion badges on your profile.",
     "Content is practical workforce education. It does not replace licensure, legal, medical, or employer-specific policy. When your organization has a rule that conflicts with a general lesson, follow your organization's rule and treat this course as context.",
   ],
 };

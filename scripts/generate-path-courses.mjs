@@ -9,12 +9,12 @@ import {
   buildChapterBlock,
   introParagraphs,
 } from "./lib/quality-writing.mjs";
+import { buildBankFile } from "./lib/quiz-bank-builder.mjs";
 
 const ROOT = process.cwd();
 const TEXTBOOKS = path.join(ROOT, "src/lib/courses/textbooks");
 const BANKS = path.join(ROOT, "src/lib/courses/textbook/banks");
 const CHAPTERS = 8;
-const Q_PER_CH = 10;
 
 /** slug → { title, category, exportPrefix, chapters: [id, title][] } */
 const COURSES = {
@@ -647,7 +647,7 @@ const COURSES = {
 function buildTextbook(slug, cfg) {
   const intro = introParagraphs(
     cfg.title,
-    `${cfg.title} is part of a structured ForgEd Learning Path. Complete courses in order to unlock the next step and earn path certifications.`
+    `${cfg.title} is part of a structured ForgEd Learning Path. Complete courses in order to unlock the next step and earn ForgEd path completion badges on your profile.`
   );
   const blocks = cfg.chapters
     .map(([id, title], idx) => buildChapterBlock(id, idx + 1, title, cfg.title))
@@ -670,51 +670,14 @@ ${blocks}
 }
 
 function buildBank(slug, cfg) {
-  const lines = [];
-  for (let ch = 1; ch <= CHAPTERS; ch++) {
-    const topic = cfg.chapters[ch - 1][1];
-    const chs = String(ch).padStart(2, "0");
-    for (let v = 0; v < Q_PER_CH; v++) {
-      const id = `${cfg.bank}-ch${chs}-q${String(v + 1).padStart(2, "0")}`;
-      const templates = [
-        {
-          q: `For ${topic}, which approach aligns with this path course?`,
-          c: `Apply ${topic} to realistic workplace scenarios with cited reasoning`,
-          w: ["Skip section quizzes", "Memorize without context", "Ignore sequential progression"],
-        },
-        {
-          q: `When studying ${topic}, prioritize:`,
-          c: `Section quizzes, chapter review, and path progression`,
-          w: ["Random chapter jumping", "Avoiding the final exam", "Unverified anecdotes only"],
-        },
-      ];
-      const t = templates[v % 2];
-      const opts = [...t.w];
-      const ci = v % 4;
-      opts[ci] = t.c;
-      while (opts.length < 4) opts.push("None of the above");
-      lines.push(
-        `  q(${JSON.stringify(id)}, ${JSON.stringify(t.q)}, ${JSON.stringify(opts.slice(0, 4))}, ${ci}, ${JSON.stringify(`Ch. ${ch}: ${topic}`)}),`
-      );
-    }
-  }
   const bankName = `${slug.replace(/-/g, "_").toUpperCase()}_BANK`;
-  return `import type { QuizQuestion } from "@/lib/quizTypes";
-
-function q(
-  id: string,
-  question: string,
-  options: [string, string, string, string],
-  correctIndex: 0 | 1 | 2 | 3,
-  explanation: string
-): QuizQuestion {
-  return { id, question, options, correctIndex, explanation };
-}
-
-export const ${bankName}: QuizQuestion[] = [
-${lines.join("\n")}
-];
-`;
+  const { body } = buildBankFile({
+    slug,
+    exportName: bankName,
+    prefix: cfg.bank,
+    chapterTitles: cfg.chapters.map(([, title]) => title),
+  });
+  return body;
 }
 
 const bundleEntries = [];

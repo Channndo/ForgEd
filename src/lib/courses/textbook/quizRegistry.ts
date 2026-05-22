@@ -33,7 +33,7 @@ import { PATH_BANKS } from "./pathBanks.generated";
 
 function buildInsuranceBank(): QuizQuestion[] {
   const merged = [...INSURANCE_QUIZ_BANK, ...INSURANCE_SUPPLEMENT];
-  return merged.slice(0, 150);
+  return merged.length >= 200 ? merged.slice(0, 200) : merged;
 }
 
 const BANKS: Record<string, QuizQuestion[]> = {
@@ -95,6 +95,27 @@ export function shuffleQuestions<T>(items: T[]): T[] {
   return arr;
 }
 
+/** Shuffle answer order so the same bank item feels different each attempt */
+export function shuffleQuestionOptions(question: QuizQuestion): QuizQuestion {
+  const order = [0, 1, 2, 3];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  const options = order.map((i) => question.options[i]) as [
+    string,
+    string,
+    string,
+    string,
+  ];
+  const correctIndex = order.indexOf(question.correctIndex) as 0 | 1 | 2 | 3;
+  return { ...question, options, correctIndex };
+}
+
+export function prepareQuestionsForAttempt(questions: QuizQuestion[]): QuizQuestion[] {
+  return shuffleQuestions(questions.map(shuffleQuestionOptions));
+}
+
 export function questionsForChapter(
   slug: string,
   chapterNumber: number
@@ -113,6 +134,6 @@ export function pickRandomQuestions(
   if (opts?.chapterNumber != null) {
     pool = questionsForChapter(slug, opts.chapterNumber);
   }
-  if (pool.length <= count) return shuffleQuestions([...pool]);
-  return shuffleQuestions(pool).slice(0, count);
+  if (pool.length <= count) return prepareQuestionsForAttempt([...pool]);
+  return prepareQuestionsForAttempt(shuffleQuestions(pool).slice(0, count));
 }

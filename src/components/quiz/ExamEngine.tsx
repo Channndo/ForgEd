@@ -11,12 +11,14 @@ interface ExamEngineProps {
   questions: QuizQuestion[];
   title?: string;
   onComplete?: (score: number, total: number) => void;
+  onNewAttempt?: () => void;
 }
 
 export function ExamEngine({
   questions,
   title = "Final exam",
   onComplete,
+  onNewAttempt,
 }: ExamEngineProps) {
   const shuffled = useMemo(() => {
     const arr = [...questions];
@@ -63,6 +65,10 @@ export function ExamEngine({
   }
 
   function retry() {
+    if (onNewAttempt) {
+      onNewAttempt();
+      return;
+    }
     setIndex(0);
     setAnswers({});
     setSubmitted(false);
@@ -152,25 +158,15 @@ export function ExamEngine({
       </ul>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <Button
-          variant="secondary"
-          onClick={index === 0 ? undefined : handlePrev}
-          className={index === 0 ? "pointer-events-none opacity-40" : ""}
-        >
+        <Button variant="secondary" disabled={index === 0} onClick={handlePrev}>
           Previous
         </Button>
         {index + 1 < total ? (
-          <Button
-            onClick={selected === undefined ? undefined : handleNext}
-            className={selected === undefined ? "pointer-events-none opacity-40" : ""}
-          >
+          <Button disabled={selected === undefined} onClick={handleNext}>
             Next question
           </Button>
         ) : (
-          <Button
-            onClick={allAnswered ? submitExam : undefined}
-            className={!allAnswered ? "pointer-events-none opacity-40" : ""}
-          >
+          <Button disabled={!allAnswered} onClick={submitExam}>
             Submit exam
           </Button>
         )}

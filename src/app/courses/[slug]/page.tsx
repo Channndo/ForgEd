@@ -6,6 +6,7 @@ import { getModulesForSlug, getAllCourseSlugs } from "@/lib/coursePaths";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { CourseProgressClient } from "./CourseProgressClient";
+import { FORGED_EDUCATION_NOTICE } from "@/lib/educationDisclaimer";
 
 export function generateStaticParams() {
   return getAllCourseSlugs().map((slug) => ({ slug }));
@@ -75,7 +76,10 @@ export default async function CoursePage({
             <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">
               Complete each chapter&apos;s 5-question quiz (instant feedback), then
               pass the 10-question course review, then the 20-question final exam
-              (score at the end) to earn course completion.
+              (score at the end) to earn course completion on your profile.
+            </p>
+            <p className="mt-2 max-w-2xl text-xs text-[var(--muted)]/90">
+              {FORGED_EDUCATION_NOTICE}
             </p>
           </>
         )}

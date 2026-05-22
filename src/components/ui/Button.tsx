@@ -20,6 +20,7 @@ export function Button({
   onClick,
   className = "",
   type = "button",
+  disabled = false,
 }: {
   children: ReactNode;
   variant?: Variant;
@@ -27,19 +28,22 @@ export function Button({
   onClick?: () => void;
   className?: string;
   type?: "button" | "submit";
+  disabled?: boolean;
 }) {
-  const base = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all ${styles[variant]} ${className}`;
+  const base = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all ${styles[variant]} ${className} ${
+    disabled ? "cursor-not-allowed opacity-40" : ""
+  }`;
 
   if (href) {
     return (
-      <Link href={href} className={base}>
+      <Link href={href} className={base} aria-disabled={disabled}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} className={base}>
+    <button type={type} onClick={onClick} disabled={disabled} className={base}>
       {children}
     </button>
   );

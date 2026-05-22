@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
+import { useCallback } from "react";
+import { useQuizAttempt } from "@/hooks/useQuizAttempt";
 import { getCourseBySlug } from "@/lib/courses/catalog";
 import {
   getQuizBankSize,
@@ -23,10 +24,13 @@ export default function ExamClient() {
   const { refresh, progress } = useProgress();
   const course = getCourseBySlug(slug);
 
-  const questions = useMemo(() => {
-    if (!course?.textbookCourse) return [];
+  const pick = useCallback(() => {
+    const c = getCourseBySlug(slug);
+    if (!c?.textbookCourse) return [];
     return pickFinalExam(slug);
-  }, [course, slug]);
+  }, [slug]);
+
+  const { questions, attemptKey, newAttempt } = useQuizAttempt(pick);
 
   const bankSize = getQuizBankSize(slug);
   const reviewPassed = course
@@ -101,9 +105,11 @@ export default function ExamClient() {
       </div>
 
       <ExamEngine
+        key={attemptKey}
         questions={questions}
         title={`${course.title} Final Exam`}
         onComplete={handleComplete}
+        onNewAttempt={newAttempt}
       />
     </div>
   );

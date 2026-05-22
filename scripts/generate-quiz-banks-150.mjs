@@ -1,9 +1,10 @@
 /**
- * Generates quiz bank modules with 150 questions per course (15 per chapter × 10 chapters).
+ * Generates quiz bank modules with 200 questions per course.
  * Run: node scripts/generate-quiz-banks-150.mjs
  */
 import fs from "fs";
 import path from "path";
+import { buildBankFile } from "./lib/quiz-bank-builder.mjs";
 
 const OUT_DIR = path.join(process.cwd(), "src/lib/courses/textbook/banks");
 
@@ -130,81 +131,16 @@ const COURSES = {
   },
 };
 
-const TEMPLATES = [
-  (topic, n) => ({
-    q: `Regarding ${topic}, which statement is most accurate according to this textbook?`,
-    correct: `The textbook emphasizes evidence-based understanding of ${topic}, not slogans or oversimplified myths.`,
-    wrong: [
-      `${topic} is unrelated to any learning objective in this course`,
-      `${topic} should be ignored until the final exam only`,
-      `${topic} has no connection to real-world decisions`,
-    ],
-  }),
-  (topic, n) => ({
-    q: `A learner studying ${topic} should prioritize:`,
-    correct: `Connecting definitions to examples and applying concepts in realistic scenarios`,
-    wrong: [
-      `Memorizing jargon without reading chapter sections`,
-      `Skipping chapter quizzes and only reading headings`,
-      `Avoiding the 150-question practice bank entirely`,
-    ],
-  }),
-  (topic, n) => ({
-    q: `Which misconception about ${topic} does the course material explicitly challenge?`,
-    correct: `That a single slogan or anecdote replaces careful reading and practice`,
-    wrong: [
-      `That textbooks never cite authoritative sources`,
-      `That all professionals reject ${topic} entirely`,
-      `That ${topic} cannot appear on any certification exam`,
-    ],
-  }),
-];
-
-function buildCourse(slug, { prefix, chapters }) {
-  const lines = [];
-  let global = 0;
-  for (let ch = 1; ch <= 10; ch++) {
-    const topic = chapters[ch - 1];
-    const chs = String(ch).padStart(2, "0");
-    for (let v = 0; v < 15; v++) {
-      global++;
-      const t = TEMPLATES[v % TEMPLATES.length](topic, v);
-      const id = `${prefix}-ch${chs}-q${String(v + 1).padStart(2, "0")}`;
-      const opts = [...t.wrong];
-      const ci = v % 4;
-      opts[ci] = t.correct;
-      while (opts.length < 4) opts.push("None of the above");
-      const options = opts.slice(0, 4);
-      lines.push(
-        `  q(${JSON.stringify(id)}, ${JSON.stringify(t.q)}, ${JSON.stringify(options)}, ${ci}, ${JSON.stringify(`Chapter ${ch} covers ${topic}. Review that section if you missed this question.`)}),`
-      );
-    }
-  }
-  const constName = slug.replace(/-/g, "_").toUpperCase();
-  return `import type { QuizQuestion } from "@/lib/quizTypes";
-
-function q(
-  id: string,
-  question: string,
-  options: [string, string, string, string],
-  correctIndex: 0 | 1 | 2 | 3,
-  explanation: string
-): QuizQuestion {
-  return { id, question, options, correctIndex, explanation };
-}
-
-export const ${constName}_BANK: QuizQuestion[] = [
-${lines.join("\n")}
-];
-`;
-}
-
 fs.mkdirSync(OUT_DIR, { recursive: true });
 for (const [slug, meta] of Object.entries(COURSES)) {
-  const file = path.join(OUT_DIR, `${slug}.ts`);
-  fs.writeFileSync(file, buildCourse(slug, meta));
-  console.log("wrote", slug, 150);
+  const exportName = `${slug.replace(/-/g, "_").toUpperCase()}_BANK`;
+  const { body, total } = buildBankFile({
+    slug,
+    exportName,
+    prefix: meta.prefix,
+    chapterTitles: meta.chapters,
+  });
+  fs.writeFileSync(path.join(OUT_DIR, `${slug}.ts`), body);
+  console.log("wrote", slug, total);
 }
-
-// insurance handled separately in merge
 console.log("done");

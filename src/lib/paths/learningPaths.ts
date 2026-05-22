@@ -550,7 +550,7 @@ export const LEARNING_PATHS: LearningPath[] = [
     estimatedWeeks: 4,
     totalXp: 1950,
     badgeId: "path-service-advisor",
-    badgeName: "Service Advisor Certification",
+    badgeName: "Service Advisor Path Badge",
     badgeDescription: "Completed the Service Advisor mastery path",
     courses: [
       {

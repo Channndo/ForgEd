@@ -214,8 +214,9 @@ export function PathLabSimulator({
       )}
       {!done && (
         <Button
-          className={`mt-4 w-full sm:w-auto ${selected === null ? "pointer-events-none opacity-50" : ""}`}
-          onClick={selected === null ? undefined : handleSubmit}
+          className="mt-4 w-full sm:w-auto"
+          disabled={selected === null}
+          onClick={handleSubmit}
         >
           Submit lab
         </Button>

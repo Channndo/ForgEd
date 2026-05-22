@@ -217,6 +217,11 @@ export function useKoda(initialContext?: KodaLearningContext) {
   }, []);
 
   const reset = useCallback(() => {
+    const newId = crypto.randomUUID();
+    setSessionId(newId);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(SESSION_KEY, newId);
+    }
     setMessages(available ? [{ role: "assistant", content: KODA_WELCOME }] : []);
   }, [available]);
 

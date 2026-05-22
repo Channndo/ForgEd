@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { useQuizAttempt } from "@/hooks/useQuizAttempt";
 import { getCourseBySlug } from "@/lib/courses/catalog";
 import {
   getQuizBankSize,
@@ -33,10 +34,13 @@ export default function QuizClient() {
     [slug, course, progress, xpBar]
   );
 
-  const questions = useMemo(() => {
-    if (!course?.textbookCourse) return [];
+  const pick = useCallback(() => {
+    const c = getCourseBySlug(slug);
+    if (!c?.textbookCourse) return [];
     return pickQuizSessionForCourse(slug);
-  }, [course, slug]);
+  }, [slug]);
+
+  const { questions, attemptKey, newAttempt } = useQuizAttempt(pick);
 
   const bankSize = getQuizBankSize(slug);
 
@@ -88,9 +92,11 @@ export default function QuizClient() {
       </div>
 
       <QuizEngine
+        key={attemptKey}
         questions={questions}
         title={`${course.title} Quiz`}
         onComplete={handleComplete}
+        onNewAttempt={newAttempt}
         kodaContext={kodaContext}
       />
     </div>

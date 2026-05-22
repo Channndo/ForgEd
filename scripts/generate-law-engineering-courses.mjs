@@ -5,6 +5,7 @@
  */
 import fs from "fs";
 import path from "path";
+import { buildBankFile } from "./lib/quiz-bank-builder.mjs";
 
 const ROOT = process.cwd();
 const TEXTBOOKS_DIR = path.join(ROOT, "src/lib/courses/textbooks");
@@ -12,7 +13,6 @@ const BANKS_DIR = path.join(ROOT, "src/lib/courses/textbook/banks");
 
 const ENGINEERING_CHAPTERS = 15;
 const LAW_CHAPTERS = 20;
-const QUESTIONS_PER_CHAPTER = 10;
 
 const COURSES = [
   // —— Law (20 chapters each) ——
@@ -364,7 +364,7 @@ function paragraphs(topic, sectionTitle, courseTitle) {
   return [
     `${sectionTitle} is a core topic in ${courseTitle}. Learners should connect definitions to how professionals apply ${topic} in regulated, evidence-based practice — not shortcuts or informal rules of thumb alone.`,
     `The textbook emphasizes reading primary sources, worked examples, and chapter objectives before attempting quizzes. When ${topic} appears on assessments, questions draw from a randomized bank tied to this chapter's learning goals.`,
-    `In professional settings, ${topic} interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section as a foundation for deeper specialization, certifications, and workplace decisions you can justify with cited reasoning.`,
+    `In professional settings, ${topic} interacts with safety, ethics, documentation, and interdisciplinary teams. Use this section to strengthen your logical foundation for further study and informed workplace decisions — not as a substitute for professional certification or licensure.`,
   ];
 }
 
@@ -406,7 +406,7 @@ export const ${constName}_TEXTBOOK_INTRO: TextbookIntro = {
   title: ${JSON.stringify(course.title)},
   subtitle: ${JSON.stringify(`ForgEd deep-dive — ${course.title.toLowerCase()}`)},
   paragraphs: [
-    "This ForgEd digital textbook presents ${course.title} at academic survey depth — ${chapterLabel}, cited frameworks, and rigorous prose suitable for self-paced study before certifications, college prep, or workplace upskilling.",
+    "This ForgEd digital textbook presents ${course.title} at academic survey depth — ${chapterLabel}, cited frameworks, and rigorous prose for self-paced education and logical foundations. It does not replace professional certification, licensure exams, or cert-level competence.",
     "Each chapter includes learning objectives, section-level explanations, and assessments aligned to a subject question bank. Read sequentially or jump via the table of contents; progress, chapter quizzes, and final exams are tracked in your ForgEd profile.",
     "Material is general education, not legal advice or professional engineering sign-off. Always verify current codes, statutes, standards, and organizational policies when applying concepts in the field.",
   ],
@@ -423,61 +423,13 @@ function bankExportName(slug) {
 }
 
 function buildQuizBank(course) {
-  const prefix = course.bankPrefix;
-  const chapterCount = course.chapters.length;
-  const lines = [];
-  for (let ch = 1; ch <= chapterCount; ch++) {
-    const topic = course.chapters[ch - 1][1];
-    const chs = String(ch).padStart(2, "0");
-    for (let v = 0; v < QUESTIONS_PER_CHAPTER; v++) {
-      const id = `${prefix}-ch${chs}-q${String(v + 1).padStart(2, "0")}`;
-      const templates = [
-        {
-          q: `Regarding ${topic}, which statement best matches this textbook's approach?`,
-          c: `Ground ${topic} in cited sources, chapter objectives, and applied examples`,
-          w: [
-            `Skip reading and rely only on quiz memorization`,
-            `${topic} is unrelated to professional practice`,
-            `Anecdotes replace evidence in ${topic}`,
-          ],
-        },
-        {
-          q: `A learner studying ${topic} should prioritize:`,
-          c: `Connecting definitions to realistic scenarios and chapter quizzes`,
-          w: [
-            `Ignoring section citations`,
-            `Avoiding the final exam entirely`,
-            `Memorizing terms without context`,
-          ],
-        },
-      ];
-      const t = templates[v % 2];
-      const opts = [...t.w];
-      const ci = v % 4;
-      opts[ci] = t.c;
-      while (opts.length < 4) opts.push("None of the above");
-      lines.push(
-        `  q(${JSON.stringify(id)}, ${JSON.stringify(t.q)}, ${JSON.stringify(opts.slice(0, 4))}, ${ci}, ${JSON.stringify(`Chapter ${ch}: ${topic}`)}),`
-      );
-    }
-  }
-  const exportName = bankExportName(course.slug);
-  return `import type { QuizQuestion } from "@/lib/quizTypes";
-
-function q(
-  id: string,
-  question: string,
-  options: [string, string, string, string],
-  correctIndex: 0 | 1 | 2 | 3,
-  explanation: string
-): QuizQuestion {
-  return { id, question, options, correctIndex, explanation };
-}
-
-export const ${exportName}: QuizQuestion[] = [
-${lines.join("\n")}
-];
-`;
+  const { body } = buildBankFile({
+    slug: course.slug,
+    exportName: bankExportName(course.slug),
+    prefix: course.bankPrefix,
+    chapterTitles: course.chapters.map(([, title]) => title),
+  });
+  return body;
 }
 
 assertChapterCounts();
@@ -494,10 +446,6 @@ for (const course of COURSES) {
     path.join(BANKS_DIR, `${course.slug}.ts`),
     buildQuizBank(course)
   );
-  console.log(
-    "wrote",
-    course.slug,
-    `(${course.chapters.length} ch, ${course.chapters.length * QUESTIONS_PER_CHAPTER} Q)`
-  );
+  console.log("wrote", course.slug, `(${course.chapters.length} ch, 200 Q)`);
 }
 console.log("done — update registry, catalog, quizRegistry");

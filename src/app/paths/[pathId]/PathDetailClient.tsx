@@ -220,7 +220,7 @@ export default function PathDetailClient({ path }: { path: LearningPath }) {
           ) : pp.masteryExamPassed ? (
             <span className="flex items-center gap-2 text-sm text-emerald-400">
               <CheckCircle2 className="h-4 w-4" />
-              Mastery certified
+              Path complete
             </span>
           ) : (
             <span className="text-sm text-[var(--muted)]">

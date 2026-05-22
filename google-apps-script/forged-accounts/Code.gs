@@ -1822,6 +1822,8 @@ function rankKodaFacts_(facts, query, topK) {
   var qTokens = query.split(/\s+/).filter(function (t) {
     return t.length > 2;
   });
+  // Short greetings ("hi", "hello") should not surface unrelated stored facts.
+  if (qTokens.length === 0) return [];
   var scored = [];
   for (var i = 0; i < facts.length; i++) {
     var f = facts[i];

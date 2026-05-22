@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { LearningPath } from "@/lib/paths/learningPaths";
 import { resolveCatalogSlug } from "@/lib/paths/learningPaths";
@@ -9,15 +10,25 @@ import { pickRandomQuestions } from "@/lib/courses/textbook/quizRegistry";
 import { markPathMasteryPassed } from "@/lib/paths/pathProgress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { isPassingScore } from "@/lib/quizTypes";
+import { useQuizAttempt } from "@/hooks/useQuizAttempt";
 
 export default function PathExamClient({ path }: { path: LearningPath }) {
   const router = useRouter();
   const { refresh } = useProgress();
 
-  const pool = path.courses.flatMap((c) =>
-    pickRandomQuestions(resolveCatalogSlug(c.slug), 4)
+  const pick = useCallback(() => {
+    const pool = path.courses.flatMap((c) =>
+      pickRandomQuestions(resolveCatalogSlug(c.slug), 4)
+    );
+    return pool.slice(0, path.masteryExamQuestions);
+  }, [path]);
+
+  const { questions, attemptKey, newAttempt } = useQuizAttempt(pick);
+
+  const pathKey = useMemo(
+    () => path.courses.map((c) => c.slug).join(","),
+    [path.courses]
   );
-  const questions = pool.slice(0, path.masteryExamQuestions);
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -33,8 +44,10 @@ export default function PathExamClient({ path }: { path: LearningPath }) {
         </p>
       </div>
       <ExamEngine
+        key={`${pathKey}-${attemptKey}`}
         title={`${path.title} Mastery`}
         questions={questions}
+        onNewAttempt={newAttempt}
         onComplete={(score, total) => {
           if (isPassingScore(score, total)) {
             markPathMasteryPassed(path.id);

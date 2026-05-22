@@ -7,7 +7,11 @@ import { extractBearerToken, getForgedUserFromToken } from "@/lib/forged-account
 import { isKodaMemoryEnabled } from "./config";
 import { extractKodaFactsFromTurn } from "./extract";
 import { prepareKodaMemoryFromAccount, saveKodaTurnToAccount } from "./gasStore";
+import { formatMemoryBlock } from "./gasStore";
+import { hasActiveLessonContext, isCasualGreeting } from "./greeting";
 import type { KodaMemoryFact, KodaPrepareResult } from "./types";
+
+export { isCasualGreeting, hasActiveLessonContext } from "./greeting";
 
 export type { KodaMemoryFact, KodaPrepareResult } from "./types";
 export { isKodaMemoryEnabled } from "./config";
@@ -39,6 +43,8 @@ export async function prepareKodaTurnMemory(
 
   const sessionId = request.sessionId ?? "";
   const query = lastUserMessage(request.messages);
+  const freshGreeting =
+    isCasualGreeting(query) && !hasActiveLessonContext(request.context);
 
   try {
     const prepared: KodaPrepareResult = await prepareKodaMemoryFromAccount({
@@ -48,17 +54,19 @@ export async function prepareKodaTurnMemory(
       context: request.context,
     });
 
-    const prior = prepared.transcript;
-    const latest = request.messages.slice(-1);
-    const transcript =
-      prior.length > 0
-        ? [...prior, ...latest.filter((m) => m.role === "user" || m.role === "assistant")]
-        : request.messages;
+    if (freshGreeting) {
+      return {
+        enabled: true,
+        memoryBlock: formatMemoryBlock(prepared.progressBlock, []),
+        transcript: request.messages,
+      };
+    }
 
     return {
       enabled: true,
       memoryBlock: prepared.memoryBlock,
-      transcript,
+      // UI sends the full active thread; do not prepend older GAS rows (wrong topic/session).
+      transcript: request.messages,
     };
   } catch {
     return { enabled: false, memoryBlock: "", transcript: request.messages };
@@ -81,6 +89,23 @@ export async function persistKodaTurnMemory(
 
   const userMessage = lastUserMessage(request.messages);
   const mode = request.mode ?? "chat";
+
+  if (isCasualGreeting(userMessage) && !hasActiveLessonContext(request.context)) {
+    try {
+      await saveKodaTurnToAccount({
+        accessToken: token,
+        sessionId,
+        userMessage,
+        assistantMessage,
+        mode,
+        context: request.context,
+        facts: [],
+      });
+    } catch {
+      /* non-fatal */
+    }
+    return;
+  }
 
   let facts: KodaMemoryFact[] = [];
   try {

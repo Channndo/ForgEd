@@ -9,6 +9,11 @@ export { HLTH_CH07 } from "./ch07-ethics-hipaa";
 export { HLTH_CH08 } from "./ch08-emergency";
 export { HLTH_CH09 } from "./ch09-careers";
 export { HLTH_CH10 } from "./ch10-future";
+export { HLTH_CH11 } from "./ch11-mental-behavioral";
+export { HLTH_CH12 } from "./ch12-chronic-disease";
+export { HLTH_CH13 } from "./ch13-diagnostics-labs";
+export { HLTH_CH14 } from "./ch14-maternal-child";
+export { HLTH_CH15 } from "./ch15-rehab-longterm";
 
 import { HLTH_CH01 } from "./ch01-health-systems";
 import { HLTH_CH02 } from "./ch02-patient-care";
@@ -20,6 +25,11 @@ import { HLTH_CH07 } from "./ch07-ethics-hipaa";
 import { HLTH_CH08 } from "./ch08-emergency";
 import { HLTH_CH09 } from "./ch09-careers";
 import { HLTH_CH10 } from "./ch10-future";
+import { HLTH_CH11 } from "./ch11-mental-behavioral";
+import { HLTH_CH12 } from "./ch12-chronic-disease";
+import { HLTH_CH13 } from "./ch13-diagnostics-labs";
+import { HLTH_CH14 } from "./ch14-maternal-child";
+import { HLTH_CH15 } from "./ch15-rehab-longterm";
 
 export const HLTH_TEXTBOOK = [
   HLTH_CH01,
@@ -32,4 +42,9 @@ export const HLTH_TEXTBOOK = [
   HLTH_CH08,
   HLTH_CH09,
   HLTH_CH10,
+  HLTH_CH11,
+  HLTH_CH12,
+  HLTH_CH13,
+  HLTH_CH14,
+  HLTH_CH15,
 ];

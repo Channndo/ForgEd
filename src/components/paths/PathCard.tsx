@@ -42,7 +42,7 @@ export function PathCard({ path }: { path: LearningPath }) {
           {earned && (
             <span className="flex items-center gap-1 rounded-full border border-[var(--gold)]/30 bg-[var(--gold)]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--gold)]">
               <Award className="h-3 w-3" />
-              Certified
+              Complete
             </span>
           )}
         </div>

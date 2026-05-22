@@ -200,7 +200,7 @@ export default function ProfilePage() {
       <section>
         <h2 className="mb-4 flex items-center gap-2 font-serif text-lg font-semibold text-[var(--silver)]">
           <Award className="h-5 w-5 text-[var(--gold)]" />
-          Badges & certifications
+          Badges & path completions
         </h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {earned.length === 0 && certs.length === 0 ? (
@@ -224,7 +224,7 @@ export default function ProfilePage() {
                   className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4"
                 >
                   <p className="font-medium text-[var(--silver)]">{c}</p>
-                  <p className="mt-1 text-xs text-[var(--muted)]">Certification</p>
+                  <p className="mt-1 text-xs text-[var(--muted)]">Path badge</p>
                 </div>
               ))}
             </>

@@ -4,6 +4,7 @@
  */
 import fs from "fs";
 import path from "path";
+import { buildBankFile } from "./lib/quiz-bank-builder.mjs";
 
 const ROOT = process.cwd();
 const TEXTBOOKS_DIR = path.join(ROOT, "src/lib/courses/textbooks");
@@ -149,7 +150,7 @@ function paragraphs(topic, sectionTitle, courseTitle) {
   return [
     `${sectionTitle} is a core topic in ${courseTitle}. Learners should connect definitions to how professionals apply ${topic} with evidence-based practice.`,
     `The textbook emphasizes chapter objectives and section quizzes before advancing. Assessment questions draw from a randomized bank tied to this chapter.`,
-    `Use this section as a foundation for certifications, workplace decisions, and further specialization in ${topic}.`,
+    `Use this section to build a logical foundation for further study and informed decisions about ${topic} — not professional certification or licensure.`,
   ];
 }
 
@@ -177,8 +178,8 @@ export const ${constName}_TEXTBOOK_INTRO: TextbookIntro = {
   subtitle: ${JSON.stringify(`ForgEd deep-dive — ${course.title.toLowerCase()}`)},
   paragraphs: [
     "This ForgEd digital textbook presents ${course.title} at academic survey depth for self-paced study.",
-    "Complete each section quiz before advancing. Chapter and course assessments draw from a 150-question bank.",
-    "Material is general education, not professional licensure or certification prep by itself.",
+    "Complete each section quiz before advancing. Chapter and course assessments draw from a 200-question bank.",
+    "Material is general education for logical foundations — not professional licensure, certification prep, or cert-level competence.",
   ],
 };
 
@@ -190,51 +191,14 @@ ${chapterBlocks}
 
 function buildQuizBank(course) {
   const prefix = course.slug.split("-")[0].slice(0, 4);
-  const lines = [];
-  for (let ch = 1; ch <= 10; ch++) {
-    const topic = course.chapters[ch - 1][1];
-    const chs = String(ch).padStart(2, "0");
-    for (let v = 0; v < 15; v++) {
-      const id = `${prefix}-ch${chs}-q${String(v + 1).padStart(2, "0")}`;
-      const templates = [
-        {
-          q: `Regarding ${topic}, which statement best matches this textbook?`,
-          c: `Ground ${topic} in cited sources and chapter objectives`,
-          w: ["Skip reading", "Unrelated to practice", "Anecdotes only"],
-        },
-        {
-          q: `When studying ${topic}, a learner should:`,
-          c: `Connect ideas to realistic scenarios and pass section quizzes`,
-          w: ["Ignore citations", "Skip assessments", "Memorize without context"],
-        },
-      ];
-      const t = templates[v % 2];
-      const opts = [...t.w];
-      const ci = v % 4;
-      opts[ci] = t.c;
-      while (opts.length < 4) opts.push("None of the above");
-      lines.push(
-        `  q(${JSON.stringify(id)}, ${JSON.stringify(t.q)}, ${JSON.stringify(opts.slice(0, 4))}, ${ci}, ${JSON.stringify(`Chapter ${ch}: ${topic}`)}),`
-      );
-    }
-  }
-  const constName = course.slug.replace(/-/g, "_").toUpperCase();
-  return `import type { QuizQuestion } from "@/lib/quizTypes";
-
-function q(
-  id: string,
-  question: string,
-  options: [string, string, string, string],
-  correctIndex: 0 | 1 | 2 | 3,
-  explanation: string
-): QuizQuestion {
-  return { id, question, options, correctIndex, explanation };
-}
-
-export const ${constName}_BANK: QuizQuestion[] = [
-${lines.join("\n")}
-];
-`;
+  const constName = `${course.slug.replace(/-/g, "_").toUpperCase()}_BANK`;
+  const { body } = buildBankFile({
+    slug: course.slug,
+    exportName: constName,
+    prefix,
+    chapterTitles: course.chapters.map(([, title]) => title),
+  });
+  return body;
 }
 
 for (const course of COURSES) {

@@ -8,7 +8,7 @@ import type { KodaChatMessage, KodaLearningContext, KodaMode } from "@/services/
 import { KODA_MEMORY_MAX_FACTS, KODA_MEMORY_TOP_K } from "./config";
 import type { KodaMemoryFact, KodaPrepareResult } from "./types";
 
-function formatMemoryBlock(
+export function formatMemoryBlock(
   progressBlock: string,
   facts: KodaMemoryFact[]
 ): string {

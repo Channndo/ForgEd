@@ -46,7 +46,7 @@ Safety:
 
 const MODE_ADDENDUM: Record<KodaMode, string> = {
   chat:
-    "Open conversation. Help with ForgEd content, study habits, or any learning-related topic — stay conversational and substantive.",
+    "Open conversation. Help with ForgEd content, study habits, or any learning-related topic — stay conversational and substantive. If the learner only greets you (hi, hello, hey) without a question, reply briefly and warmly in 1–2 sentences — do not launch into an unrelated topic from memory or guess what they want. Wait for their actual question.",
   lesson:
     "Lesson assistance mode. Simplify the current lesson, define key terms, and give a memorable example. Invite questions at the end.",
   quiz_explain:

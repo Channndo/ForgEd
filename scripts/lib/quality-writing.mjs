@@ -86,8 +86,8 @@ export function introParagraphs(courseTitle, pathContext) {
   return [
     `${courseTitle} is built for professionals who want usable skill—not trivia. Each chapter moves from why the topic matters, through structured explanation, to quizzes that check judgment rather than memorization.`,
     pathContext ||
-      "You will read in sequence: objectives, applied sections, chapter review, then the next chapter. Finish the course review and final exam to certify completion on your ForgEd profile.",
-    "Content is practical workforce education. It does not replace licensure, legal, medical, or employer-specific policy. When your organization has a rule that conflicts with a general lesson, follow your organization's rule and treat this course as context.",
+      "You will read in sequence: objectives, applied sections, chapter review, then the next chapter. Finish the course review and final exam to record course completion on your ForgEd profile.",
+    "Content is practical workforce education for logical foundations. It does not replace licensure, legal, medical, employer policy, or professional certification. When your organization has a rule that conflicts with a general lesson, follow your organization's rule and treat this course as context.",
   ];
 }
 

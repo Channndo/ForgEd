@@ -13,7 +13,7 @@ export function Roadmap() {
             <li>· AI learning assistant (full integration)</li>
             <li>· Resume-linked skill credentials</li>
             <li>· Community forums & mentorship</li>
-            <li>· Industry partner certifications</li>
+            <li>· Employer-aligned learning pathways (educational, not professional licensure)</li>
           </ul>
         </Card>
       </div>

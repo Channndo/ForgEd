@@ -8,6 +8,7 @@ import {
 import {
   getQuizBankSize,
   pickRandomQuestions,
+  prepareQuestionsForAttempt,
   questionsForChapter,
   shuffleQuestions,
 } from "./quizRegistry";
@@ -17,7 +18,9 @@ export { shuffleQuestions, getQuizBankSize, questionsForChapter };
 export function pickSectionQuiz(slug: string, chapterNumber: number): QuizQuestion[] {
   const pool = questionsForChapter(slug, chapterNumber);
   if (pool.length >= SECTION_QUIZ_LENGTH) {
-    return shuffleQuestions(pool).slice(0, SECTION_QUIZ_LENGTH);
+    return prepareQuestionsForAttempt(
+      shuffleQuestions(pool).slice(0, SECTION_QUIZ_LENGTH)
+    );
   }
   return pickRandomQuestions(slug, SECTION_QUIZ_LENGTH, { chapterNumber });
 }
@@ -25,7 +28,9 @@ export function pickSectionQuiz(slug: string, chapterNumber: number): QuizQuesti
 export function pickChapterQuiz(slug: string, chapterNumber: number): QuizQuestion[] {
   const pool = questionsForChapter(slug, chapterNumber);
   if (pool.length >= CHAPTER_QUIZ_LENGTH) {
-    return shuffleQuestions(pool).slice(0, CHAPTER_QUIZ_LENGTH);
+    return prepareQuestionsForAttempt(
+      shuffleQuestions(pool).slice(0, CHAPTER_QUIZ_LENGTH)
+    );
   }
   return pickRandomQuestions(slug, CHAPTER_QUIZ_LENGTH, { chapterNumber });
 }

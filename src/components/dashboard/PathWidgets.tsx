@@ -71,7 +71,7 @@ export function PathDashboardSection() {
           ) : (
             <>
               <p className="mt-2 text-sm text-[var(--muted)]">
-                Pick a structured mastery path to unlock sequential courses and certifications.
+                Pick a structured mastery path to unlock sequential courses and ForgEd completion badges.
               </p>
               <Link href="/paths" className="mt-4 inline-block">
                 <Button>Explore paths →</Button>
@@ -108,7 +108,7 @@ export function PathDashboardSection() {
           <div className="flex items-center gap-2 text-[var(--gold)]">
             <Award className="h-4 w-4" />
             <span className="text-xs font-semibold uppercase tracking-wider">
-              Active certifications
+              Path badges earned
             </span>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">

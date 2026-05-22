@@ -8,7 +8,8 @@
     "build:pages": "node scripts/prepare-gh-pages.mjs hide && GITHUB_PAGES=true next build && node scripts/prepare-gh-pages.mjs restore",
     "start": "next start",
     "lint": "eslint",
-    "favicon": "python3 scripts/make-transparent-favicon.py"
+    "favicon": "python3 scripts/make-transparent-favicon.py",
+    "generate:quiz-banks:llm": "node scripts/generate-quiz-banks-llm.mjs --all --model qwen2.5:7b"
   },
   "dependencies": {
     "framer-motion": "^12.39.0",

@@ -90,6 +90,14 @@ import {
   HVAC_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/hvac-fundamentals";
 import {
+  PLUMB_TEXTBOOK,
+  PLUMB_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/plumbing-fundamentals";
+import {
+  ELEC_TEXTBOOK,
+  ELEC_TEXTBOOK_INTRO,
+} from "@/lib/courses/textbooks/electrical-trades-fundamentals";
+import {
   SCI_TEXTBOOK,
   SCI_TEXTBOOK_INTRO,
 } from "@/lib/courses/textbooks/science-fundamentals";
@@ -225,6 +233,16 @@ const BUNDLES: Record<string, TextbookBundle> = {
     slug: "hvac-fundamentals",
     intro: HVAC_TEXTBOOK_INTRO,
     chapters: HVAC_TEXTBOOK,
+  },
+  "plumbing-fundamentals": {
+    slug: "plumbing-fundamentals",
+    intro: PLUMB_TEXTBOOK_INTRO,
+    chapters: PLUMB_TEXTBOOK,
+  },
+  "electrical-trades-fundamentals": {
+    slug: "electrical-trades-fundamentals",
+    intro: ELEC_TEXTBOOK_INTRO,
+    chapters: ELEC_TEXTBOOK,
   },
   "science-fundamentals": {
     slug: "science-fundamentals",

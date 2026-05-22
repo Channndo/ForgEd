@@ -8,6 +8,7 @@ const PUBLIC_ACTIONS = new Set([
   "loginUser",
   "requestPasswordReset",
   "resetPassword",
+  "verifyCertificate",
 ]);
 
 const SERVER_ACTIONS = new Set([

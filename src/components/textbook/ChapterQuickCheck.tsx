@@ -5,6 +5,7 @@ import type { QuizQuestion } from "@/lib/quizTypes";
 import { CHAPTER_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
 import { pickChapterQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
+import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
 import {
   isChapterQuickCheckPassed,
   markChapterQuickCheckPassed,
@@ -210,21 +211,15 @@ export function ChapterQuickCheck({
                 })}
               </fieldset>
               {currentRevealed && answers[current.id] !== undefined && (
-                <QuizAnswerExplanation
-                  question={current}
-                  selectedIndex={answers[current.id]}
-                />
+                <div className="mt-4 max-h-[min(240px,35vh)] overflow-y-auto overscroll-contain">
+                  <QuizAnswerExplanation
+                    question={current}
+                    selectedIndex={answers[current.id]}
+                  />
+                </div>
               )}
-              <div className="mt-6 flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  disabled={index === 0}
-                  onClick={() => setIndex((i) => i - 1)}
-                  className="rounded-lg border border-white/15 px-4 py-2 text-xs text-[var(--muted)] hover:bg-white/5 disabled:opacity-40"
-                >
-                  Previous
-                </button>
-                {!currentRevealed ? (
+              {!currentRevealed ? (
+                <div className="mt-6 flex flex-wrap gap-2">
                   <button
                     type="button"
                     disabled={answers[current.id] === undefined}
@@ -233,7 +228,17 @@ export function ChapterQuickCheck({
                   >
                     Submit answer
                   </button>
-                ) : (
+                </div>
+              ) : (
+                <QuizStickyFooter inset="compact" className="justify-between">
+                  <button
+                    type="button"
+                    disabled={index === 0}
+                    onClick={() => setIndex((i) => i - 1)}
+                    className="rounded-lg border border-white/15 px-4 py-2 text-xs text-[var(--muted)] hover:bg-white/5 disabled:opacity-40"
+                  >
+                    Previous
+                  </button>
                   <button
                     type="button"
                     onClick={goNext}
@@ -241,8 +246,8 @@ export function ChapterQuickCheck({
                   >
                     {index < questions.length - 1 ? "Next question" : "See summary"}
                   </button>
-                )}
-              </div>
+                </QuizStickyFooter>
+              )}
             </div>
           )}
 

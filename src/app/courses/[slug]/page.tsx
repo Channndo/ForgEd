@@ -4,8 +4,8 @@ import { Clock, Zap, CheckCircle2 } from "lucide-react";
 import { getCourseBySlug } from "@/lib/courses/catalog";
 import { getModulesForSlug, getAllCourseSlugs } from "@/lib/coursePaths";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import { CourseProgressClient } from "./CourseProgressClient";
+import { CourseAssessmentActions } from "./CourseAssessmentActions";
 import { FORGED_EDUCATION_NOTICE } from "@/lib/educationDisclaimer";
 
 export function generateStaticParams() {
@@ -62,17 +62,7 @@ export default async function CoursePage({
 
         {course.textbookCourse && (
           <>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button href={`/courses/${slug}/read`} variant="forge">
-                Open textbook
-              </Button>
-              <Button href={`/courses/${slug}/quiz`} variant="secondary">
-                Course review quiz
-              </Button>
-              <Button href={`/courses/${slug}/exam`} variant="secondary">
-                Final exam
-              </Button>
-            </div>
+            <CourseAssessmentActions slug={slug} courseId={course.id} />
             <p className="mt-3 max-w-2xl text-sm text-[var(--muted)]">
               Complete each chapter&apos;s 5-question quiz (instant feedback), then
               pass the 10-question course review, then the 20-question final exam

@@ -10,7 +10,15 @@ import {
   pickQuizSessionForCourse,
 } from "@/lib/courses/textbook/quizUtils";
 import { QuizEngine } from "@/components/quiz/QuizEngine";
-import { markCourseReviewQuizPassed, recordQuiz } from "@/lib/progress";
+import {
+  isCourseReviewQuizPassed,
+  isFinalExamPassed,
+  markCourseReviewQuizPassed,
+  recordQuiz,
+} from "@/lib/progress";
+import { FINAL_EXAM_LENGTH, PASS_RATIO } from "@/lib/quizTypes";
+import { Button } from "@/components/ui/Button";
+import { ArrowRight, GraduationCap } from "lucide-react";
 import { COURSE_REVIEW_QUIZ_LENGTH } from "@/lib/quizTypes";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { isPassingScore } from "@/lib/quizTypes";
@@ -43,6 +51,9 @@ export default function QuizClient() {
   const { questions, attemptKey, newAttempt } = useQuizAttempt(pick);
 
   const bankSize = getQuizBankSize(slug);
+  const reviewPassed = course ? isCourseReviewQuizPassed(course.id) : false;
+  const examPassed = course ? isFinalExamPassed(course.id) : false;
+  const examPassMin = Math.ceil(FINAL_EXAM_LENGTH * PASS_RATIO);
 
   if (!course) {
     return (
@@ -91,6 +102,26 @@ export default function QuizClient() {
         </p>
       </div>
 
+      {reviewPassed && !examPassed && (
+        <div
+          className="rounded-xl border border-[var(--gold)]/35 bg-[var(--gold)]/10 px-5 py-4"
+          role="status"
+        >
+          <p className="flex items-center gap-2 font-semibold text-[var(--gold)]">
+            <GraduationCap className="h-4 w-4" />
+            Review quiz already passed
+          </p>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            You only need the final exam ({examPassMin}/{FINAL_EXAM_LENGTH}, 70%) to
+            complete {course.title}. You can practice below or go straight to the exam.
+          </p>
+          <Button href={`/courses/${slug}/exam`} variant="forge" className="mt-4">
+            Take final exam
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
       <QuizEngine
         key={attemptKey}
         questions={questions}
@@ -98,6 +129,10 @@ export default function QuizClient() {
         onComplete={handleComplete}
         onNewAttempt={newAttempt}
         kodaContext={kodaContext}
+        courseReviewComplete={{
+          courseTitle: course.title,
+          courseSlug: slug,
+        }}
       />
     </div>
   );

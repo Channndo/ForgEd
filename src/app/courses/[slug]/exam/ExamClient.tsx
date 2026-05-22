@@ -16,7 +16,9 @@ import {
   passFinalExamAndCompleteCourse,
 } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
-import { FINAL_EXAM_LENGTH } from "@/lib/quizTypes";
+import { FINAL_EXAM_LENGTH, isPassingScore } from "@/lib/quizTypes";
+import { CertificateModal } from "@/components/certificates/CertificateModal";
+import { useCertificateUnlock } from "@/hooks/useCertificateUnlock";
 
 export default function ExamClient() {
   const params = useParams();
@@ -37,6 +39,15 @@ export default function ExamClient() {
     ? isCourseReviewQuizPassed(course.id)
     : false;
   const examPassed = course ? isFinalExamPassed(course.id) : false;
+
+  const {
+    certificate,
+    modalOpen,
+    issuing,
+    error: certError,
+    issueOnCourseComplete,
+    closeModal,
+  } = useCertificateUnlock();
 
   if (!course) {
     return (
@@ -77,9 +88,25 @@ export default function ExamClient() {
     if (!course) return;
     passFinalExamAndCompleteCourse(course.id, score, total, course.xpReward);
     refresh();
+    if (isPassingScore(score, total)) {
+      void issueOnCourseComplete({
+        courseSlug: slug,
+        examScore: score,
+        examTotal: total,
+      });
+    }
   }
 
   return (
+    <>
+    <CertificateModal
+      open={modalOpen}
+      onClose={closeModal}
+      certificate={certificate}
+      courseComplete
+      error={certError}
+      issuing={issuing}
+    />
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
         <Link
@@ -91,6 +118,13 @@ export default function ExamClient() {
         <h1 className="mt-4 font-serif text-2xl font-bold text-[var(--silver)]">
           Final exam
         </h1>
+        {reviewPassed && !examPassed && (
+          <p className="mt-3 rounded-lg border border-[var(--gold)]/30 bg-[var(--gold)]/10 px-4 py-3 text-sm text-[var(--silver)]">
+            <strong className="text-[var(--gold)]">Last step:</strong> you passed
+            the course review quiz. Pass this final exam to complete{" "}
+            {course.title} on your profile.
+          </p>
+        )}
         <p className="mt-2 text-sm text-[var(--muted)]">
           {FINAL_EXAM_LENGTH} questions drawn randomly from {bankSize} in the
           bank. Score is shown only after you submit the full exam. Pass with
@@ -112,5 +146,6 @@ export default function ExamClient() {
         onNewAttempt={newAttempt}
       />
     </div>
+    </>
   );
 }

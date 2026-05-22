@@ -4,6 +4,7 @@ const isGhPages = process.env.GITHUB_PAGES === "true";
 const basePath = isGhPages ? "/ForgEd" : "";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["pdf-lib"],
   output: isGhPages ? "export" : undefined,
   basePath: basePath || undefined,
   assetPrefix: basePath ? `${basePath}/` : undefined,

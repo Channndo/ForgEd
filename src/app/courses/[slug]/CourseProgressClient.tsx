@@ -1,6 +1,8 @@
 "use client";
 
+import { ArrowRight, GraduationCap } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
+import { Button } from "@/components/ui/Button";
 import { getCourseBySlug } from "@/lib/courses/catalog";
 import { getTextbookChapterCount } from "@/lib/courses/textbook/registry";
 import {
@@ -12,6 +14,9 @@ import {
   isCourseReviewQuizPassed,
   isFinalExamPassed,
 } from "@/lib/progress";
+import { FINAL_EXAM_LENGTH, PASS_RATIO } from "@/lib/quizTypes";
+
+const EXAM_PASS_MIN = Math.ceil(FINAL_EXAM_LENGTH * PASS_RATIO);
 
 export function CourseProgressClient({
   courseId,
@@ -68,6 +73,40 @@ export function CourseProgressClient({
           <a href={`/courses/${slug}/exam`} className="text-[var(--gold)] hover:underline">
             Final exam
           </a>
+        </p>
+      )}
+
+      {course?.textbookCourse && reviewPassed && !examPassed && !passed && (
+        <div
+          className="mt-4 rounded-xl border border-[var(--gold)]/35 bg-gradient-to-br from-[var(--gold)]/15 to-transparent p-4 sm:p-5"
+          role="status"
+        >
+          <div className="flex items-start gap-3">
+            <GraduationCap className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gold)]" />
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-[var(--gold)]">One step left to complete this course</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                You passed the course review quiz. Pass the{" "}
+                <strong className="font-medium text-[var(--silver)]">final exam</strong>{" "}
+                ({EXAM_PASS_MIN}/{FINAL_EXAM_LENGTH} correct, 70%) to mark{" "}
+                {course.title} complete on your profile and earn the remaining XP.
+              </p>
+              <Button
+                href={`/courses/${slug}/exam`}
+                variant="forge"
+                className="mt-4"
+              >
+                Take final exam
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {course?.textbookCourse && reviewPassed && examPassed && !passed && (
+        <p className="mt-3 text-sm text-[var(--success)]">
+          Final exam passed — course completion should appear on your profile shortly.
         </p>
       )}
     </div>

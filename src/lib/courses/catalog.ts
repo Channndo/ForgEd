@@ -366,6 +366,30 @@ const EXTENDED_CATALOG: Course[] = [
     ]
   ),
   textbookCourse(
+    "plumbing-fundamentals",
+    "Plumbing Fundamentals",
+    "skilled-trades",
+    "Ten-chapter textbook on water supply, DWV, fixtures, codes, rough-in, service, safety, licensing, and plumbing careers.",
+    [
+      { id: "supply-dwv", name: "Supply & DWV" },
+      { id: "fixtures", name: "Fixtures & Service" },
+      { id: "codes", name: "Codes & Permits" },
+      { id: "plumbing-careers", name: "Plumbing Careers" },
+    ]
+  ),
+  textbookCourse(
+    "electrical-trades-fundamentals",
+    "Electrical Trades Fundamentals",
+    "skilled-trades",
+    "Ten-chapter trade electrician survey: safety, circuits, wiring, panels, NEC literacy, troubleshooting, and apprenticeship—not engineering theory.",
+    [
+      { id: "safety-wiring", name: "Safety & Wiring" },
+      { id: "panels-loads", name: "Panels & Loads" },
+      { id: "nec-codes", name: "NEC & Codes" },
+      { id: "elec-careers", name: "Electrical Careers" },
+    ]
+  ),
+  textbookCourse(
     "science-fundamentals",
     "Science Fundamentals",
     "science",

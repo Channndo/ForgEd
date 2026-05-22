@@ -5,6 +5,7 @@ import type { QuizQuestion } from "@/lib/quizTypes";
 import { SECTION_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
 import { pickSectionQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
+import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
 import { isSectionQuizPassed, markSectionQuizPassed } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import {
@@ -192,14 +193,16 @@ export function SectionQuiz({
                 })}
               </fieldset>
               {currentRevealed && answers[current.id] !== undefined && (
-                <QuizAnswerExplanation
-                  question={current}
-                  selectedIndex={answers[current.id]}
-                  compact
-                />
+                <div className="mt-3 max-h-[min(200px,30vh)] overflow-y-auto overscroll-contain">
+                  <QuizAnswerExplanation
+                    question={current}
+                    selectedIndex={answers[current.id]}
+                    compact
+                  />
+                </div>
               )}
-              <div className="mt-4 flex gap-2">
-                {!currentRevealed ? (
+              {!currentRevealed ? (
+                <div className="mt-4">
                   <button
                     type="button"
                     disabled={answers[current.id] === undefined}
@@ -208,16 +211,18 @@ export function SectionQuiz({
                   >
                     Submit answer
                   </button>
-                ) : (
+                </div>
+              ) : (
+                <QuizStickyFooter inset="compact">
                   <button
                     type="button"
                     onClick={goNext}
-                    className="rounded-lg bg-[var(--gold)] px-3 py-1.5 text-xs font-semibold text-[#050505]"
+                    className="rounded-lg bg-[var(--gold)] px-4 py-2 text-xs font-semibold text-[#050505]"
                   >
                     {index < questions.length - 1 ? "Next" : "Finish"}
                   </button>
-                )}
-              </div>
+                </QuizStickyFooter>
+              )}
             </div>
           )}
 

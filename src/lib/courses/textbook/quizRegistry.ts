@@ -23,6 +23,8 @@ import { CHEMICAL_ENGINEERING_BASICS_BANK } from "./banks/chemical-engineering-b
 import { INDUSTRIAL_ENGINEERING_BASICS_BANK } from "./banks/industrial-engineering-basics";
 import { AEROSPACE_ENGINEERING_BASICS_BANK } from "./banks/aerospace-engineering-basics";
 import { HVAC_FUNDAMENTALS_BANK } from "./banks/hvac-fundamentals";
+import { PLUMBING_FUNDAMENTALS_BANK } from "./banks/plumbing-fundamentals";
+import { ELECTRICAL_TRADES_FUNDAMENTALS_BANK } from "./banks/electrical-trades-fundamentals";
 import { SCIENCE_FUNDAMENTALS_BANK } from "./banks/science-fundamentals";
 import { HEALTHCARE_FUNDAMENTALS_BANK } from "./banks/healthcare-fundamentals";
 import { CREATIVE_MEDIA_FUNDAMENTALS_BANK } from "./banks/creative-media-fundamentals";
@@ -59,6 +61,8 @@ const BANKS: Record<string, QuizQuestion[]> = {
   "industrial-engineering-basics": INDUSTRIAL_ENGINEERING_BASICS_BANK,
   "aerospace-engineering-basics": AEROSPACE_ENGINEERING_BASICS_BANK,
   "hvac-fundamentals": HVAC_FUNDAMENTALS_BANK,
+  "plumbing-fundamentals": PLUMBING_FUNDAMENTALS_BANK,
+  "electrical-trades-fundamentals": ELECTRICAL_TRADES_FUNDAMENTALS_BANK,
   "science-fundamentals": SCIENCE_FUNDAMENTALS_BANK,
   "healthcare-fundamentals": HEALTHCARE_FUNDAMENTALS_BANK,
   "creative-media-fundamentals": CREATIVE_MEDIA_FUNDAMENTALS_BANK,

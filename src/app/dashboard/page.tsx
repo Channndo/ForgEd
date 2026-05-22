@@ -26,6 +26,7 @@ import { CourseSpotlight } from "@/components/dashboard/CourseSpotlight";
 import { DomainGrid } from "@/components/dashboard/DomainGrid";
 import { PathDashboardSection } from "@/components/dashboard/PathWidgets";
 import { WelcomeAccountModal } from "@/components/welcome/WelcomeAccountModal";
+import { CertificatesDashboardSection } from "@/components/certificates/CertificatesDashboardSection";
 
 export default function DashboardPage() {
   const { profile, user } = useAuth();
@@ -139,6 +140,8 @@ export default function DashboardPage() {
       </section>
 
       <PathDashboardSection />
+
+      <CertificatesDashboardSection />
 
       <DomainGrid />
 

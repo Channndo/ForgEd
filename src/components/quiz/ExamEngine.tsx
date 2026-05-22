@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import type { QuizQuestion } from "@/lib/quizTypes";
 import { isPassingScore } from "@/lib/quizTypes";
 import { Button } from "@/components/ui/Button";
+import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
 import { RotateCcw } from "lucide-react";
 
 interface ExamEngineProps {
@@ -157,23 +158,25 @@ export function ExamEngine({
         })}
       </ul>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+      <QuizStickyFooter className="justify-between">
         <Button variant="secondary" disabled={index === 0} onClick={handlePrev}>
           Previous
         </Button>
-        {index + 1 < total ? (
-          <Button disabled={selected === undefined} onClick={handleNext}>
-            Next question
-          </Button>
-        ) : (
-          <Button disabled={!allAnswered} onClick={submitExam}>
-            Submit exam
-          </Button>
-        )}
-      </div>
-      <p className="mt-3 text-center text-xs text-[var(--muted)]">
-        {Object.keys(answers).length}/{total} answered
-      </p>
+        <div className="flex flex-col items-end gap-2">
+          {index + 1 < total ? (
+            <Button disabled={selected === undefined} onClick={handleNext}>
+              Next question
+            </Button>
+          ) : (
+            <Button disabled={!allAnswered} onClick={submitExam}>
+              Submit exam
+            </Button>
+          )}
+          <p className="text-xs text-[var(--muted)]">
+            {Object.keys(answers).length}/{total} answered
+          </p>
+        </div>
+      </QuizStickyFooter>
     </div>
   );
 }

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
 import { KodaQuizHelp } from "@/components/koda/KodaQuizHelp";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
+import { QuizStickyFooter } from "@/components/quiz/QuizStickyFooter";
+import { CourseReviewQuizComplete } from "@/components/quiz/CourseReviewQuizComplete";
 import type { KodaLearningContext } from "@/lib/koda/types";
 
 interface QuizEngineProps {
@@ -17,6 +19,11 @@ interface QuizEngineProps {
   /** Draw a new random set from the course bank (parent bumps attempt key). */
   onNewAttempt?: () => void;
   kodaContext?: KodaLearningContext;
+  /** Rich completion UI for course review quiz → final exam handoff */
+  courseReviewComplete?: {
+    courseTitle: string;
+    courseSlug: string;
+  };
 }
 
 export function QuizEngine({
@@ -25,6 +32,7 @@ export function QuizEngine({
   onComplete,
   onNewAttempt,
   kodaContext,
+  courseReviewComplete,
 }: QuizEngineProps) {
   const shuffled = useMemo(() => {
     const arr = [...questions];
@@ -75,6 +83,18 @@ export function QuizEngine({
   }
 
   if (finished) {
+    if (courseReviewComplete) {
+      return (
+        <CourseReviewQuizComplete
+          score={score}
+          total={total}
+          courseTitle={courseReviewComplete.courseTitle}
+          slug={courseReviewComplete.courseSlug}
+          onRetry={retry}
+        />
+      );
+    }
+
     const passed = isPassingScore(score, total);
     return (
       <motion.div
@@ -158,34 +178,35 @@ export function QuizEngine({
           </ul>
 
           {revealed && selected !== null && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-            >
-              <QuizAnswerExplanation question={q} selectedIndex={selected} />
-            </motion.div>
-          )}
-
-          {revealed && kodaContext && (
-            <KodaQuizHelp
-              context={{
-                ...kodaContext,
-                quizQuestion: q.question,
-                quizOptions: [...q.options],
-                userAnswer:
-                  selected !== null ? q.options[selected] : undefined,
-                correctAnswer: q.options[q.correctIndex],
-                quizExplanation: q.explanation,
-              }}
-            />
-          )}
-
-          {revealed && (
-            <div className="mt-6 flex justify-end">
-              <Button onClick={handleNext}>
-                {index + 1 >= total ? "See results" : "Next question"}
-              </Button>
-            </div>
+            <>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-4 max-h-[min(280px,38vh)] overflow-y-auto overscroll-contain pr-1"
+              >
+                <QuizAnswerExplanation question={q} selectedIndex={selected} />
+                {kodaContext && (
+                  <div className="mt-4">
+                    <KodaQuizHelp
+                      context={{
+                        ...kodaContext,
+                        quizQuestion: q.question,
+                        quizOptions: [...q.options],
+                        userAnswer:
+                          selected !== null ? q.options[selected] : undefined,
+                        correctAnswer: q.options[q.correctIndex],
+                        quizExplanation: q.explanation,
+                      }}
+                    />
+                  </div>
+                )}
+              </motion.div>
+              <QuizStickyFooter>
+                <Button onClick={handleNext}>
+                  {index + 1 >= total ? "See results" : "Next question"}
+                </Button>
+              </QuizStickyFooter>
+            </>
           )}
         </motion.div>
       </AnimatePresence>

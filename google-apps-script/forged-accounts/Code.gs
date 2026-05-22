@@ -169,6 +169,25 @@ var SHEETS = {
       'Course Slug',
       'Created'
     ]
+  },
+  CERTIFICATES: {
+    name: 'CERTIFICATES',
+    headers: [
+      'Certificate ID',
+      'User ID',
+      'Student Name',
+      'Course ID',
+      'Course Title',
+      'Course Slug',
+      'Completion Date',
+      'Hours Completed',
+      'Exam Score',
+      'Exam Total',
+      'Verification URL',
+      'Issued At',
+      'Status',
+      'Instructor Signature'
+    ]
   }
 };
 
@@ -293,6 +312,27 @@ function doPost(e) {
     if (action === 'unlockAchievement') {
       var u7 = requireSession_(raw);
       return jsonResponse_(unlockAchievement_(u7.userId, raw));
+    }
+
+    if (action === 'verifyCertificate') {
+      return jsonResponse_(verifyCertificatePublic_(raw.certificateId));
+    }
+
+    if (action === 'issueCertificate') {
+      var uCert = requireSession_(raw);
+      return jsonResponse_(
+        issueCertificate_(uCert.userId, uCert.displayName || uCert.firstName, raw)
+      );
+    }
+
+    if (action === 'listCertificates') {
+      var uList = requireSession_(raw);
+      return jsonResponse_(listCertificates_(uList.userId));
+    }
+
+    if (action === 'getCertificate') {
+      var uGet = requireSession_(raw);
+      return jsonResponse_(getCertificateForUser_(uGet.userId, raw.certificateId));
     }
 
     if (action === 'kodaHealth') {
@@ -2039,6 +2079,182 @@ function kodaChat_(user, data) {
     throw new Error('Empty response from Ollama.');
   }
   return { ok: true, message: content, model: usedModel, userId: user.userId };
+}
+
+// ─── Certificates ───────────────────────────────────────────────────────────
+
+function ensureCertificatesSheet_() {
+  var ss = getSpreadsheet_();
+  var def = SHEETS.CERTIFICATES;
+  var sheet = ss.getSheetByName(def.name);
+  if (!sheet) {
+    sheet = ss.insertSheet(def.name);
+    sheet.getRange(1, 1, 1, def.headers.length).setValues([def.headers]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function findCertificateRow_(certificateId) {
+  var sheet = ensureCertificatesSheet_();
+  var data = sheet.getDataRange().getValues();
+  if (data.length < 2) return null;
+  var headers = data[0];
+  var idCol = headers.indexOf('Certificate ID');
+  if (idCol < 0) return null;
+  for (var r = 1; r < data.length; r++) {
+    if (String(data[r][idCol] || '').trim() === String(certificateId || '').trim()) {
+      return { sheet: sheet, rowIndex: r + 1, headers: headers, row: data[r] };
+    }
+  }
+  return null;
+}
+
+function certificateFromRow_(headers, row) {
+  function col(name) {
+    var i = headers.indexOf(name);
+    return i >= 0 ? row[i] : '';
+  }
+  return {
+    certificateId: String(col('Certificate ID')).trim(),
+    userId: String(col('User ID')).trim(),
+    studentName: String(col('Student Name')).trim(),
+    courseId: String(col('Course ID')).trim(),
+    courseTitle: String(col('Course Title')).trim(),
+    courseSlug: String(col('Course Slug')).trim(),
+    completionDate: String(col('Completion Date')).trim(),
+    hoursCompleted: Number(col('Hours Completed')) || 0,
+    examScore: col('Exam Score') !== '' ? Number(col('Exam Score')) : null,
+    examTotal: col('Exam Total') !== '' ? Number(col('Exam Total')) : null,
+    verificationUrl: String(col('Verification URL')).trim(),
+    issuedAt: String(col('Issued At')).trim(),
+    status: String(col('Status') || 'valid').trim() || 'valid',
+    instructorSignature: String(col('Instructor Signature') || '').trim()
+  };
+}
+
+function findCertificateByUserCourse_(userId, courseId) {
+  var sheet = ensureCertificatesSheet_();
+  var data = sheet.getDataRange().getValues();
+  if (data.length < 2) return null;
+  var headers = data[0];
+  var uidCol = headers.indexOf('User ID');
+  var cidCol = headers.indexOf('Course ID');
+  if (uidCol < 0 || cidCol < 0) return null;
+  for (var r = 1; r < data.length; r++) {
+    if (
+      String(data[r][uidCol] || '').trim() === String(userId).trim() &&
+      String(data[r][cidCol] || '').trim() === String(courseId).trim()
+    ) {
+      return certificateFromRow_(headers, data[r]);
+    }
+  }
+  return null;
+}
+
+function issueCertificate_(userId, defaultStudentName, raw) {
+  ensureCertificatesSheet_();
+  var courseId = trim_(raw.courseId, 80);
+  if (!courseId) throw new Error('courseId is required.');
+
+  var existing = findCertificateByUserCourse_(userId, courseId);
+  if (existing && existing.status !== 'revoked') {
+    return { ok: true, alreadyIssued: true, certificate: existing };
+  }
+
+  var certificateId = trim_(raw.certificateId, 64);
+  if (!certificateId) {
+    certificateId =
+      'FE-CERT-' +
+      Utilities.getUuid().replace(/-/g, '').toUpperCase().slice(0, 8) +
+      '-' +
+      Utilities.getUuid().slice(0, 19).toUpperCase();
+  }
+
+  var studentName = trim_(raw.studentName || defaultStudentName, 120);
+  if (!studentName) throw new Error('Student name is required.');
+
+  var now = nowIso_();
+  var row = [
+    certificateId,
+    userId,
+    studentName,
+    courseId,
+    trim_(raw.courseTitle, 160),
+    trim_(raw.courseSlug, 80),
+    trim_(raw.completionDate || now, 40),
+    Number(raw.hoursCompleted) || 0,
+    raw.examScore != null && raw.examScore !== '' ? Number(raw.examScore) : '',
+    raw.examTotal != null && raw.examTotal !== '' ? Number(raw.examTotal) : '',
+    trim_(raw.verificationUrl, 300),
+    now,
+    'valid',
+    trim_(raw.instructorSignature || 'Chandler Hill', 80)
+  ];
+
+  var sheet = ensureCertificatesSheet_();
+  sheet.appendRow(row);
+
+  return {
+    ok: true,
+    alreadyIssued: false,
+    certificate: certificateFromRow_(SHEETS.CERTIFICATES.headers, row)
+  };
+}
+
+function listCertificates_(userId) {
+  ensureCertificatesSheet_();
+  var sheet = ensureCertificatesSheet_();
+  var data = sheet.getDataRange().getValues();
+  if (data.length < 2) return { ok: true, certificates: [] };
+  var headers = data[0];
+  var uidCol = headers.indexOf('User ID');
+  var out = [];
+  for (var r = 1; r < data.length; r++) {
+    if (String(data[r][uidCol] || '').trim() === String(userId).trim()) {
+      out.push(certificateFromRow_(headers, data[r]));
+    }
+  }
+  out.sort(function (a, b) {
+    return String(b.issuedAt).localeCompare(String(a.issuedAt));
+  });
+  return { ok: true, certificates: out };
+}
+
+function getCertificateForUser_(userId, certificateId) {
+  var found = findCertificateRow_(certificateId);
+  if (!found) return { ok: false, error: 'Certificate not found.' };
+  var cert = certificateFromRow_(found.headers, found.row);
+  if (cert.userId !== userId) {
+    return { ok: false, error: 'Certificate not found.' };
+  }
+  return { ok: true, certificate: cert };
+}
+
+function verifyCertificatePublic_(certificateId) {
+  var id = String(certificateId || '').trim();
+  if (!id) return { ok: false, valid: false, error: 'Certificate ID required.' };
+  var found = findCertificateRow_(id);
+  if (!found) {
+    return { ok: true, valid: false, error: 'Invalid certificate.' };
+  }
+  var cert = certificateFromRow_(found.headers, found.row);
+  if (cert.status === 'revoked') {
+    return { ok: true, valid: false, error: 'This certificate has been revoked.' };
+  }
+  return {
+    ok: true,
+    valid: true,
+    certificate: {
+      certificateId: cert.certificateId,
+      studentName: cert.studentName,
+      courseTitle: cert.courseTitle,
+      completionDate: cert.completionDate,
+      hoursCompleted: cert.hoursCompleted,
+      issuedAt: cert.issuedAt,
+      status: cert.status
+    }
+  };
 }
 
 function jsonResponse_(obj) {

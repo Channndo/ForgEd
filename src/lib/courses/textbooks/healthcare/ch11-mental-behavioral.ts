@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH10 = chapter(
+export const HLTH_CH08 = chapter(
   "mental-behavioral-health",
-  10,
+  8,
   "Mental and Behavioral Health Essentials",
   [
     section(
       "mental-behavioral-s1",
-      "10.1 Why mental health belongs in every care setting",
+      "8.1 Why mental health belongs in every care setting",
       [
         "A patient who whispers that they have not slept in weeks is telling you something as clinically important as a fever. Mental and behavioral health conditions—depression, anxiety, substance use disorders, psychosis, trauma responses—are not separate from \"real\" medicine. They shape adherence, pain perception, recovery time, and safety for staff and families.",
         "Stigma still blocks honest conversation. Your language matters: say \"person with schizophrenia,\" not \"schizophrenic\"; ask about safety without sounding accusatory. Many patients have been dismissed when they raised mood or substance concerns. One calm, nonjudgmental question can reopen a door that was shut for years.",
@@ -25,7 +25,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "mental-behavioral-s2",
-      "10.2 Common conditions learners actually encounter",
+      "8.2 Common conditions learners actually encounter",
       [
         "Major depression is more than sadness—it is persistent low mood or loss of interest, often with sleep change, fatigue, poor concentration, guilt, and sometimes suicidal thoughts. Anxiety disorders include generalized worry, panic attacks (sudden palpitations, chest tightness, fear of dying), and phobias that avoid necessary care.",
         "Bipolar disorder alternates depressive episodes with manic or hypomanic highs: decreased sleep need, racing speech, risky spending, or grandiosity. ADHD in adults may present as disorganization and impulsivity mistaken for poor character.",
@@ -43,7 +43,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "mental-behavioral-s3",
-      "10.3 Screening tools and what a positive screen means",
+      "8.3 Screening tools and what a positive screen means",
       [
         "Validated screens are short on purpose. PHQ-9 (depression) and GAD-7 (anxiety) are common in primary care; AUDIT-C flags unhealthy alcohol use; Columbia Suicide Severity Rating Scale structures lethal-means and intent questions for youth and adults.",
         "A positive screen is not a diagnosis—it is a signal to pause the checkout rush and involve a clinician. Document the score, patient statements in quotes when possible, and the referral or safety plan initiated the same day when risk is elevated.",
@@ -68,7 +68,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "mental-behavioral-s4",
-      "10.4 Integrated care, peer support, and the 988 crisis line",
+      "8.4 Integrated care, peer support, and the 988 crisis line",
       [
         "Integrated behavioral health places psychologists or social workers inside primary care clinics—warm handoffs beat faxed referrals that patients never complete. Collaborative care models track symptoms with registry tools and adjust treatment by protocol with psychiatric consultation.",
         "Peer specialists are trained individuals with lived experience who coach recovery goals, appointment attendance, and community resources. Their role complements—not replaces—licensed therapy and medical management.",
@@ -86,7 +86,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "mental-behavioral-s5",
-      "10.5 Workplace boundaries, burnout, and supporting colleagues",
+      "8.5 Workplace boundaries, burnout, and supporting colleagues",
       [
         "Healthcare workers experience depression and substance use at rates comparable to or higher than the general public—often hidden because licensure fears punishment. Healthy teams normalize employee assistance programs (EAPs) and debriefing after traumatic events.",
         "Compassion fatigue is not weakness; it is the cost of sustained empathy without recovery. Micro-breaks, sleep protection, and limiting mandatory overtime where possible are operational safety issues, not perks.",

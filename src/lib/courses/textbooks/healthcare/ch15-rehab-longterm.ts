@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH14 = chapter(
+export const HLTH_CH12 = chapter(
   "rehab-longterm-care",
-  14,
+  12,
   "Rehabilitation, Long-Term Care, and Aging Services",
   [
     section(
       "rehab-longterm-s1",
-      "14.1 The post-acute continuum: where patients go after the hospital",
+      "12.1 The post-acute continuum: where patients go after the hospital",
       [
         "Hospital discharge is a handoff, not an ending. Patients with stroke, joint replacement, major trauma, or deconditioning often need inpatient rehabilitation (IRF), skilled nursing facility (SNF) rehab, home health, or outpatient physical/occupational/speech therapy. The wrong level wastes Medicare days or sends frail patients home without support.",
         "Inpatient rehabilitation facilities require three hours of therapy daily and physician oversight—appropriate for motivated patients who can tolerate intensity. SNFs offer lower daily therapy minutes but 24-hour nursing for wound care and complex medication regimens.",
@@ -25,7 +25,7 @@ export const HLTH_CH14 = chapter(
     ),
     section(
       "rehab-longterm-s2",
-      "14.2 Therapy disciplines and functional goals",
+      "12.2 Therapy disciplines and functional goals",
       [
         "Physical therapy restores mobility, strength, balance, and gait—preventing falls that fracture hips and end independence. Occupational therapy focuses on activities of daily living: dressing, bathing, cooking, returning to work with adaptive equipment.",
         "Speech-language pathology treats swallowing dysfunction (dysphagia) after stroke—aspiration pneumonia kills silently—and cognitive-communication deficits from brain injury or dementia. Diet texture modifications (pureed, thickened liquids) follow formal swallow studies, not guesswork.",
@@ -43,7 +43,7 @@ export const HLTH_CH14 = chapter(
     ),
     section(
       "rehab-longterm-s3",
-      "14.3 Long-term care, assisted living, and nursing facilities",
+      "12.3 Long-term care, assisted living, and nursing facilities",
       [
         "Nursing facilities (nursing homes) provide 24-hour licensed nursing for chronic custodial and skilled needs—ventilator weaning, wound vacs, tube feeds, advanced dementia care. Surveys and star ratings reflect staffing, inspections, and quality measures—families should tour and ask about RN coverage nights and weekends.",
         "Assisted living offers housing plus help with medications and bathing—not 24-hour skilled nursing. Memory care units add secured environments for wandering risk. Costs are largely private pay unless Medicaid waiver programs exist.",
@@ -61,7 +61,7 @@ export const HLTH_CH14 = chapter(
     ),
     section(
       "rehab-longterm-s4",
-      "14.4 Aging in place, caregivers, and adult protective services",
+      "12.4 Aging in place, caregivers, and adult protective services",
       [
         "Most older adults prefer to remain home. Area Agencies on Aging coordinate meals, transportation, respite, and home modifications (grab bars, ramps). Family caregivers provide billions of unpaid hours—burnout is a patient-safety issue when missed doses and falls follow.",
         "Advance care planning documents wishes before crisis: health care proxy (durable power of attorney for health), living will or POLST/MOLST forms where states recognize them. Encourage conversations at routine visits, not only in the ICU hallway.",
@@ -79,7 +79,7 @@ export const HLTH_CH14 = chapter(
     ),
     section(
       "rehab-longterm-s5",
-      "14.5 Quality, staffing, and the workforce caring for older adults",
+      "12.5 Quality, staffing, and the workforce caring for older adults",
       [
         "Minimum staffing ratios and turnover drive outcomes in long-term care—COVID-19 exposed fragility of the sector. CNAs perform most hands-on care; fair wages and career ladders affect retention more than slogans.",
         "Antipsychotic reduction programs target inappropriate sedation for dementia behaviors—nonpharmacologic interventions first (music, routine, pain treatment). Falls and pressure injuries are publicly reported quality indicators.",

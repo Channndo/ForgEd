@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH08 = chapter(
+export const HLTH_CH07 = chapter(
   "emergency-basics",
-  8,
+  7,
   "Emergency Response Basics",
   [
     section(
       "emergency-basics-s1",
-      "8.1 EMS systems and the chain of survival",
+      "7.1 EMS systems and the chain of survival",
       [
         "Emergency medical services (EMS) integrate 911 dispatch, first responders, ambulances, air medical transport, and receiving hospitals. Response intervals (call to dispatch, dispatch to scene, scene to hospital) are measured publicly in many communities.",
         "Cardiac arrest survival depends on the chain of survival: immediate recognition, CPR, rapid defibrillation, advanced care, and post-arrest treatment. Bystander CPR doubles or triples survival before professionals arrive.",
@@ -32,7 +32,7 @@ export const HLTH_CH08 = chapter(
     ),
     section(
       "emergency-basics-s2",
-      "8.2 First aid priorities (survey-level, not certification)",
+      "7.2 First aid priorities (survey-level, not certification)",
       [
         "Scene safety first—traffic, fire, violence, downed power lines. Protect yourself; you cannot help if you become a second victim. Activate EMS for life threats: unresponsive patient, major bleeding, chest pain, stroke signs, severe allergic reaction, difficulty breathing.",
         "Direct pressure controls most external bleeding. Tourniquets are appropriate for life-threatening extremity hemorrhage when direct pressure fails. Do not remove impaled objects—stabilize and transport.",
@@ -50,7 +50,7 @@ export const HLTH_CH08 = chapter(
     ),
     section(
       "emergency-basics-s3",
-      "8.3 Triage: sorting patients when demand exceeds capacity",
+      "7.3 Triage: sorting patients when demand exceeds capacity",
       [
         "Triage sorts patients by urgency. Simple triage and rapid treatment (START) uses respiration, perfusion, and mental status tags in mass casualty events. Emergency departments use the Emergency Severity Index (ESI) levels 1–5.",
         "Level 1 needs immediate life-saving intervention; level 5 is non-urgent. Crowding and boarding (patients held in ED awaiting inpatient beds) are system problems affecting wait times—not only clinical staffing.",
@@ -68,7 +68,7 @@ export const HLTH_CH08 = chapter(
     ),
     section(
       "emergency-basics-s4",
-      "8.4 Inside the emergency department: flow and roles",
+      "7.4 Inside the emergency department: flow and roles",
       [
         "Typical flow: triage nurse → registration → primary nursing assessment → physician or advanced practitioner evaluation → diagnostics (labs, imaging) → treatment → disposition (admit, observe, discharge). Trauma activations bypass routine queue.",
         "Team roles include attending emergency physician, residents, PAs/NPs, nurses, techs, pharmacists, social work, and case management. Consultants join for specialty issues (orthopedics, psychiatry).",
@@ -86,7 +86,7 @@ export const HLTH_CH08 = chapter(
     ),
     section(
       "emergency-basics-s5",
-      "8.5 Disaster preparedness and hospital incident command",
+      "7.5 Disaster preparedness and hospital incident command",
       [
         "Hospitals use Incident Command System (ICS) structures during surges—hurricane, pandemic, mass shooting. Supply chain, staffing, and alternate care sites (field hospitals, canceled electives) free capacity.",
         "Employers train staff on fire drills, active threat response (Run, Hide, Fight frameworks), and hazardous materials exposure routes. Community partners include EMS, fire, police, and public health.",

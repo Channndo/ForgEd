@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH12 = chapter(
+export const HLTH_CH10 = chapter(
   "diagnostics-labs",
-  12,
+  10,
   "Diagnostic Testing and Laboratory Literacy",
   [
     section(
       "diagnostics-labs-s1",
-      "12.1 How clinicians think about tests: rule in, rule out, monitor",
+      "10.1 How clinicians think about tests: rule in, rule out, monitor",
       [
         "Diagnostic tests are not truth machines—they change probability. A sensitive test misses few cases (good screen); a specific test has few false positives (good confirmation). Pretest probability matters: a troponin in a healthy 22-year-old with chest wall tenderness means something different than the same value in a diabetic smoker with crushing pain.",
         "Screening applies tests to asymptomatic people (mammography, colonoscopy, lipid panels) under evidence-based rules. Diagnostic testing answers a clinical question in a symptomatic patient. Monitoring tracks known disease (A1c, INR on warfarin). Mixing these purposes causes harm—treating incidental findings that would never have hurt the patient.",
@@ -25,7 +25,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "diagnostics-labs-s2",
-      "12.2 Laboratory basics: specimens, reference ranges, and critical values",
+      "10.2 Laboratory basics: specimens, reference ranges, and critical values",
       [
         "Labs analyze blood, urine, body fluids, and tissue. Specimen collection errors—wrong tube, hemolyzed sample, delayed transport—produce bad data. Fasting glucose and lipid panels require patient preparation; label mismatches are a serious patient-safety event.",
         "Reference intervals reflect population norms, not individual baselines. A creatinine \"within normal limits\" may still signal kidney injury in a muscular athlete or frail elder. Trending the same test over time often beats a single snapshot.",
@@ -43,7 +43,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "diagnostics-labs-s3",
-      "12.3 Common panels learners should decode for patients",
+      "10.3 Common panels learners should decode for patients",
       [
         "Complete blood count (CBC) reports white cells (infection, immune suppression), hemoglobin/hematocrit (anemia), and platelets (clotting risk). Basic metabolic panel (BMP) covers electrolytes, kidney function (creatinine, BUN), and glucose. Liver enzymes (AST, ALT, bilirubin) flag hepatocellular injury or cholestasis.",
         "Lipid panel components—LDL, HDL, triglycerides—feed cardiovascular risk discussions. HbA1c and fasting glucose diagnose and monitor diabetes. Thyroid-stimulating hormone (TSH) screens hypo- and hyperthyroidism with reflex free T4 when abnormal.",
@@ -61,7 +61,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "diagnostics-labs-s4",
-      "12.4 Imaging literacy: X-ray, ultrasound, CT, MRI",
+      "10.4 Imaging literacy: X-ray, ultrasound, CT, MRI",
       [
         "Plain radiographs excel at bones, chest congestion, and foreign bodies—fast, lower radiation than CT. Ultrasound uses sound waves—no ionizing radiation—ideal for pregnancy, gallstones, DVT protocols, and bedside procedures.",
         "CT provides cross-sectional detail quickly—trauma, pulmonary embolism, appendicitis—but delivers higher radiation dose; repeat scans accumulate risk, especially in children. MRI uses magnetic fields—superior soft tissue contrast for brain, spine, joints—yet contraindicated with some implants and claustrophobia limits tolerance.",
@@ -79,7 +79,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "diagnostics-labs-s5",
-      "12.5 Explaining results, prior authorization, and patient-facing logistics",
+      "10.5 Explaining results, prior authorization, and patient-facing logistics",
       [
         "Patients receive portal results before clinicians call—good for engagement, risky for misinterpretation. Scripts help: \"Your doctor ordered this to follow up on X; abnormal does not always mean serious; we will contact you if you need action before your visit.\"",
         "Prior authorization and outpatient imaging scheduling create delays. Document medical necessity in orders; staff track authorization numbers to prevent surprise bills when insurance denies coverage.",

@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH09 = chapter(
+export const HLTH_CH14 = chapter(
   "careers-health",
-  9,
+  14,
   "Healthcare Careers",
   [
     section(
       "careers-health-s1",
-      "9.1 Clinical pathways: nursing, medicine, and allied health",
+      "14.1 Clinical pathways: nursing, medicine, and allied health",
       [
         "Registered nurses (RN) complete associate or baccalaureate programs and NCLEX-RN licensure; BSN pathways are preferred in many hospitals. Licensed practical nurses (LPN/LVN) work under RN direction in long-term and clinic settings. Nursing assistants provide direct care with state certification.",
         "Physicians complete four-year medical school (MD or DO) plus residency (3–7+ years) and board certification. Doctor of Osteopathic Medicine (DO) training includes osteopathic manipulative medicine; practice rights parallel MD in U.S. licensure.",
@@ -25,7 +25,7 @@ export const HLTH_CH09 = chapter(
     ),
     section(
       "careers-health-s2",
-      "9.2 Non-clinical pathways: operations, IT, revenue cycle, quality",
+      "14.2 Non-clinical pathways: operations, IT, revenue cycle, quality",
       [
         "Hospitals employ analysts, project managers, supply chain specialists, and patient experience leaders. Health information management (HIM) professionals manage records, coding, release of information, and privacy. Revenue cycle hires registrars, coders, billers, and denials specialists.",
         "Health IT roles implement EHRs, interfaces, cybersecurity, and clinical decision support. Informatics blends clinical knowledge with data science. Supply chain negotiated PPE during COVID—operations is lifesaving.",
@@ -43,7 +43,7 @@ export const HLTH_CH09 = chapter(
     ),
     section(
       "careers-health-s3",
-      "9.3 Education timelines, costs, and credentialing",
+      "14.3 Education timelines, costs, and credentialing",
       [
         "Short certificates (medical assistant, phlebotomy, EMT) take months. Associate degrees (RN, radiography) take two years. Bachelor’s degrees open management and graduate school. Graduate programs (MPH, MHA, MSN, PA, MD) compound tuition and opportunity cost.",
         "Federal student aid, NHSC loan repayment, military Health Professions Scholarship Program, and employer tuition benefits offset costs. Research accreditation—unaccredited programs may not qualify for licensure exams.",
@@ -68,7 +68,7 @@ export const HLTH_CH09 = chapter(
     ),
     section(
       "careers-health-s4",
-      "9.4 Workplace culture, burnout, and moral injury",
+      "14.4 Workplace culture, burnout, and moral injury",
       [
         "Healthcare workers face shift work, emotional labor, violence, and moral distress when resources limit ideal care. Burnout triad: exhaustion, cynicism, reduced efficacy. Turnover raises costs and harms continuity.",
         "Healthy workplaces invest in staffing ratios (where mandated), break coverage, peer support, and leader rounding. Unionization debates center on wages and safe staffing in nursing.",
@@ -86,7 +86,7 @@ export const HLTH_CH09 = chapter(
     ),
     section(
       "careers-health-s5",
-      "9.5 Job search: résumés, networking, and clinical placements",
+      "14.5 Job search: résumés, networking, and clinical placements",
       [
         "Healthcare hiring uses applicant tracking systems—keywords from posting should appear in résumés. Quantify impact: patients per shift, denial reduction percentage, project go-lives.",
         "Networking includes preceptors, professional associations (AHIMA, AAPC, specialty societies), and LinkedIn with HIPAA-safe descriptions (no patient identifiers). Job fairs and hospital residency-style new grad programs matter for nurses.",

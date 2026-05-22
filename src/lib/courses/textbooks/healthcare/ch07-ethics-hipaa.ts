@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH07 = chapter(
+export const HLTH_CH13 = chapter(
   "ethics-hipaa",
-  7,
+  13,
   "Ethics and HIPAA",
   [
     section(
       "ethics-hipaa-s1",
-      "7.1 Professional ethics: beneficence, autonomy, justice, nonmaleficence",
+      "13.1 Professional ethics: beneficence, autonomy, justice, nonmaleficence",
       [
         "Bioethics frameworks guide dilemmas technology cannot solve alone. Beneficence promotes patient welfare; nonmaleficence avoids harm; autonomy respects competent decision-making; justice demands fair allocation of scarce resources.",
         "Conflicts arise: adolescent privacy vs parental notification, ICU beds during surges, experimental therapy access. Ethics committees consult on withdrawal of life support, organ donation, and research participation.",
@@ -25,7 +25,7 @@ export const HLTH_CH07 = chapter(
     ),
     section(
       "ethics-hipaa-s2",
-      "7.2 HIPAA Privacy Rule: PHI, minimum necessary, patient rights",
+      "13.2 HIPAA Privacy Rule: PHI, minimum necessary, patient rights",
       [
         "The Health Insurance Portability and Accountability Act (HIPAA) Privacy Rule regulates protected health information (PHI)—identifiers linked to health data. Covered entities (most providers, plans, clearinghouses) and many business associates must safeguard PHI.",
         "Uses and disclosures require permission or a permitted purpose (treatment, payment, health care operations). Minimum necessary limits what staff access. Patients may request records, amend certain entries, and receive accounting of disclosures.",
@@ -50,7 +50,7 @@ export const HLTH_CH07 = chapter(
     ),
     section(
       "ethics-hipaa-s3",
-      "7.3 Security Rule, breaches, and cyber hygiene",
+      "13.3 Security Rule, breaches, and cyber hygiene",
       [
         "The HIPAA Security Rule requires administrative, physical, and technical safeguards for electronic PHI (ePHI). Risk analysis, access controls, encryption where appropriate, audit logs, and workforce sanctions are expected.",
         "A breach is impermissible use or disclosure compromising security or privacy. Breach notification to individuals, HHS, and sometimes media depends on scale and risk assessment. Ransomware attacks on hospitals demonstrate operational and ethical stakes.",
@@ -68,7 +68,7 @@ export const HLTH_CH07 = chapter(
     ),
     section(
       "ethics-hipaa-s4",
-      "7.4 Informed consent, assent, and surrogate decision-making",
+      "13.4 Informed consent, assent, and surrogate decision-making",
       [
         "Informed consent requires disclosure of purpose, risks, benefits, and alternatives in language the patient understands. Capacity is decision-specific—a delirious patient may still choose food. Documentation captures the conversation, not only the form signature.",
         "Minors generally need parental permission with exceptions (emancipation, reproductive care statutes vary by state). Assent involves children in developmentally appropriate ways.",
@@ -86,7 +86,7 @@ export const HLTH_CH07 = chapter(
     ),
     section(
       "ethics-hipaa-s5",
-      "7.5 Bias, equity, and vulnerable populations",
+      "13.5 Bias, equity, and vulnerable populations",
       [
         "Structural racism and bias affect triage, pain treatment, and maternal outcomes. Implicit bias training is insufficient without system fixes—diverse hiring, community partnerships, and stratified quality metrics.",
         "Vulnerable groups include incarcerated patients, homeless individuals, immigrants fearful of deportation, and people with disabilities. Privacy, interpreter access, and reasonable accommodations are legal and ethical duties under ADA and Section 1557.",

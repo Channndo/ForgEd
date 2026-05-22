@@ -83,7 +83,8 @@ export async function getForgedSyntrixKodaStatus(): Promise<KodaStatusResponse> 
 }
 
 export async function forgedSyntrixKodaChat(
-  request: KodaChatRequest
+  request: KodaChatRequest,
+  systemPromptOverride?: string
 ): Promise<KodaChatResponse> {
   if (!isForgedSyntrixKodaConfigured()) {
     throw new ForgedSyntrixKodaError(
@@ -93,7 +94,8 @@ export async function forgedSyntrixKodaChat(
   }
 
   const mode = request.mode ?? "chat";
-  const systemPrompt = buildKodaSystemPrompt(mode, request.context);
+  const systemPrompt =
+    systemPromptOverride ?? buildKodaSystemPrompt(mode, request.context);
   const messages = request.messages
     .filter((m) => m.role === "user" || m.role === "assistant")
     .map((m) => ({ role: m.role, content: m.content }));

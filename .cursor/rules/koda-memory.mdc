@@ -1,0 +1,16 @@
+---
+description: KODA ForgEd-only memory — RAG, structured storage, isolation from MIRA/Syntrix
+globs: src/services/koda/**,src/services/ai/memory.ts,src/services/ai/kodaService.ts,docs/prompts/koda-memory-architecture.md
+alwaysApply: false
+---
+
+# KODA memory (ForgEd only)
+
+**Read first:** `docs/prompts/koda-memory-architecture.md`
+
+- Namespace: `forged` / `koda_*` — never MIRA, Syntrix, or CoverIQ stores.
+- Structured layer: Postgres (or SQLite dev) + optional pgvector/Qdrant + optional Redis.
+- Pipeline: retrieve (RAG) → augment `buildKodaSystemPrompt` → chat → extract facts → prune.
+- Gate: `KODA_MEMORY_ENABLED` — default off until migrations run.
+
+Do not import memory code into `syntrix` or `coveriq` repos.

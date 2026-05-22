@@ -27,6 +27,11 @@ import {
 } from "./inference";
 import { getSyntrixKodaStatus, syntrixKodaChat, SyntrixKodaError } from "./syntrixKoda";
 import { loadSession, saveSession } from "./memory";
+import {
+  isKodaMemoryEnabled,
+  persistKodaTurnMemory,
+  prepareKodaTurnMemory,
+} from "@/services/koda/memory";
 import { buildKodaSystemPrompt } from "./kodaPrompt";
 import type {
   KodaChatMessage,
@@ -213,11 +218,20 @@ export async function kodaChat(
   }
 
   const mode = request.mode ?? "chat";
-  const systemPrompt = buildKodaSystemPrompt(mode, request.context);
   const sessionId = request.sessionId ?? crypto.randomUUID();
 
-  let messages = request.messages;
-  if (request.sessionId) {
+  const mem = await prepareKodaTurnMemory(authHeader, {
+    ...request,
+    sessionId,
+  });
+  const systemPrompt = buildKodaSystemPrompt(
+    mode,
+    request.context,
+    mem.memoryBlock
+  );
+
+  let messages = mem.enabled ? mem.transcript : request.messages;
+  if (!mem.enabled && request.sessionId) {
     const prior = await loadSession(request.sessionId);
     if (prior?.messages.length) {
       messages = [...prior.messages, ...request.messages.slice(-1)];
@@ -231,11 +245,15 @@ export async function kodaChat(
 
   if (useSyntrixForgedKoda()) {
     try {
-      const result = await forgedSyntrixKodaChat(request);
-      await saveSession(sessionId, [
-        ...messages,
-        { role: "assistant", content: result.message },
-      ]);
+      const result = await forgedSyntrixKodaChat(request, systemPrompt);
+      if (isKodaMemoryEnabled()) {
+        await persistKodaTurnMemory(authHeader, { ...request, sessionId }, result.message);
+      } else {
+        await saveSession(sessionId, [
+          ...messages,
+          { role: "assistant", content: result.message },
+        ]);
+      }
       return { ...result, sessionId };
     } catch (e) {
       if (
@@ -276,10 +294,14 @@ export async function kodaChat(
       model = direct.model;
     }
     const reply = content || "I'm here to help — could you rephrase that?";
-    await saveSession(sessionId, [
-      ...messages,
-      { role: "assistant", content: reply },
-    ]);
+    if (isKodaMemoryEnabled()) {
+      await persistKodaTurnMemory(authHeader, { ...request, sessionId }, reply);
+    } else {
+      await saveSession(sessionId, [
+        ...messages,
+        { role: "assistant", content: reply },
+      ]);
+    }
     return { message: reply, model, sessionId };
   } catch (e) {
     if (e instanceof OllamaError) {
@@ -313,8 +335,27 @@ export async function* kodaChatStreamGenerator(
 
   if (useSyntrixForgedKoda()) {
     try {
-      const result = await forgedSyntrixKodaChat(request);
-      if (result.message) yield result.message;
+      const sessionId = request.sessionId ?? crypto.randomUUID();
+      const mem = await prepareKodaTurnMemory(authHeader, {
+        ...request,
+        sessionId,
+      });
+      const systemPrompt = buildKodaSystemPrompt(
+        request.mode ?? "chat",
+        request.context,
+        mem.memoryBlock
+      );
+      const result = await forgedSyntrixKodaChat(request, systemPrompt);
+      if (result.message) {
+        yield result.message;
+        if (isKodaMemoryEnabled()) {
+          await persistKodaTurnMemory(
+            authHeader,
+            { ...request, sessionId },
+            result.message
+          );
+        }
+      }
       return;
     } catch (e) {
       if (
@@ -330,16 +371,35 @@ export async function* kodaChatStreamGenerator(
   }
 
   const mode = request.mode ?? "chat";
-  const systemPrompt = buildKodaSystemPrompt(mode, request.context);
-  const ollamaMessages = toOllamaMessages(systemPrompt, request.messages);
+  const sessionId = request.sessionId ?? crypto.randomUUID();
+  const mem = await prepareKodaTurnMemory(authHeader, {
+    ...request,
+    sessionId,
+  });
+  const systemPrompt = buildKodaSystemPrompt(
+    mode,
+    request.context,
+    mem.memoryBlock
+  );
+  const messages = mem.enabled ? mem.transcript : request.messages;
+  const ollamaMessages = toOllamaMessages(systemPrompt, messages);
 
   if (ollamaMessages.length < 2) {
     throw new KodaServiceError(400, "A user message is required.");
   }
 
+  let full = "";
   try {
     for await (const token of ollamaChatStream(ollamaMessages)) {
+      full += token;
       yield token;
+    }
+    if (full && isKodaMemoryEnabled()) {
+      await persistKodaTurnMemory(
+        authHeader,
+        { ...request, sessionId },
+        full
+      );
     }
   } catch (e) {
     if (e instanceof OllamaError) {

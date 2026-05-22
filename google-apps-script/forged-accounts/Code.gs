@@ -141,6 +141,34 @@ var SHEETS = {
   EMAIL_LOG: {
     name: 'EMAIL_LOG',
     headers: ['Timestamp', 'Event', 'Recipients', 'Status', 'Error Detail', 'User ID', 'Email']
+  },
+  /** ForgEd KODA only — never shared with Syntrix MIRA or CoverIQ */
+  KODA_FACTS: {
+    name: 'KODA_FACTS',
+    headers: [
+      'Fact ID',
+      'User ID',
+      'Fact Type',
+      'Content',
+      'Confidence',
+      'Course Slug',
+      'Status',
+      'Created',
+      'Updated'
+    ]
+  },
+  KODA_CHAT_LOG: {
+    name: 'KODA_CHAT_LOG',
+    headers: [
+      'Log ID',
+      'User ID',
+      'Session ID',
+      'Role',
+      'Content',
+      'Mode',
+      'Course Slug',
+      'Created'
+    ]
   }
 };
 
@@ -269,6 +297,16 @@ function doPost(e) {
 
     if (action === 'kodaHealth') {
       return jsonResponse_(kodaHealth_());
+    }
+
+    if (action === 'kodaMemoryPrepare') {
+      var uMemPrep = requireSession_(raw);
+      return jsonResponse_(kodaMemoryPrepare_(uMemPrep.userId, raw));
+    }
+
+    if (action === 'kodaMemorySaveTurn') {
+      var uMemSave = requireSession_(raw);
+      return jsonResponse_(kodaMemorySaveTurn_(uMemSave.userId, raw));
     }
 
     if (action === 'kodaChat') {
@@ -1623,6 +1661,265 @@ function getServerSecret_() {
     FORGED_SETUP.SERVER_SECRET ||
     ''
   );
+}
+
+// ─── KODA memory (ForgEd accounts sheet only — isolated from Syntrix / CoverIQ) ─
+
+function ensureKodaMemorySheets_() {
+  var ss = getSpreadsheet_();
+  var defs = [SHEETS.KODA_FACTS, SHEETS.KODA_CHAT_LOG];
+  for (var i = 0; i < defs.length; i++) {
+    var def = defs[i];
+    var sheet = ss.getSheetByName(def.name);
+    if (!sheet) {
+      sheet = ss.insertSheet(def.name);
+      sheet.getRange(1, 1, 1, def.headers.length).setValues([def.headers]);
+      sheet.setFrozenRows(1);
+    }
+  }
+}
+
+function kodaMemoryPrepare_(userId, data) {
+  ensureKodaMemorySheets_();
+  var sessionId = String(data.sessionId || '').trim();
+  var query = String(data.query || '').trim().toLowerCase();
+  var maxMessages = Math.min(Number(data.maxMessages) || 24, 48);
+
+  var transcript = [];
+  if (sessionId) {
+    transcript = listKodaChatForSession_(userId, sessionId, maxMessages);
+  }
+
+  var progressBlock = buildKodaProgressBlock_(userId);
+  var facts = listKodaFactsForUser_(userId, 'active');
+  var retrieved = rankKodaFacts_(facts, query, Number(data.topK) || 8);
+
+  return {
+    ok: true,
+    venture: 'forged',
+    assistant: 'koda',
+    transcript: transcript,
+    memoryFacts: retrieved,
+    progressBlock: progressBlock
+  };
+}
+
+function kodaMemorySaveTurn_(userId, data) {
+  ensureKodaMemorySheets_();
+  var sessionId = String(data.sessionId || '').trim();
+  if (!sessionId) {
+    throw new Error('sessionId is required.');
+  }
+  var mode = String(data.mode || 'chat').trim();
+  var courseSlug = String(data.courseSlug || '').trim();
+
+  var userMsg = String(data.userMessage || '').trim();
+  var assistantMsg = String(data.assistantMessage || '').trim();
+  if (userMsg) {
+    appendKodaChatRow_(userId, sessionId, 'user', userMsg, mode, courseSlug);
+  }
+  if (assistantMsg) {
+    appendKodaChatRow_(userId, sessionId, 'assistant', assistantMsg, mode, courseSlug);
+  }
+
+  var savedFacts = [];
+  var incoming = data.facts;
+  if (incoming && incoming.length) {
+    savedFacts = upsertKodaFacts_(userId, incoming, courseSlug);
+  }
+  pruneKodaFactsForUser_(userId, Number(data.maxFacts) || 200);
+
+  return {
+    ok: true,
+    venture: 'forged',
+    assistant: 'koda',
+    factsSaved: savedFacts.length
+  };
+}
+
+function buildKodaProgressBlock_(userId) {
+  try {
+    var dash = loadUserDashboard_(userId);
+    var u = dash.user;
+    var p = dash.progress;
+    var lines = [
+      'ForgEd learner snapshot (from this account only):',
+      'XP: ' + (Number(u.xp) || 0) + ', Level: ' + (Number(u.level) || 1) + ', Streak: ' + (Number(u.streak) || 0) + ' day(s).'
+    ];
+    if (p && p.completedCourses && p.completedCourses.length) {
+      lines.push('Completed courses: ' + p.completedCourses.join(', '));
+    }
+    if (p && p.completedLessons && p.completedLessons.length) {
+      lines.push('Lessons completed: ' + p.completedLessons.length);
+    }
+    if (p && p.activePathId) {
+      lines.push('Active learning path: ' + p.activePathId);
+    }
+    return lines.join('\n');
+  } catch (e) {
+    return 'ForgEd learner snapshot unavailable.';
+  }
+}
+
+function listKodaChatForSession_(userId, sessionId, maxRows) {
+  var sheet = getSheet_(SHEETS.KODA_CHAT_LOG.name);
+  var last = sheet.getLastRow();
+  if (last < 2) return [];
+  var rows = sheet.getRange(2, 1, last - 1, SHEETS.KODA_CHAT_LOG.headers.length).getValues();
+  var out = [];
+  for (var i = rows.length - 1; i >= 0 && out.length < maxRows; i--) {
+    var r = rows[i];
+    if (String(r[1]) !== userId || String(r[2]) !== sessionId) continue;
+    var role = String(r[3]);
+    if (role !== 'user' && role !== 'assistant') continue;
+    out.unshift({ role: role, content: String(r[4] || '') });
+  }
+  return out;
+}
+
+function appendKodaChatRow_(userId, sessionId, role, content, mode, courseSlug) {
+  var sheet = getSheet_(SHEETS.KODA_CHAT_LOG.name);
+  var text = String(content || '').slice(0, 12000);
+  sheet.appendRow([
+    Utilities.getUuid(),
+    userId,
+    sessionId,
+    role,
+    text,
+    mode,
+    courseSlug,
+    nowIso_()
+  ]);
+}
+
+function listKodaFactsForUser_(userId, status) {
+  var sheet = getSheet_(SHEETS.KODA_FACTS.name);
+  var last = sheet.getLastRow();
+  if (last < 2) return [];
+  var rows = sheet.getRange(2, 1, last - 1, SHEETS.KODA_FACTS.headers.length).getValues();
+  var out = [];
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (String(r[1]) !== userId) continue;
+    if (status && String(r[6]) !== status) continue;
+    out.push({
+      factId: String(r[0]),
+      userId: String(r[1]),
+      factType: String(r[2]),
+      content: String(r[3]),
+      confidence: Number(r[4]) || 0.5,
+      courseSlug: String(r[5]),
+      status: String(r[6]),
+      created: String(r[7]),
+      updated: String(r[8])
+    });
+  }
+  return out;
+}
+
+function rankKodaFacts_(facts, query, topK) {
+  if (!facts.length) return [];
+  var qTokens = query.split(/\s+/).filter(function (t) {
+    return t.length > 2;
+  });
+  var scored = [];
+  for (var i = 0; i < facts.length; i++) {
+    var f = facts[i];
+    var text = (f.content || '').toLowerCase();
+    var score = f.confidence || 0.5;
+    for (var j = 0; j < qTokens.length; j++) {
+      if (text.indexOf(qTokens[j]) >= 0) score += 1.2;
+    }
+    if (f.factType === 'goal' || f.factType === 'skill_level') score += 0.3;
+    scored.push({ fact: f, score: score });
+  }
+  scored.sort(function (a, b) {
+    return b.score - a.score;
+  });
+  var out = [];
+  for (var k = 0; k < scored.length && out.length < topK; k++) {
+    if (scored[k].score < 0.4 && qTokens.length > 0) continue;
+    out.push(scored[k].fact);
+  }
+  return out;
+}
+
+function upsertKodaFacts_(userId, facts, defaultCourseSlug) {
+  var sheet = getSheet_(SHEETS.KODA_FACTS.name);
+  var existing = listKodaFactsForUser_(userId, 'active');
+  var saved = 0;
+  for (var i = 0; i < facts.length; i++) {
+    var f = facts[i];
+    var content = String(f.content || '').trim().slice(0, 2000);
+    if (!content) continue;
+    var factType = String(f.factType || f.fact_type || 'context').trim();
+    var confidence = Math.max(0, Math.min(1, Number(f.confidence) || 0.7));
+    var courseSlug = String(f.courseSlug || f.course_slug || defaultCourseSlug || '').trim();
+    var dup = null;
+    for (var j = 0; j < existing.length; j++) {
+      if (
+        existing[j].factType === factType &&
+        existing[j].content.toLowerCase() === content.toLowerCase()
+      ) {
+        dup = existing[j];
+        break;
+      }
+    }
+    var now = nowIso_();
+    if (dup) {
+      updateKodaFactRow_(dup.factId, {
+        confidence: Math.max(dup.confidence, confidence),
+        updated: now
+      });
+    } else {
+      sheet.appendRow([
+        Utilities.getUuid(),
+        userId,
+        factType,
+        content,
+        confidence,
+        courseSlug,
+        'active',
+        now,
+        now
+      ]);
+      saved++;
+    }
+  }
+  return saved;
+}
+
+function updateKodaFactRow_(factId, patch) {
+  var sheet = getSheet_(SHEETS.KODA_FACTS.name);
+  var last = sheet.getLastRow();
+  if (last < 2) return;
+  var rows = sheet.getRange(2, 1, last - 1, 1).getValues();
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][0]) !== factId) continue;
+    var rowIndex = i + 2;
+    if (patch.confidence !== undefined) {
+      sheet.getRange(rowIndex, 5).setValue(patch.confidence);
+    }
+    if (patch.status !== undefined) {
+      sheet.getRange(rowIndex, 7).setValue(patch.status);
+    }
+    if (patch.updated !== undefined) {
+      sheet.getRange(rowIndex, 9).setValue(patch.updated);
+    }
+    return;
+  }
+}
+
+function pruneKodaFactsForUser_(userId, maxFacts) {
+  var facts = listKodaFactsForUser_(userId, 'active');
+  if (facts.length <= maxFacts) return;
+  facts.sort(function (a, b) {
+    return String(a.updated).localeCompare(String(b.updated));
+  });
+  var toPrune = facts.length - maxFacts;
+  for (var i = 0; i < toPrune; i++) {
+    updateKodaFactRow_(facts[i].factId, { status: 'pruned', updated: nowIso_() });
+  }
 }
 
 // ─── KODA (Ollama via Apps Script — Netlify calls here, GAS calls shared Ollama) ─

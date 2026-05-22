@@ -72,9 +72,14 @@ function skillNote(level?: SkillLevel): string {
 
 export function buildKodaSystemPrompt(
   mode: KodaMode = "chat",
-  context?: KodaLearningContext
+  context?: KodaLearningContext,
+  memoryBlock?: string
 ): string {
   const parts = [KODA_CORE_SYSTEM, "", MODE_ADDENDUM[mode]];
+
+  if (memoryBlock?.trim()) {
+    parts.push("", memoryBlock.trim());
+  }
 
   if (context?.skillLevel) {
     parts.push(skillNote(context.skillLevel));

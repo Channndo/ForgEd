@@ -14,9 +14,11 @@ import {
   isCourseReviewQuizPassed,
   isFinalExamPassed,
 } from "@/lib/progress";
-import { FINAL_EXAM_LENGTH, PASS_RATIO } from "@/lib/quizTypes";
-
-const EXAM_PASS_MIN = Math.ceil(FINAL_EXAM_LENGTH * PASS_RATIO);
+import {
+  getExamPassMinimum,
+  getFinalExamLength,
+  getPassPercent,
+} from "@/lib/quizCyber";
 
 export function CourseProgressClient({
   courseId,
@@ -88,7 +90,8 @@ export function CourseProgressClient({
               <p className="mt-1 text-sm text-[var(--muted)]">
                 You passed the course review quiz. Pass the{" "}
                 <strong className="font-medium text-[var(--silver)]">final exam</strong>{" "}
-                ({EXAM_PASS_MIN}/{FINAL_EXAM_LENGTH} correct, 70%) to mark{" "}
+                ({getExamPassMinimum(slug)}/{getFinalExamLength(slug)} correct,{" "}
+                {getPassPercent(slug)}%) to mark{" "}
                 {course.title} complete on your profile and earn the remaining XP.
               </p>
               <Button

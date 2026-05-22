@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { QuizQuestion } from "@/lib/quizTypes";
 import { isPassingScore } from "@/lib/quizTypes";
+import { getExamPassMinimum, getPassPercent } from "@/lib/quizCyber";
 import { Button } from "@/components/ui/Button";
 import {
   QuizStickyFooter,
@@ -15,6 +16,7 @@ import { RotateCcw } from "lucide-react";
 interface ExamEngineProps {
   questions: QuizQuestion[];
   title?: string;
+  courseSlug?: string;
   onComplete?: (score: number, total: number) => void;
   onNewAttempt?: () => void;
 }
@@ -22,6 +24,7 @@ interface ExamEngineProps {
 export function ExamEngine({
   questions,
   title = "Final exam",
+  courseSlug,
   onComplete,
   onNewAttempt,
 }: ExamEngineProps) {
@@ -80,7 +83,9 @@ export function ExamEngine({
   }
 
   if (submitted) {
-    const passed = isPassingScore(score, total);
+    const passed = isPassingScore(score, total, courseSlug);
+    const passMin = getExamPassMinimum(courseSlug);
+    const passPct = getPassPercent(courseSlug);
     return (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -96,7 +101,7 @@ export function ExamEngine({
         >
           {passed
             ? "Passed! This course is now complete."
-            : "Not yet — score 70% or higher to pass (14/20)."}
+            : `Not yet — score ${passPct}% or higher to pass (${passMin}/${total}).`}
         </p>
         <p className="mt-3 text-sm text-[var(--muted)]">
           Answers are revealed only after you submit the full exam.

@@ -51,7 +51,7 @@ export function CertificateTemplate({
       <div className="pointer-events-none absolute inset-5 rounded-sm border border-[#c9a962]/60" />
       <div className="pointer-events-none absolute inset-7 rounded-sm border border-[#e8d5a3]/30" />
 
-      <div className="relative flex h-full flex-col px-6 py-5 text-center sm:px-10 sm:py-7">
+      <div className="relative flex h-full flex-col px-6 pb-5 pt-8 text-center sm:px-10 sm:pb-7 sm:pt-10">
         <div className="flex flex-col items-center">
           <Image
             src={withBasePath("/forged-wordmark.png")}
@@ -61,12 +61,12 @@ export function CertificateTemplate({
             className="h-12 w-auto object-contain sm:h-14"
             priority
           />
-          <p className="mt-1 font-mono text-[8px] tracking-[0.28em] text-[var(--muted)] sm:text-[9px]">
-            — {CERTIFICATE_TAGLINE.toUpperCase()} —
+          <p className="mt-1.5 font-mono text-[8px] tracking-[0.28em] text-[var(--muted)] sm:text-[9px]">
+            — {CERTIFICATE_TAGLINE} —
           </p>
         </div>
 
-        <h2 className="mt-4 font-serif text-lg font-bold tracking-wide text-[var(--gold)] sm:text-xl">
+        <h2 className="mt-5 font-serif text-lg font-bold tracking-wide text-[var(--gold)] sm:mt-6 sm:text-xl">
           CERTIFICATE OF COMPLETION
         </h2>
         <p className="mt-3 font-mono text-[8px] tracking-[0.2em] text-[var(--muted)] sm:text-[9px]">

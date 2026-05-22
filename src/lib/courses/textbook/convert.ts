@@ -9,6 +9,9 @@ export function chapterToModule(chapter: TextbookChapter): CourseModule {
       ...(section.laws?.map(
         (l) => `**${l.name}**${l.year ? ` (${l.year})` : ""}: ${l.summary}`
       ) ?? []),
+      ...(section.caseStudies?.map(
+        (c) => `Case: **${c.name}**${c.year ? ` (${c.year})` : ""}: ${c.summary}`
+      ) ?? []),
     ].join("\n\n");
 
     return {

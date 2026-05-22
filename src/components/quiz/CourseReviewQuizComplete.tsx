@@ -9,13 +9,12 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { isPassingScore } from "@/lib/quizTypes";
 import {
-  FINAL_EXAM_LENGTH,
-  isPassingScore,
-  PASS_RATIO,
-} from "@/lib/quizTypes";
-
-const EXAM_PASS_MIN = Math.ceil(FINAL_EXAM_LENGTH * PASS_RATIO);
+  getExamPassMinimum,
+  getFinalExamLength,
+  getPassPercent,
+} from "@/lib/quizCyber";
 
 export function CourseReviewQuizComplete({
   score,
@@ -30,7 +29,10 @@ export function CourseReviewQuizComplete({
   slug: string;
   onRetry: () => void;
 }) {
-  const passed = isPassingScore(score, total);
+  const passed = isPassingScore(score, total, slug);
+  const examLength = getFinalExamLength(slug);
+  const examPassMin = getExamPassMinimum(slug);
+  const passPct = getPassPercent(slug);
   const examHref = `/courses/${slug}/exam`;
   const courseHref = `/courses/${slug}`;
 
@@ -46,7 +48,7 @@ export function CourseReviewQuizComplete({
           {score}/{total}
         </p>
         <p className="mt-2 text-lg text-[var(--warning)]">
-          Not quite — score 70% or higher to unlock the final exam.
+          Not quite — score {passPct}% or higher to unlock the final exam.
         </p>
         <p className="mx-auto mt-3 max-w-md text-sm text-[var(--muted)]">
           Review the textbook chapters you missed, then try another random set
@@ -115,9 +117,9 @@ export function CourseReviewQuizComplete({
                   Final exam — your last step
                 </span>
                 <span className="mt-1 block text-[var(--muted)]">
-                  {FINAL_EXAM_LENGTH} questions from the bank · score shown after
-                  you submit all · pass with {EXAM_PASS_MIN}/{FINAL_EXAM_LENGTH}{" "}
-                  (70%) to complete {courseTitle} and earn full course XP.
+                  {examLength} questions from the bank · score shown after you
+                  submit all · pass with {examPassMin}/{examLength} ({passPct}%)
+                  to complete {courseTitle} and earn full course XP.
                 </span>
               </span>
             </li>

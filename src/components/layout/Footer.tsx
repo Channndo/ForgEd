@@ -24,6 +24,7 @@ export function Footer() {
               <li><Link href="/paths" className="hover:text-[var(--gold)]">Learning Paths</Link></li>
               <li><Link href="/career" className="hover:text-[var(--gold)]">Career Hub</Link></li>
               <li><Link href="/progress" className="hover:text-[var(--gold)]">Progress</Link></li>
+              <li><Link href="/achievements" className="hover:text-[var(--gold)]">Achievements</Link></li>
             </ul>
           </div>
           <div>

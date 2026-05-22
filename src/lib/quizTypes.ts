@@ -18,7 +18,13 @@ export const PASS_RATIO = 0.7;
 export const CHAPTER_QUICK_CHECK_LENGTH = CHAPTER_QUIZ_LENGTH;
 export const QUIZ_SESSION_LENGTH = COURSE_REVIEW_QUIZ_LENGTH;
 
-export function isPassingScore(score: number, total: number): boolean {
+import { getPassRatio } from "./quizCyber";
+
+export function isPassingScore(
+  score: number,
+  total: number,
+  slug?: string
+): boolean {
   if (total <= 0) return false;
-  return score >= Math.ceil(total * PASS_RATIO);
+  return score >= Math.ceil(total * getPassRatio(slug));
 }

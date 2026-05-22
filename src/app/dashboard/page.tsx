@@ -247,6 +247,11 @@ export default function DashboardPage() {
                 </Link>
               </li>
               <li>
+                <Link href="/achievements" className="text-[var(--gold)] hover:underline">
+                  Achievements
+                </Link>
+              </li>
+              <li>
                 <Link href="/career" className="text-[var(--gold)] hover:underline">
                   Career hub
                 </Link>

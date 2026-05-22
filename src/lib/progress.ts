@@ -155,7 +155,8 @@ export function recordQuiz(
   quizKey: string,
   score: number,
   total: number,
-  xpAmount = 100
+  xpAmount = 100,
+  courseSlug?: string
 ): UserProgress {
   let data = updateStreak(readProgress());
   data.quizScores[quizKey] = {
@@ -163,7 +164,7 @@ export function recordQuiz(
     total,
     at: new Date().toISOString(),
   };
-  if (isPassingScore(score, total)) {
+  if (isPassingScore(score, total, courseSlug)) {
     data.xp += xpAmount;
     data = awardBadge(data, "quiz-pass");
   }
@@ -325,7 +326,8 @@ export function passFinalExamAndCompleteCourse(
   courseId: string,
   score: number,
   total: number,
-  xpAmount: number
+  xpAmount: number,
+  courseSlug?: string
 ): UserProgress {
   let data = updateStreak(readProgress());
   data.quizScores[`${courseId}-exam`] = {
@@ -333,7 +335,7 @@ export function passFinalExamAndCompleteCourse(
     total,
     at: new Date().toISOString(),
   };
-  if (isPassingScore(score, total)) {
+  if (isPassingScore(score, total, courseSlug)) {
     const exams = data.finalExamPassed ?? [];
     if (!exams.includes(courseId)) {
       data.finalExamPassed = [...exams, courseId];

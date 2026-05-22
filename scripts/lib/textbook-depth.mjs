@@ -3,6 +3,7 @@
  */
 
 import { chapterHook } from "../data/textbook-chapter-snippets.mjs";
+import { getLawCaseStudies } from "../data/law-case-studies.mjs";
 
 export const SECTION_HEADINGS = [
   "foundations and vocabulary",
@@ -306,7 +307,14 @@ function sectionHeading(sectionIndex) {
   return parts.map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w)).join(" ");
 }
 
-export function buildSectionContent(chapterTitle, courseTitle, domain, sectionIndex) {
+export function buildSectionContent(
+  chapterTitle,
+  courseTitle,
+  domain,
+  sectionIndex,
+  options = {}
+) {
+  const { courseSlug, chapterId } = options;
   const facts = pickFacts(domain, chapterTitle, sectionIndex);
   const hook = chapterHook(domain, chapterTitle);
   const topic = chapterTitle;
@@ -362,7 +370,22 @@ export function buildSectionContent(chapterTitle, courseTitle, domain, sectionIn
       ? [DOMAIN_CITATIONS[domain][hash(chapterTitle) % DOMAIN_CITATIONS[domain].length]]
       : undefined;
 
-  return { heading: sectionHeading(sectionIndex), paragraphs, bulletPoints, citations, angle };
+  const caseStudies =
+    domain === "law" &&
+    sectionIndex === 3 &&
+    courseSlug &&
+    chapterId
+      ? getLawCaseStudies(courseSlug, chapterId)
+      : undefined;
+
+  return {
+    heading: sectionHeading(sectionIndex),
+    paragraphs,
+    bulletPoints,
+    citations,
+    caseStudies,
+    angle,
+  };
 }
 
 export function buildChapterMeta(chapterTitle, courseTitle, domain, sections) {

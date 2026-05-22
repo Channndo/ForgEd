@@ -408,6 +408,7 @@ export const LEARNING_PATHS: LearningPath[] = [
     badgeName: "Cyber Defense Badge",
     badgeDescription: "Completed the Cybersecurity mastery path",
     unlockRequirement: { type: "path", pathId: "it-foundations" },
+    masteryExamQuestions: 25,
     courses: [
       {
         slug: "cybersecurity-basics",
@@ -478,7 +479,6 @@ export const LEARNING_PATHS: LearningPath[] = [
         unlockAfterCourseSlug: "threat-awareness",
       },
     ],
-    masteryExamQuestions: 20,
   },
   {
     id: "entrepreneurship",

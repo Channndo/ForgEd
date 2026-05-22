@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, Trophy } from "lucide-react";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { Card } from "@/components/ui/Card";
 import { COURSES } from "@/lib/courses/catalog";
@@ -27,6 +27,24 @@ export default function ProgressPage() {
           </p>
         </div>
       </div>
+
+      <Card className="flex flex-wrap items-center justify-between gap-4 border-[var(--gold)]/15 bg-[var(--gold)]/[0.04]">
+        <div>
+          <p className="flex items-center gap-2 text-sm font-medium text-[var(--silver)]">
+            <Trophy className="h-4 w-4 text-[var(--gold)]" />
+            Achievements
+          </p>
+          <p className="mt-1 text-xs text-[var(--muted)]">
+            View every badge — earned and locked — with XP bonuses.
+          </p>
+        </div>
+        <Link
+          href="/achievements"
+          className="rounded-lg border border-[var(--gold)]/30 bg-[var(--gold)]/10 px-4 py-2 text-sm font-medium text-[var(--gold)] transition hover:bg-[var(--gold)]/15"
+        >
+          Open Achievements →
+        </Link>
+      </Card>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>

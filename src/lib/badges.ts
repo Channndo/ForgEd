@@ -104,3 +104,23 @@ export const BADGES: Badge[] = [
 export function getBadge(id: string): Badge | undefined {
   return BADGES.find((b) => b.id === id);
 }
+
+export interface BadgeGroup {
+  id: string;
+  label: string;
+  badges: Badge[];
+}
+
+/** Groups for the Achievements gallery */
+export function getBadgeGroups(): BadgeGroup[] {
+  const general = BADGES.filter(
+    (b) => !b.id.startsWith("path-") && !b.id.startsWith("insurance")
+  );
+  const course = BADGES.filter((b) => b.id.startsWith("insurance"));
+  const paths = BADGES.filter((b) => b.id.startsWith("path-"));
+  return [
+    { id: "milestones", label: "Learning milestones", badges: general },
+    { id: "courses", label: "Course achievements", badges: course },
+    { id: "paths", label: "Mastery paths", badges: paths },
+  ].filter((g) => g.badges.length > 0);
+}

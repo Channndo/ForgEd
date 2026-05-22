@@ -16,7 +16,12 @@ import {
   passFinalExamAndCompleteCourse,
 } from "@/lib/progress";
 import { useProgress } from "@/components/providers/ProgressProvider";
-import { FINAL_EXAM_LENGTH, isPassingScore } from "@/lib/quizTypes";
+import { isPassingScore } from "@/lib/quizTypes";
+import {
+  getExamPassMinimum,
+  getFinalExamLength,
+  getPassPercent,
+} from "@/lib/quizCyber";
 import { CertificateModal } from "@/components/certificates/CertificateModal";
 import { useCertificateUnlock } from "@/hooks/useCertificateUnlock";
 
@@ -86,9 +91,9 @@ export default function ExamClient() {
 
   function handleComplete(score: number, total: number) {
     if (!course) return;
-    passFinalExamAndCompleteCourse(course.id, score, total, course.xpReward);
+    passFinalExamAndCompleteCourse(course.id, score, total, course.xpReward, slug);
     refresh();
-    if (isPassingScore(score, total)) {
+    if (isPassingScore(score, total, slug)) {
       void issueOnCourseComplete({
         courseSlug: slug,
         examScore: score,
@@ -126,9 +131,10 @@ export default function ExamClient() {
           </p>
         )}
         <p className="mt-2 text-sm text-[var(--muted)]">
-          {FINAL_EXAM_LENGTH} questions drawn randomly from {bankSize} in the
-          bank. Score is shown only after you submit the full exam. Pass with
-          70% (14/20) to complete the course.
+          {getFinalExamLength(slug)} questions drawn randomly from {bankSize} in
+          the bank. Score is shown only after you submit the full exam. Pass with{" "}
+          {getPassPercent(slug)}% ({getExamPassMinimum(slug)}/
+          {getFinalExamLength(slug)}) to complete the course.
         </p>
         {examPassed && (
           <p className="mt-2 text-sm text-[var(--success)]">
@@ -142,6 +148,7 @@ export default function ExamClient() {
         key={attemptKey}
         questions={questions}
         title={`${course.title} Final Exam`}
+        courseSlug={slug}
         onComplete={handleComplete}
         onNewAttempt={newAttempt}
       />

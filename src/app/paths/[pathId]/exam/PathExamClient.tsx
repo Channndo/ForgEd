@@ -10,6 +10,7 @@ import { pickRandomQuestions } from "@/lib/courses/textbook/quizRegistry";
 import { markPathMasteryPassed } from "@/lib/paths/pathProgress";
 import { useProgress } from "@/components/providers/ProgressProvider";
 import { isPassingScore } from "@/lib/quizTypes";
+import { isCybersecurityPath } from "@/lib/quizCyber";
 import { useQuizAttempt } from "@/hooks/useQuizAttempt";
 
 export default function PathExamClient({ path }: { path: LearningPath }) {
@@ -46,10 +47,11 @@ export default function PathExamClient({ path }: { path: LearningPath }) {
       <ExamEngine
         key={`${pathKey}-${attemptKey}`}
         title={`${path.title} Mastery`}
+        courseSlug={isCybersecurityPath(path.id) ? "cybersecurity-basics" : undefined}
         questions={questions}
         onNewAttempt={newAttempt}
         onComplete={(score, total) => {
-          if (isPassingScore(score, total)) {
+          if (isPassingScore(score, total, isCybersecurityPath(path.id) ? "cybersecurity-basics" : undefined)) {
             markPathMasteryPassed(path.id);
             refresh();
           }

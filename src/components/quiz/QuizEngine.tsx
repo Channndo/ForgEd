@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { QuizQuestion } from "@/lib/quizTypes";
 import { isPassingScore } from "@/lib/quizTypes";
+import { getPassPercent } from "@/lib/quizCyber";
 import { Button } from "@/components/ui/Button";
 import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
 import { KodaQuizHelp } from "@/components/koda/KodaQuizHelp";
@@ -99,6 +100,7 @@ export function QuizEngine({
     }
 
     const passed = isPassingScore(score, total);
+    const passPct = getPassPercent();
     return (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -110,7 +112,7 @@ export function QuizEngine({
           {score}/{total}
         </p>
         <p className={`mt-2 text-lg ${passed ? "text-[var(--success)]" : "text-[var(--warning)]"}`}>
-          {passed ? "Passed! Great work." : "Keep learning — 70% needed to pass."}
+          {passed ? "Passed! Great work." : `Keep learning — ${passPct}% needed to pass.`}
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="secondary" onClick={retry}>

@@ -23,6 +23,11 @@ import { generateVerificationQrPng } from "@/lib/certificates/qr";
 const PAGE_W = 792;
 const PAGE_H = 612;
 
+/** Pushes logo + certificate copy down so the wordmark is not clipped at the top */
+const BODY_SHIFT_DOWN = 48;
+const WORDMARK_MAX_HEIGHT = 86;
+const BORDER_INSET = 28;
+
 const GOLD = rgb(0.79, 0.66, 0.31);
 const GOLD_LIGHT = rgb(0.92, 0.84, 0.55);
 const SILVER = rgb(0.72, 0.72, 0.76);
@@ -44,20 +49,19 @@ function formatDisplayDate(iso: string): string {
 }
 
 function drawDoubleBorder(page: PDFPage) {
-  const inset = 28;
   page.drawRectangle({
-    x: inset,
-    y: inset,
-    width: PAGE_W - inset * 2,
-    height: PAGE_H - inset * 2,
+    x: BORDER_INSET,
+    y: BORDER_INSET,
+    width: PAGE_W - BORDER_INSET * 2,
+    height: PAGE_H - BORDER_INSET * 2,
     borderColor: GOLD,
     borderWidth: 1.5,
   });
   page.drawRectangle({
-    x: inset + 6,
-    y: inset + 6,
-    width: PAGE_W - (inset + 6) * 2,
-    height: PAGE_H - (inset + 6) * 2,
+    x: BORDER_INSET + 6,
+    y: BORDER_INSET + 6,
+    width: PAGE_W - (BORDER_INSET + 6) * 2,
+    height: PAGE_H - (BORDER_INSET + 6) * 2,
     borderColor: GOLD_LIGHT,
     borderWidth: 0.75,
   });
@@ -144,61 +148,74 @@ export async function generateCertificatePdf(
   });
 
   drawDoubleBorder(page);
-  const inset = 28;
-  drawCornerFlourish(page, inset + 10, PAGE_H - inset - 10, false, true);
-  drawCornerFlourish(page, PAGE_W - inset - 10, PAGE_H - inset - 10, true, true);
-  drawCornerFlourish(page, inset + 10, inset + 10, false, false);
-  drawCornerFlourish(page, PAGE_W - inset - 10, inset + 10, true, false);
+  drawCornerFlourish(page, BORDER_INSET + 10, PAGE_H - BORDER_INSET - 10, false, true);
+  drawCornerFlourish(page, PAGE_W - BORDER_INSET - 10, PAGE_H - BORDER_INSET - 10, true, true);
+  drawCornerFlourish(page, BORDER_INSET + 10, BORDER_INSET + 10, false, false);
+  drawCornerFlourish(page, PAGE_W - BORDER_INSET - 10, BORDER_INSET + 10, true, false);
 
   const helvetica = await doc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await doc.embedFont(StandardFonts.HelveticaBold);
   const timesBold = await doc.embedFont(StandardFonts.TimesRomanBold);
   const timesItalic = await doc.embedFont(StandardFonts.TimesRomanItalic);
 
+  /** Cursor tracks the next baseline, descending from a safe top margin */
+  let cursorY = PAGE_H - BORDER_INSET - 20 - BODY_SHIFT_DOWN;
+
   const wordmark = await embedWordmark(doc);
   if (wordmark) {
-    const wmW = 200;
-    const scale = wmW / wordmark.width;
-    const wmH = wordmark.height * scale;
+    let wmW = 190;
+    let wmH = (wmW / wordmark.width) * wordmark.height;
+    if (wmH > WORDMARK_MAX_HEIGHT) {
+      wmH = WORDMARK_MAX_HEIGHT;
+      wmW = (wmH / wordmark.height) * wordmark.width;
+    }
+    const wmY = cursorY - wmH;
     page.drawImage(wordmark, {
       x: (PAGE_W - wmW) / 2,
-      y: PAGE_H - 118,
+      y: wmY,
       width: wmW,
       height: wmH,
     });
+    cursorY = wmY - 16;
   } else {
-    centerText(page, "ForgEd", PAGE_H - 100, timesBold, 36, GOLD);
+    centerText(page, "ForgEd", cursorY - 8, timesBold, 36, GOLD);
+    cursorY -= 44;
   }
 
-  centerText(page, `— ${CERTIFICATE_TAGLINE.toUpperCase()} —`, PAGE_H - 128, helvetica, 8, SILVER);
+  centerText(page, `— ${CERTIFICATE_TAGLINE} —`, cursorY, helvetica, 8, SILVER);
+  cursorY -= 28;
 
-  centerText(page, "CERTIFICATE OF COMPLETION", PAGE_H - 175, timesBold, 22, GOLD);
+  centerText(page, "CERTIFICATE OF COMPLETION", cursorY, timesBold, 22, GOLD);
+  cursorY -= 38;
 
-  centerText(page, "THIS CERTIFIES THAT", PAGE_H - 210, helvetica, 9, SILVER);
+  centerText(page, "THIS CERTIFIES THAT", cursorY, helvetica, 9, SILVER);
+  cursorY -= 32;
 
   const nameSize = Math.min(42, 520 / Math.max(data.studentName.length * 0.45, 12));
-  centerText(page, data.studentName, PAGE_H - 255, timesItalic, nameSize, WHITE);
+  centerText(page, data.studentName, cursorY, timesItalic, nameSize, WHITE);
+  cursorY -= nameSize + 6;
 
   page.drawLine({
-    start: { x: PAGE_W / 2 - 180, y: PAGE_H - 272 },
-    end: { x: PAGE_W / 2 + 180, y: PAGE_H - 272 },
+    start: { x: PAGE_W / 2 - 180, y: cursorY },
+    end: { x: PAGE_W / 2 + 180, y: cursorY },
     thickness: 0.5,
     color: SILVER,
   });
+  cursorY -= 22;
 
-  centerText(page, "HAS SUCCESSFULLY COMPLETED THE", PAGE_H - 295, helvetica, 9, SILVER);
+  centerText(page, "HAS SUCCESSFULLY COMPLETED THE", cursorY, helvetica, 9, SILVER);
+  cursorY -= 28;
 
   const courseLines = wrapCourseTitle(data.courseTitle, 52);
-  let courseY = PAGE_H - 325;
   for (const line of courseLines) {
-    centerText(page, line, courseY, timesBold, 16, GOLD);
-    courseY -= 22;
+    centerText(page, line, cursorY, timesBold, 16, GOLD);
+    cursorY -= 22;
   }
 
   centerText(
     page,
     `AND HAS DEMONSTRATED DEDICATION AND PROFICIENCY · ${data.hoursCompleted} HOURS`,
-    courseY - 8,
+    cursorY - 6,
     helvetica,
     7.5,
     MUTED

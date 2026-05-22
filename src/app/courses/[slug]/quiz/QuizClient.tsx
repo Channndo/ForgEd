@@ -16,7 +16,7 @@ import {
   markCourseReviewQuizPassed,
   recordQuiz,
 } from "@/lib/progress";
-import { FINAL_EXAM_LENGTH, PASS_RATIO } from "@/lib/quizTypes";
+import { getExamPassMinimum, getFinalExamLength, getPassPercent } from "@/lib/quizCyber";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, GraduationCap } from "lucide-react";
 import { COURSE_REVIEW_QUIZ_LENGTH } from "@/lib/quizTypes";
@@ -53,7 +53,9 @@ export default function QuizClient() {
   const bankSize = getQuizBankSize(slug);
   const reviewPassed = course ? isCourseReviewQuizPassed(course.id) : false;
   const examPassed = course ? isFinalExamPassed(course.id) : false;
-  const examPassMin = Math.ceil(FINAL_EXAM_LENGTH * PASS_RATIO);
+  const examPassMin = getExamPassMinimum(slug);
+  const examLength = getFinalExamLength(slug);
+  const passPct = getPassPercent(slug);
 
   if (!course) {
     return (
@@ -76,8 +78,8 @@ export default function QuizClient() {
 
   function handleComplete(score: number, total: number) {
     if (!course) return;
-    recordQuiz(`${course.id}-quiz`, score, total, course.xpReward / 4);
-    if (isPassingScore(score, total)) {
+    recordQuiz(`${course.id}-quiz`, score, total, course.xpReward / 4, slug);
+    if (isPassingScore(score, total, slug)) {
       markCourseReviewQuizPassed(course.id, course.xpReward / 4);
     }
     refresh();
@@ -97,8 +99,8 @@ export default function QuizClient() {
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
           {COURSE_REVIEW_QUIZ_LENGTH} random questions from {bankSize} in the bank.
-          Immediate feedback after each answer. Pass with 70% to unlock the final
-          exam.
+          Immediate feedback after each answer. Pass with {passPct}% to unlock the
+          final exam.
         </p>
       </div>
 
@@ -112,7 +114,7 @@ export default function QuizClient() {
             Review quiz already passed
           </p>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            You only need the final exam ({examPassMin}/{FINAL_EXAM_LENGTH}, 70%) to
+            You only need the final exam ({examPassMin}/{examLength}, {passPct}%) to
             complete {course.title}. You can practice below or go straight to the exam.
           </p>
           <Button href={`/courses/${slug}/exam`} variant="forge" className="mt-4">

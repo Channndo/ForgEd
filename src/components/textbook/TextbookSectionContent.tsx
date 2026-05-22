@@ -86,10 +86,38 @@ export function TextbookSectionContent({
         </div>
       )}
 
+      {section.caseStudies && section.caseStudies.length > 0 && (
+        <div className="mt-8 overflow-x-auto rounded-xl border border-[var(--gold)]/20 bg-[var(--gold)]/[0.04]">
+          <table className="textbook-law-table w-full text-left text-sm">
+            <caption className="caption-bottom pt-3 text-[var(--muted)]">
+              Illustrative case studies (general education — not legal advice)
+            </caption>
+            <thead>
+              <tr className="border-b border-white/10 text-[var(--muted)]">
+                <th className="px-4 py-3 font-medium">Case</th>
+                <th className="px-4 py-3 font-medium">Year</th>
+                <th className="px-4 py-3 font-medium">Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              {section.caseStudies.map((c) => (
+                <tr key={c.name} className="border-b border-white/5 last:border-0">
+                  <td className="px-4 py-3 font-medium text-[var(--silver)]">{c.name}</td>
+                  <td className="px-4 py-3 text-[var(--muted)]">{c.year ?? "—"}</td>
+                  <td className="px-4 py-3 text-[var(--muted)]">{c.summary}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {section.laws && section.laws.length > 0 && (
         <div className="mt-8 overflow-x-auto rounded-xl border border-[var(--gold)]/15 bg-black/30">
           <table className="textbook-law-table w-full text-left text-sm">
-            <caption>Statutes, standards, and frameworks</caption>
+            <caption className="caption-bottom pt-3 text-[var(--muted)]">
+              Statutes, standards, and frameworks
+            </caption>
             <thead>
               <tr className="border-b border-white/10 text-[var(--muted)]">
                 <th className="px-4 py-3 font-medium">Name</th>

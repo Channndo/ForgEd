@@ -7,7 +7,7 @@ export const FOUNDER_NAME = "Chandler Hill";
 export const FOUNDER_SIGNATURE = FOUNDER_NAME;
 export const FOUNDER_TITLE = "Founder, ForgEd";
 
-export const CERTIFICATE_TAGLINE = "Learn Skills That Matter";
+export const CERTIFICATE_TAGLINE = "Congratulations!";
 
 export function getSiteOrigin(): string {
   if (typeof window !== "undefined") {

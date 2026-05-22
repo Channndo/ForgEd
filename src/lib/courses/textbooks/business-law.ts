@@ -36,7 +36,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "contracts-intro-s3",
       "1.3 Introduction to Contracts — Workplace scenarios and documentation",
       ["Scenario: a teammate cites introduction to contracts in a meeting, but details in the packet do not match the textbook example. Burden of proof and standards of review change outcomes even when facts are similar. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Constitutional limits constrain what governments and sometimes private actors may do.","Good documentation states facts, cites the framework, and records the decision. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Criminal law uses government prosecution and protections like presumption of innocence. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence."]
+        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence."],
+        caseStudies: [
+          { name: "Lucy v. Zehmer", year: "1954", summary: "Objective assent in business deals—outward signs of agreement bind even if a party claims jest." },
+        ]
       }
     ),
     section(
@@ -85,7 +88,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "contract-formation-s3",
       "2.3 Offer, Acceptance, and Consideration — Workplace scenarios and documentation",
       ["Scenario: a teammate cites offer, acceptance, and consideration in a meeting, but details in the packet do not match the textbook example. Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Torts compensate harm caused by negligence, strict liability, or intentional acts.","Good documentation states facts, cites the framework, and records the decision. Contracts allocate risk with offer, acceptance, consideration, and definite terms. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Legal research starts with primary sources—constitutions, statutes, regulations, cases. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation."]
+        bulletPoints: ["Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation."],
+        caseStudies: [
+          { name: "Leonard v. Pepsico", year: "1999", summary: "Promotional offers vs. binding contracts—marketing puffery rarely creates enforceable commercial terms." },
+        ]
       }
     ),
     section(
@@ -134,7 +140,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "contract-terms-s3",
       "3.3 Contract Terms and Interpretation — Workplace scenarios and documentation",
       ["Scenario: a teammate cites contract terms and interpretation in a meeting, but details in the packet do not match the textbook example. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Criminal law uses government prosecution and protections like presumption of innocence.","Good documentation states facts, cites the framework, and records the decision. Statutes come from legislatures while case law develops through published judicial decisions. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Rules are announced in advance and applied by independent institutions rather than private retaliation. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence."]
+        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence."],
+        caseStudies: [
+          { name: "UCC § 2-207 (Battle of the Forms)", year: "—", summary: "Merchant confirmatory memos can form contracts despite conflicting boilerplate—practical formation in B2B sales." },
+        ]
       }
     ),
     section(
@@ -183,7 +192,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "breach-remedies-s3",
       "4.3 Breach of Contract and Remedies — Workplace scenarios and documentation",
       ["Scenario: a teammate cites breach of contract and remedies in a meeting, but details in the packet do not match the textbook example. Legal research starts with primary sources—constitutions, statutes, regulations, cases. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Alternative dispute resolution can resolve conflicts faster than full trials.","Good documentation states facts, cites the framework, and records the decision. Federalism splits authority between national and state governments in the U.S. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Burden of proof and standards of review change outcomes even when facts are similar. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."]
+        bulletPoints: ["Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."],
+        caseStudies: [
+          { name: "Hadley v. Baxendale", year: "1854", summary: "Foreseeable consequential damages limit recovery—buyers must communicate special loss risks at formation." },
+        ]
       }
     ),
     section(
@@ -232,7 +244,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "sales-ucc-s3",
       "5.3 Sales of Goods and the UCC — Workplace scenarios and documentation",
       ["Scenario: a teammate cites sales of goods and the ucc in a meeting, but details in the packet do not match the textbook example. Statutes come from legislatures while case law develops through published judicial decisions. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Rules are announced in advance and applied by independent institutions rather than private retaliation.","Good documentation states facts, cites the framework, and records the decision. Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Torts compensate harm caused by negligence, strict liability, or intentional acts. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Torts compensate harm caused by negligence, strict liability, or intentional acts.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar."]
+        bulletPoints: ["Torts compensate harm caused by negligence, strict liability, or intentional acts.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar."],
+        caseStudies: [
+          { name: "Hadley v. Baxendale (UCC adoption)", year: "—", summary: "Article 2 remedies echo common-law foreseeability—perfect tender and cure rules govern merchant sales." },
+        ]
       }
     ),
     section(
@@ -281,7 +296,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "torts-intro-s3",
       "6.3 Torts and Business Risk — Workplace scenarios and documentation",
       ["Scenario: a teammate cites torts and business risk in a meeting, but details in the packet do not match the textbook example. Constitutional limits constrain what governments and sometimes private actors may do. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Good documentation states facts, cites the framework, and records the decision. Criminal law uses government prosecution and protections like presumption of innocence. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Statutes come from legislatures while case law develops through published judicial decisions. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits."]
+        bulletPoints: ["Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits."],
+        caseStudies: [
+          { name: "Palsgraf v. Long Island R.R.", year: "1928", summary: "Foreseeability limits duty—businesses face tort exposure when conduct risks harm to identifiable classes." },
+        ]
       }
     ),
     section(
@@ -330,7 +348,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "negligence-s3",
       "7.3 Negligence and Duty of Care — Workplace scenarios and documentation",
       ["Scenario: a teammate cites negligence and duty of care in a meeting, but details in the packet do not match the textbook example. Constitutional limits constrain what governments and sometimes private actors may do. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Good documentation states facts, cites the framework, and records the decision. Criminal law uses government prosecution and protections like presumption of innocence. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Statutes come from legislatures while case law develops through published judicial decisions. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."]
+        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."],
+        caseStudies: [
+          { name: "United States v. Carroll Towing Co.", year: "1947", summary: "Reasonable care balances burden, probability, and gravity—risk management parallels negligence law." },
+        ]
       }
     ),
     section(
@@ -379,7 +400,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "strict-products-s3",
       "8.3 Strict Liability and Products — Workplace scenarios and documentation",
       ["Scenario: a teammate cites strict liability and products in a meeting, but details in the packet do not match the textbook example. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Criminal law uses government prosecution and protections like presumption of innocence.","Good documentation states facts, cites the framework, and records the decision. Statutes come from legislatures while case law develops through published judicial decisions. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Rules are announced in advance and applied by independent institutions rather than private retaliation. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do."]
+        bulletPoints: ["Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do."],
+        caseStudies: [
+          { name: "Greenman v. Yuba Power Products, Inc.", year: "1963", summary: "Strict products liability—manufacturers in supply chains answer for defective goods injuring consumers." },
+        ]
       }
     ),
     section(
@@ -428,7 +452,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "business-entities-s3",
       "9.3 Corporations, LLCs, and Partnerships — Workplace scenarios and documentation",
       ["Scenario: a teammate cites corporations, llcs, and partnerships in a meeting, but details in the packet do not match the textbook example. Torts compensate harm caused by negligence, strict liability, or intentional acts. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Good documentation states facts, cites the framework, and records the decision. Alternative dispute resolution can resolve conflicts faster than full trials. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Federalism splits authority between national and state governments in the U.S. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S."]
+        bulletPoints: ["Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S."],
+        caseStudies: [
+          { name: "Salomon v. Salomon & Co.", year: "1897", summary: "Corporate veil separates shareholder liability in ordinary circumstances—foundational for LLC and corp planning." },
+        ]
       }
     ),
     section(
@@ -477,7 +504,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "governance-s3",
       "10.3 Corporate Governance and Fiduciary Duties — Workplace scenarios and documentation",
       ["Scenario: a teammate cites corporate governance and fiduciary duties in a meeting, but details in the packet do not match the textbook example. Statutes come from legislatures while case law develops through published judicial decisions. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Rules are announced in advance and applied by independent institutions rather than private retaliation.","Good documentation states facts, cites the framework, and records the decision. Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Torts compensate harm caused by negligence, strict liability, or intentional acts. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Torts compensate harm caused by negligence, strict liability, or intentional acts.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar."]
+        bulletPoints: ["Torts compensate harm caused by negligence, strict liability, or intentional acts.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar."],
+        caseStudies: [
+          { name: "Smith v. Van Gorkom", year: "1985", summary: "Board duty of care in sale of company—directors need informed process and reasonable investigation (Delaware)." },
+        ]
       }
     ),
     section(
@@ -526,7 +556,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "securities-overview-s3",
       "11.3 Securities Law Overview — Workplace scenarios and documentation",
       ["Scenario: a teammate cites securities law overview in a meeting, but details in the packet do not match the textbook example. Burden of proof and standards of review change outcomes even when facts are similar. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Good documentation states facts, cites the framework, and records the decision. Constitutional limits constrain what governments and sometimes private actors may do. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions."]
+        bulletPoints: ["Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions."],
+        caseStudies: [
+          { name: "SEC v. W.J. Howey Co.", year: "1946", summary: "Investment contract test—offerings may be securities even when labeled otherwise, triggering disclosure duties." },
+        ]
       }
     ),
     section(
@@ -575,7 +608,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "employment-law-s3",
       "12.3 Employment Law Essentials — Workplace scenarios and documentation",
       ["Scenario: a teammate cites employment law essentials in a meeting, but details in the packet do not match the textbook example. Criminal law uses government prosecution and protections like presumption of innocence. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Statutes come from legislatures while case law develops through published judicial decisions.","Good documentation states facts, cites the framework, and records the decision. Rules are announced in advance and applied by independent institutions rather than private retaliation. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."]
+        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."],
+        caseStudies: [
+          { name: "McDonnell Douglas Corp. v. Green", year: "1973", summary: "Burden-shifting framework in Title VII discrimination claims—HR investigations mirror evidentiary stages." },
+        ]
       }
     ),
     section(
@@ -624,7 +660,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "labor-relations-s3",
       "13.3 Labor Law and Collective Bargaining — Workplace scenarios and documentation",
       ["Scenario: a teammate cites labor law and collective bargaining in a meeting, but details in the packet do not match the textbook example. Alternative dispute resolution can resolve conflicts faster than full trials. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Federalism splits authority between national and state governments in the U.S.","Good documentation states facts, cites the framework, and records the decision. Burden of proof and standards of review change outcomes even when facts are similar. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Contracts allocate risk with offer, acceptance, consideration, and definite terms. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."]
+        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."],
+        caseStudies: [
+          { name: "NLRB v. Jones & Laughlin Steel Corp.", year: "1937", summary: "Commerce power supports National Labor Relations Act—collective bargaining rights in interstate industry." },
+        ]
       }
     ),
     section(
@@ -673,7 +712,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "intellectual-property-s3",
       "14.3 Intellectual Property for Business — Workplace scenarios and documentation",
       ["Scenario: a teammate cites intellectual property for business in a meeting, but details in the packet do not match the textbook example. Legal research starts with primary sources—constitutions, statutes, regulations, cases. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Alternative dispute resolution can resolve conflicts faster than full trials.","Good documentation states facts, cites the framework, and records the decision. Federalism splits authority between national and state governments in the U.S. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Burden of proof and standards of review change outcomes even when facts are similar. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts."]
+        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts."],
+        caseStudies: [
+          { name: "Apple Computer, Inc. v. Microsoft Corp.", year: "1994", summary: "GUI look-and-feel copyright dispute—shows how IP battles shape product design and licensing." },
+        ]
       }
     ),
     section(
@@ -722,7 +764,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "antitrust-s3",
       "15.3 Antitrust and Competition Law — Workplace scenarios and documentation",
       ["Scenario: a teammate cites antitrust and competition law in a meeting, but details in the packet do not match the textbook example. Contracts allocate risk with offer, acceptance, consideration, and definite terms. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Constitutional limits constrain what governments and sometimes private actors may do.","Good documentation states facts, cites the framework, and records the decision. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Criminal law uses government prosecution and protections like presumption of innocence. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts."]
+        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts."],
+        caseStudies: [
+          { name: "United States v. Microsoft Corp.", year: "2001", summary: "Monopolization and tying in software markets—Sherman Act enforcement against dominant platforms." },
+        ]
       }
     ),
     section(
@@ -771,7 +816,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "regulatory-compliance-s3",
       "16.3 Regulation and Compliance — Workplace scenarios and documentation",
       ["Scenario: a teammate cites regulation and compliance in a meeting, but details in the packet do not match the textbook example. Statutes come from legislatures while case law develops through published judicial decisions. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Rules are announced in advance and applied by independent institutions rather than private retaliation.","Good documentation states facts, cites the framework, and records the decision. Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Torts compensate harm caused by negligence, strict liability, or intentional acts. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts."]
+        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions.","Rules are announced in advance and applied by independent institutions rather than private retaliation.","Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits.","Torts compensate harm caused by negligence, strict liability, or intentional acts."],
+        caseStudies: [
+          { name: "Chevron U.S.A. Inc. v. NRDC", year: "1984", summary: "Agency deference on ambiguous rules—compliance teams follow regulations agencies reasonably interpret." },
+        ]
       }
     ),
     section(
@@ -820,7 +868,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "consumer-protection-s3",
       "17.3 Consumer Protection Law — Workplace scenarios and documentation",
       ["Scenario: a teammate cites consumer protection law in a meeting, but details in the packet do not match the textbook example. Federalism splits authority between national and state governments in the U.S. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Burden of proof and standards of review change outcomes even when facts are similar.","Good documentation states facts, cites the framework, and records the decision. Contracts allocate risk with offer, acceptance, consideration, and definite terms. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Constitutional limits constrain what governments and sometimes private actors may do. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar."]
+        bulletPoints: ["Criminal law uses government prosecution and protections like presumption of innocence.","Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar."],
+        caseStudies: [
+          { name: "FTC v. Wyndham Worldwide Corp.", year: "2015", summary: "FTC Act covers unreasonable data security—consumer protection extends to cybersecurity practices." },
+        ]
       }
     ),
     section(
@@ -869,7 +920,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "bankruptcy-basics-s3",
       "18.3 Bankruptcy and Creditor Rights — Workplace scenarios and documentation",
       ["Scenario: a teammate cites bankruptcy and creditor rights in a meeting, but details in the packet do not match the textbook example. Burden of proof and standards of review change outcomes even when facts are similar. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Good documentation states facts, cites the framework, and records the decision. Constitutional limits constrain what governments and sometimes private actors may do. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."]
+        bulletPoints: ["Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals."],
+        caseStudies: [
+          { name: "Mission Product Holdings, Inc. v. Tempnology, LLC", year: "2019", summary: "Trademark licenses in bankruptcy—debtor-in-possession cannot always void executory contracts without consequences." },
+        ]
       }
     ),
     section(
@@ -918,7 +972,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "international-business-s3",
       "19.3 International Business Law — Workplace scenarios and documentation",
       ["Scenario: a teammate cites international business law in a meeting, but details in the packet do not match the textbook example. Civil procedure governs pleadings, discovery, motions, and appeals in lawsuits. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Torts compensate harm caused by negligence, strict liability, or intentional acts.","Good documentation states facts, cites the framework, and records the decision. Legal research starts with primary sources—constitutions, statutes, regulations, cases. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Alternative dispute resolution can resolve conflicts faster than full trials. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do."]
+        bulletPoints: ["Alternative dispute resolution can resolve conflicts faster than full trials.","Federalism splits authority between national and state governments in the U.S.","Burden of proof and standards of review change outcomes even when facts are similar.","Contracts allocate risk with offer, acceptance, consideration, and definite terms.","Constitutional limits constrain what governments and sometimes private actors may do."],
+        caseStudies: [
+          { name: "Filanto, S.p.A. v. Chilewich International Corp.", year: "1992", summary: "CISG and arbitration in cross-border sales—choice of law clauses steer dispute forums." },
+        ]
       }
     ),
     section(
@@ -967,7 +1024,10 @@ export const BIZLAW_TEXTBOOK: TextbookChapter[] = [
       "risk-management-s3",
       "20.3 Legal Risk Management — Workplace scenarios and documentation",
       ["Scenario: a teammate cites legal risk management in a meeting, but details in the packet do not match the textbook example. Torts compensate harm caused by negligence, strict liability, or intentional acts. Your job is to reconcile the story with the rule—not to win the argument.","Ask clarifying questions: what happened first, what was measured, what policy applies, and what harm or risk remains. Legal research starts with primary sources—constitutions, statutes, regulations, cases.","Good documentation states facts, cites the framework, and records the decision. Contracts allocate risk with offer, acceptance, consideration, and definite terms. One paragraph in a ticket, incident log, or memo often prevents expensive rework.","After action reviews should link outcomes back to concepts, not only blame individuals. Alternative dispute resolution can resolve conflicts faster than full trials. That habit is how teams improve without repeating the same failure mode."], {
-        bulletPoints: ["Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions."]
+        bulletPoints: ["Burden of proof and standards of review change outcomes even when facts are similar.","Constitutional limits constrain what governments and sometimes private actors may do.","Ethics rules for lawyers address conflicts, confidentiality, and candor to tribunals.","Criminal law uses government prosecution and protections like presumption of innocence.","Statutes come from legislatures while case law develops through published judicial decisions."],
+        caseStudies: [
+          { name: "Ultramares Corp. v. Touche", year: "1931", summary: "Auditor liability limits—risk managers scope insurance and contracts knowing third-party suits face barriers." },
+        ]
       }
     ),
     section(

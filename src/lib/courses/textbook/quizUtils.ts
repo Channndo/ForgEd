@@ -1,10 +1,10 @@
 import type { QuizQuestion } from "@/lib/quizTypes";
+import { COURSE_REVIEW_QUIZ_LENGTH } from "@/lib/quizTypes";
 import {
-  CHAPTER_QUIZ_LENGTH,
-  COURSE_REVIEW_QUIZ_LENGTH,
-  FINAL_EXAM_LENGTH,
-  SECTION_QUIZ_LENGTH,
-} from "@/lib/quizTypes";
+  getChapterQuizLength,
+  getFinalExamLength,
+  getSectionQuizLength,
+} from "@/lib/quizCyber";
 import {
   getQuizBankSize,
   pickRandomQuestions,
@@ -16,23 +16,21 @@ import {
 export { shuffleQuestions, getQuizBankSize, questionsForChapter };
 
 export function pickSectionQuiz(slug: string, chapterNumber: number): QuizQuestion[] {
+  const len = getSectionQuizLength(slug);
   const pool = questionsForChapter(slug, chapterNumber);
-  if (pool.length >= SECTION_QUIZ_LENGTH) {
-    return prepareQuestionsForAttempt(
-      shuffleQuestions(pool).slice(0, SECTION_QUIZ_LENGTH)
-    );
+  if (pool.length >= len) {
+    return prepareQuestionsForAttempt(shuffleQuestions(pool).slice(0, len));
   }
-  return pickRandomQuestions(slug, SECTION_QUIZ_LENGTH, { chapterNumber });
+  return pickRandomQuestions(slug, len, { chapterNumber });
 }
 
 export function pickChapterQuiz(slug: string, chapterNumber: number): QuizQuestion[] {
+  const len = getChapterQuizLength(slug);
   const pool = questionsForChapter(slug, chapterNumber);
-  if (pool.length >= CHAPTER_QUIZ_LENGTH) {
-    return prepareQuestionsForAttempt(
-      shuffleQuestions(pool).slice(0, CHAPTER_QUIZ_LENGTH)
-    );
+  if (pool.length >= len) {
+    return prepareQuestionsForAttempt(shuffleQuestions(pool).slice(0, len));
   }
-  return pickRandomQuestions(slug, CHAPTER_QUIZ_LENGTH, { chapterNumber });
+  return pickRandomQuestions(slug, len, { chapterNumber });
 }
 
 export function pickCourseReviewQuiz(slug: string): QuizQuestion[] {
@@ -40,16 +38,17 @@ export function pickCourseReviewQuiz(slug: string): QuizQuestion[] {
 }
 
 export function pickFinalExam(slug: string): QuizQuestion[] {
-  return pickRandomQuestions(slug, FINAL_EXAM_LENGTH);
+  return pickRandomQuestions(slug, getFinalExamLength(slug));
 }
 
 /** @deprecated */
 export function pickChapterQuickCheck(
   slug: string,
   chapterNumber: number,
-  count = CHAPTER_QUIZ_LENGTH
+  count?: number
 ): QuizQuestion[] {
-  return pickChapterQuiz(slug, chapterNumber).slice(0, count);
+  const len = count ?? getChapterQuizLength(slug);
+  return pickChapterQuiz(slug, chapterNumber).slice(0, len);
 }
 
 export function pickQuizSessionForCourse(slug: string): QuizQuestion[] {

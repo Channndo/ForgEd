@@ -36,6 +36,8 @@ const DEEP_SLUGS = new Set([
   "plumbing-fundamentals",
   "electrical-trades-fundamentals",
   "hvac-fundamentals",
+  "service-advising-fundamentals",
+  "mechanical-engineering-basics",
 ]);
 
 /** Tier C — force rebuild to current generator depth (even if not placeholder) */
@@ -64,7 +66,6 @@ const FORCE_UPGRADE_SLUGS = new Set([
   "maintenance-selling",
   "warranty-basics",
   "repair-order-workflow",
-  "service-advising-fundamentals",
   "customer-communication-service",
   "difficult-customer-scenarios",
   "digital-presence",
@@ -114,6 +115,9 @@ function emitSection(sectionId, chapterNum, sectionNum, chapterTitle, section) {
   if (section.citations?.length) {
     extras.push(`citations: ${JSON.stringify(section.citations)}`);
   }
+  if (section.caseStudies?.length) {
+    extras.push(`caseStudies: ${JSON.stringify(section.caseStudies)}`);
+  }
   const extrasBlock = extras.length
     ? `, {\n        ${extras.join(",\n        ")}\n      }`
     : "";
@@ -124,10 +128,13 @@ function emitSection(sectionId, chapterNum, sectionNum, chapterTitle, section) {
     )`;
 }
 
-function emitChapter(ch, courseTitle, domain) {
+function emitChapter(ch, courseTitle, domain, courseSlug) {
   const sections = [];
   for (let s = 1; s <= 5; s++) {
-    const data = buildSectionContent(ch.title, courseTitle, domain, s);
+    const data = buildSectionContent(ch.title, courseTitle, domain, s, {
+      courseSlug,
+      chapterId: ch.id,
+    });
     sections.push({
       id: `${ch.id}-s${s}`,
       ...data,
@@ -157,7 +164,9 @@ ${sectionBlocks}
 function buildFile(parsed) {
   const domain = inferDomain(parsed.slug, parsed.title);
   const intro = buildIntroParagraphs(parsed.title, domain, parsed.chapters.length);
-  const chapters = parsed.chapters.map((ch) => emitChapter(ch, parsed.title, domain)).join(",\n");
+  const chapters = parsed.chapters
+    .map((ch) => emitChapter(ch, parsed.title, domain, parsed.slug))
+    .join(",\n");
 
   return `import type { TextbookChapter, TextbookIntro } from "@/lib/courses/textbook/types";
 import { chapter, section } from "@/lib/courses/textbook/factory";

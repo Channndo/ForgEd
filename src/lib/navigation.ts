@@ -5,6 +5,7 @@ import {
   Route,
   Briefcase,
   BarChart3,
+  Trophy,
   Users,
   User,
 } from "lucide-react";
@@ -23,6 +24,7 @@ export const PLATFORM_NAV: NavItem[] = [
   { href: "/paths", label: "Learning Paths", icon: Route },
   { href: "/career", label: "Career Hub", icon: Briefcase },
   { href: "/progress", label: "Progress", icon: BarChart3 },
+  { href: "/achievements", label: "Achievements", icon: Trophy },
   { href: "/profile", label: "Profile", icon: User },
   { href: "/community", label: "Community", icon: Users },
 ];
@@ -34,6 +36,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/paths": "Learning Paths",
   "/career": "Career Hub",
   "/progress": "Progress",
+  "/achievements": "Achievements",
   "/profile": "Profile",
   "/profile/settings": "Settings",
   "/community": "Community",

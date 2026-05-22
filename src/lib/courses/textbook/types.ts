@@ -15,6 +15,8 @@ export interface TextbookSection {
   title: string;
   paragraphs: string[];
   laws?: TextbookLaw[];
+  /** Landmark cases for law courses (section 3 scenarios) */
+  caseStudies?: TextbookLaw[];
   bulletPoints?: string[];
   citations?: TextbookCitation[];
 }

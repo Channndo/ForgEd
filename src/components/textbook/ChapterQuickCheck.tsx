@@ -2,7 +2,8 @@
 
 import { useCallback, useState } from "react";
 import type { QuizQuestion } from "@/lib/quizTypes";
-import { CHAPTER_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
+import { isPassingScore } from "@/lib/quizTypes";
+import { getChapterQuizLength, getPassPercent } from "@/lib/quizCyber";
 import { pickChapterQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
 import {
@@ -64,6 +65,9 @@ export function ChapterQuickCheck({
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
   const [graded, setGraded] = useState<ReturnType<typeof gradeSession> | null>(null);
 
+  const chapterQuizLen = getChapterQuizLength(courseSlug);
+  const passPct = getPassPercent(courseSlug);
+
   const current = questions[index];
   const currentRevealed = current ? Boolean(revealed[current.id]) : false;
 
@@ -87,7 +91,7 @@ export function ChapterQuickCheck({
     setGraded(result);
     setPhase("results");
     queueTextbookScrollRestore(courseSlug, scrollRestoreAnchor);
-    if (isPassingScore(result.score, result.total)) {
+    if (isPassingScore(result.score, result.total, courseSlug)) {
       markChapterQuickCheckPassed(courseId, chapterNumber, 25, {
         sectionLessonIds,
         courseSlug,
@@ -142,7 +146,7 @@ export function ChapterQuickCheck({
             <p className="mt-1 text-sm text-[var(--muted)]">
               {alreadyPassed
                 ? "Passed — saved to your progress. Retake anytime."
-                : `${CHAPTER_QUIZ_LENGTH} random questions — instant feedback after each answer`}
+                : `${chapterQuizLen} random questions — instant feedback after each answer`}
             </p>
           </div>
           <span
@@ -261,9 +265,9 @@ export function ChapterQuickCheck({
                 </span>
               </p>
               <p className="mt-2 text-sm text-[var(--muted)]">
-                {isPassingScore(graded.score, graded.total)
+                {isPassingScore(graded.score, graded.total, courseSlug)
                   ? "Nice — you're ready for the next chapter."
-                  : "Review the chapter, then try again."}
+                  : `Review the chapter (${passPct}% to pass), then try again.`}
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 <button

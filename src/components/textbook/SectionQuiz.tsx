@@ -2,7 +2,8 @@
 
 import { useCallback, useState } from "react";
 import type { QuizQuestion } from "@/lib/quizTypes";
-import { SECTION_QUIZ_LENGTH, isPassingScore } from "@/lib/quizTypes";
+import { isPassingScore } from "@/lib/quizTypes";
+import { getSectionQuizLength } from "@/lib/quizCyber";
 import { pickSectionQuiz } from "@/lib/courses/textbook/quizUtils";
 import { QuizAnswerExplanation } from "@/components/quiz/QuizAnswerExplanation";
 import {
@@ -47,6 +48,7 @@ export function SectionQuiz({
   const alreadyPassed = (progress.sectionQuizzesPassed?.[courseId] ?? []).includes(
     lessonId
   );
+  const sectionQuizLen = getSectionQuizLength(courseSlug);
 
   const [open, setOpen] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -79,7 +81,7 @@ export function SectionQuiz({
     setGraded(result);
     setPhase("results");
     queueTextbookScrollRestore(courseSlug, scrollRestoreAnchor);
-    if (isPassingScore(result.score, result.total)) {
+    if (isPassingScore(result.score, result.total, courseSlug)) {
       markSectionQuizPassed(courseId, lessonId, {
         courseSlug,
         moduleId: chapterId,
@@ -135,7 +137,7 @@ export function SectionQuiz({
             <p className="mt-1 text-xs text-[var(--muted)]">
               {alreadyPassed
                 ? "Passed — next section unlocked."
-                : `${SECTION_QUIZ_LENGTH} questions · pass to continue`}
+                : `${sectionQuizLen} questions · pass to continue`}
             </p>
           </div>
           <span
@@ -231,12 +233,12 @@ export function SectionQuiz({
                 {graded.score}/{graded.total}
               </p>
               <p className="mt-1 text-sm text-[var(--muted)]">
-                {isPassingScore(graded.score, graded.total)
+                {isPassingScore(graded.score, graded.total, courseSlug)
                   ? "Section complete — you can move on."
                   : "Review this section and try again."}
               </p>
               <div className="mt-3 flex gap-2">
-                {!isPassingScore(graded.score, graded.total) && (
+                {!isPassingScore(graded.score, graded.total, courseSlug) && (
                   <button
                     type="button"
                     onClick={start}

@@ -35,10 +35,17 @@ export interface TextbookChapter {
   realWorldRelevance?: string;
 }
 
+export interface TextbookResourceGroup {
+  title: string;
+  resources: TextbookCitation[];
+}
+
 export interface TextbookIntro {
   title: string;
   subtitle: string;
   paragraphs: string[];
+  /** Optional third-party links for deeper study (course-specific). */
+  additionalResources?: TextbookResourceGroup[];
 }
 
 export interface TextbookBundle {

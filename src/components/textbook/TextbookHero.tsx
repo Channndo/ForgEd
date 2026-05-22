@@ -74,6 +74,47 @@ export function TextbookHero({ bundle }: { bundle: TextbookBundle }) {
           contents. Each chapter includes learning objectives, cited sources, and section
           navigation—like a reference textbook, not a slideshow of bullet summaries.
         </p>
+
+        {bundle.intro.additionalResources &&
+          bundle.intro.additionalResources.length > 0 && (
+            <div className="mt-10 rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-5 sm:px-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                Additional resources
+              </p>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Optional links for deeper study. ForgEd is not affiliated with these sites; content
+                and terms are maintained by each provider.
+              </p>
+              <div className="mt-6 space-y-6">
+                {bundle.intro.additionalResources.map((group) => (
+                  <div key={group.title}>
+                    <p className="text-sm font-medium text-[var(--silver)]">{group.title}</p>
+                    <ul className="mt-2 space-y-2 text-sm text-[var(--muted)]">
+                      {group.resources.map((r) => (
+                        <li key={r.url ?? r.source}>
+                          {r.url ? (
+                            <a
+                              href={r.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[var(--gold)] hover:underline"
+                            >
+                              {r.source}
+                            </a>
+                          ) : (
+                            <span className="text-[var(--silver)]">{r.source}</span>
+                          )}
+                          {r.note ? (
+                            <span className="text-[var(--muted)]"> — {r.note}</span>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
     </header>
   );

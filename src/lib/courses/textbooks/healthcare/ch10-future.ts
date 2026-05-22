@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH10 = chapter(
+export const HLTH_CH15 = chapter(
   "future-health",
-  10,
+  15,
   "Future of Healthcare",
   [
     section(
       "future-health-s1",
-      "10.1 Digital health records and interoperability",
+      "15.1 Digital health records and interoperability",
       [
         "Electronic health records (EHRs) replaced paper charts but introduced click fatigue, copy-forward errors, and alert fatigue. Major vendors dominate hospital markets; ambulatory practices may use different systems. Interoperability—sharing data across organizations—relies on standards (HL7 FHIR APIs), health information exchanges, and patient access rules (21st Century Cures Act).",
         "Clinical documentation improvement (CDI) and computer-assisted physician documentation aim to align notes with coding and quality metrics without drowning clinicians in boilerplate. Nurses and MAs increasingly room patients and draft histories for provider attestation.",
@@ -25,7 +25,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "future-health-s2",
-      "10.2 Telehealth, remote monitoring, and hospital-at-home",
+      "15.2 Telehealth, remote monitoring, and hospital-at-home",
       [
         "Telehealth surged during COVID-19: synchronous video visits, store-and-forward dermatology images, and remote patient monitoring (RPM) for blood pressure, glucose, and weight. Reimbursement rules evolved; some flexibilities made permanent, others state-dependent.",
         "Hospital-at-home programs deliver acute-level care in the home with daily visits, monitoring, and infusion—lower cost for selected diagnoses when logistics support it.",
@@ -43,7 +43,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "future-health-s3",
-      "10.3 Artificial intelligence: documentation, imaging, and limits",
+      "15.3 Artificial intelligence: documentation, imaging, and limits",
       [
         "AI in healthcare includes imaging triage (flagging hemorrhage on CT), sepsis prediction scores, ambient documentation scribes, and chatbots for scheduling—not autonomous diagnosis for consumers. FDA regulates some software as medical devices; others are administrative tools.",
         "Risks: biased training data, hallucinated citations, privacy leaks if staff paste PHI into public models, and liability ambiguity when suggestions are wrong. Human oversight remains mandatory.",
@@ -68,7 +68,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "future-health-s4",
-      "10.4 Payment reform: value, risk, and transparency",
+      "15.4 Payment reform: value, risk, and transparency",
       [
         "Fee-for-service pays per visit or procedure—volume incentive. Value-based models (ACO, bundled payments, capitation) reward outcomes and cost control. Medicare Advantage growth shifts seniors into managed plans with prior authorization scrutiny.",
         "Price transparency rules require machine-readable hospital prices and good-faith estimates. Real shopping remains hard—quality and network matter alongside sticker price.",
@@ -86,7 +86,7 @@ export const HLTH_CH10 = chapter(
     ),
     section(
       "future-health-s5",
-      "10.5 Demography, workforce, and global health trends",
+      "15.5 Demography, workforce, and global health trends",
       [
         "Aging populations raise demand for geriatrics, home care, and memory services. Nursing and primary care shortages persist; immigration policy and education pipeline affect supply. Burnout recovery is a decade-long project.",
         "Climate change shifts disease patterns—heat illness, wildfire smoke respiratory surges, vector-borne disease range expansion. Hospitals decarbonize operations slowly.",

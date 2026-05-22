@@ -6,8 +6,34 @@ export const HLTH_CH01 = chapter(
   "Healthcare Systems",
   [
     section(
+      "health-systems-s0",
+      "1.1 History of medicine: from ancient practice to modern science",
+      [
+        "Medicine did not begin in a hospital tower—it began wherever people tried to explain suffering and stop it. Ancient healers in Egypt, Greece, India, and China mixed observation, ritual, and early surgery. The Hippocratic tradition (~400 BCE) urged physicians to study illness naturally rather than blame gods alone, and the oath still symbolizes ethical duty today.",
+        "For centuries, progress was uneven. Islamic scholars preserved and extended Greek texts; medieval monasteries housed infirmaries; barber-surgeons performed amputations without anesthesia. The 19th century transformed everything: anesthesia (1846), antisepsis and germ theory (Semmelweis, Lister, Pasteur, Koch), and the rise of scientific laboratories. Infections that once killed mothers in childbirth or soldiers on battlefields became preventable.",
+        "The 20th century added antibiotics, vaccines, imaging (X-ray, CT, MRI), organ transplantation, and genetics. Public health campaigns beat smallpox and polio in many regions. Yet harm persisted—thalidomide tragedies, Tuskegee syphilis study ethics failures, and unequal access by race and class remind us that science without justice is incomplete.",
+        "Today’s medicine is evidence-based: randomized trials, systematic reviews, clinical guidelines, and quality measurement. You are entering healthcare at a moment when AI, genomics, and global connectivity accelerate discovery—and when trust, equity, and cost still determine who benefits. Knowing this arc helps you see today’s system not as fixed fate, but as the latest chapter in a long human project.",
+      ],
+      {
+        bulletPoints: [
+          "Hippocratic ethic — natural causes, confidentiality, do no harm",
+          "Germ theory — hand hygiene, sterilization, public sanitation",
+          "Antibiotics & vaccines — transformed infection and childhood mortality",
+          "Evidence-based medicine — trials and guidelines over tradition alone",
+          "Ethics milestones — research protections (Belmont, IRB, informed consent)",
+        ],
+        citations: [
+          {
+            source: "NLM — History of Medicine",
+            url: "https://www.nlm.nih.gov/hmd/",
+            note: "National Library of Medicine historical collections and timelines",
+          },
+        ],
+      }
+    ),
+    section(
       "health-systems-s1",
-      "1.1 What “healthcare” means in a modern economy",
+      "1.2 What “healthcare” means in a modern economy",
       [
         "Healthcare is the organized delivery of services that prevent, diagnose, treat, and rehabilitate illness and injury. It is not synonymous with “medicine” alone: financing, regulation, facilities, workforce licensure, supply chains, and information systems determine whether a patient can access care at all.",
         "In the United States, healthcare is simultaneously a clinical profession, a regulated industry, and one of the largest sectors of GDP. Spending flows through employers, government programs, insurers, and out-of-pocket payments. Outcomes depend on biology, behavior, social conditions, and how well teams coordinate across settings.",
@@ -25,7 +51,7 @@ export const HLTH_CH01 = chapter(
     ),
     section(
       "health-systems-s2",
-      "1.2 How care is financed: payers and populations",
+      "1.3 How care is financed: payers and populations",
       [
         "Most Americans receive coverage through a mix of sources. Employer-sponsored insurance remains common for working adults and dependents. Medicare covers seniors and many people with disabilities; Medicaid and CHIP cover low-income adults, children, and long-term services in partnership with states. The Affordable Care Act (ACA) marketplace and off-exchange individual plans serve self-employed and uninsured populations with standardized benefits and subsidies based on income.",
         "Payers negotiate rates with networks of providers. A hospital’s “chargemaster” price rarely equals what Medicare, Medicaid, or a commercial insurer actually pays. Understanding healthcare therefore requires understanding covered benefits, cost sharing (deductible, copay, coinsurance), prior authorization, and medical necessity rules—not just what happens in an exam room.",
@@ -55,7 +81,7 @@ export const HLTH_CH01 = chapter(
     ),
     section(
       "health-systems-s3",
-      "1.3 Where care happens: the continuum of settings",
+      "1.4 Where care happens: the continuum of settings",
       [
         "Acute hospitals provide emergency, surgical, and inpatient medical care. Many health systems also operate ambulatory surgery centers, physician groups, imaging centers, and post-acute facilities. Primary care offices manage prevention and chronic disease; urgent care bridges evenings and weekends; specialty clinics concentrate expertise (cardiology, oncology, orthopedics).",
         "After hospital discharge, patients may need skilled nursing, inpatient rehabilitation, home health, hospice, or long-term care. Each transition is a handoff risk: medication lists, follow-up appointments, and wound-care instructions must transfer cleanly or readmissions rise.",
@@ -73,7 +99,7 @@ export const HLTH_CH01 = chapter(
     ),
     section(
       "health-systems-s4",
-      "1.4 Workforce: who does what (and under which license)",
+      "1.5 Workforce: who does what (and under which license)",
       [
         "Healthcare is delivered by interprofessional teams. Physicians (MD/DO) diagnose and prescribe; advanced practice clinicians (NP, PA) provide primary and specialty care in many states; registered nurses coordinate bedside care, education, and surveillance; licensed practical/vocational nurses and nursing assistants support daily needs; pharmacists manage medication safety; therapists restore function; technologists perform imaging and lab work.",
         "Administrative roles—patient access, health information management, revenue cycle, quality, compliance—are not “support” in a weak sense; they determine whether care is schedulable, billable, legal, and measurable. Medical assistants and patient care technicians often bridge clinical and operational workflows in clinics.",
@@ -91,7 +117,7 @@ export const HLTH_CH01 = chapter(
     ),
     section(
       "health-systems-s5",
-      "1.5 Quality, safety, and how systems learn from harm",
+      "1.6 Quality, safety, and how systems learn from harm",
       [
         "High-reliability industries study near-misses. Healthcare adopted frameworks such as the Institute of Medicine’s patient safety movement, WHO surgical checklists, and hospital accreditation standards (e.g., The Joint Commission). Common harm themes include medication errors, health care–associated infections, falls, diagnostic delay, and communication failures during handoffs.",
         "Quality metrics include mortality ratios, readmission rates, hospital-acquired infection rates, patient experience scores (HCAHPS), and timeliness of care (e.g., sepsis bundles, stroke door-to-needle). Public reporting and value-based payment programs increasingly tie dollars to outcomes, not only volume of services.",
@@ -121,14 +147,17 @@ export const HLTH_CH01 = chapter(
     ),
   ],
   {
-    subtitle: "Financing, settings, workforce, and system-level quality",
+    subtitle: "Medical history, financing, settings, workforce, and system-level quality",
     learningObjectives: [
+      "Describe major milestones from ancient medicine through evidence-based care.",
       "Explain how U.S. healthcare financing mixes public and private payers.",
       "Map common care settings from primary care through post-acute services.",
       "Describe core clinical and administrative roles and scope-of-practice limits.",
       "Identify basic patient-safety and quality measurement concepts.",
     ],
     keyConcepts: [
+      "History of medicine",
+      "Germ theory",
       "Payer mix",
       "Continuum of care",
       "Interprofessional teams",

@@ -1,5 +1,4 @@
-/** Chapter 4–15 content-specific quiz items for healthcare bank generator */
-
+/** Chapters 4-15 quiz items — Future of Healthcare is chapter 15 */
 export const BY_CHAPTER_4_15 = {
   4: [
     { q: "Revenue cycle management begins at registration primarily to:", opts: ["Prevent denials from wrong demographics and eligibility", "Eliminate clinical documentation", "Avoid all patient payments", "Replace coders with schedulers only"], c: 0, exp: "Front-end accuracy prevents downstream denials." },
@@ -134,28 +133,6 @@ export const BY_CHAPTER_4_15 = {
     { q: "Interprofessional education emphasizes:", opts: ["Team communication across disciplines", "Siloed work without handoffs", "Only one profession matters", "Eliminating documentation"], c: 0, exp: "IPE reduces teamwork errors." },
   ],
   10: [
-    { q: "HL7 FHIR standards primarily enable:", opts: ["Modern API-based health data exchange", "Only paper charts", "Elimination of EHRs", "Only fax machines"], c: 0, exp: "FHIR supports app and payer interoperability." },
-    { q: "Alert fatigue in EHRs risks:", opts: ["Clinicians overriding all alerts—including true warnings", "Perfect safety always", "No documentation", "Lower costs always"], c: 0, exp: "Too many alerts reduce attention." },
-    { q: "Telehealth synchronous visits are:", opts: ["Live video/audio clinical encounters", "Only store-and-forward always", "Only billing codes", "Only cafeteria orders"], c: 0, exp: "Synchronous = real-time." },
-    { q: "Remote patient monitoring (RPM) transmits:", opts: ["Home device data (e.g., BP, glucose) to care teams", "Only marketing emails", "Only X-rays without patient", "Only parking data"], c: 0, exp: "RPM supports chronic disease management." },
-    { q: "FDA-regulated AI as Software as a Medical Device (SaMD) requires:", opts: ["Evidence and regulatory pathways for clinical claims", "No oversight if branded 'AI'", "Only social media approval", "Only patient selfies"], c: 0, exp: "Clinical AI may be regulated medical devices." },
-    { q: "Pasting PHI into public ChatGPT is risky because:", opts: ["Data may leak outside HIPAA controls", "It always improves privacy", "Required by HIPAA", "Eliminates breaches"], c: 0, exp: "Unapproved AI tools aren't HIPAA business associates." },
-    { q: "Accountable care organizations (ACOs) aim to:", opts: ["Coordinate care and share savings/risk for populations", "Increase unnecessary procedures only", "Eliminate primary care", "Only sell devices"], c: 0, exp: "ACOs are value-based models." },
-    { q: "Hospital-at-home programs deliver:", opts: ["Acute-level care in the home for selected patients", "Only spa services", "Only coding classes", "Only parking"], c: 0, exp: "Hospital-at-home is structured acute home care." },
-    { q: "OpenNotes policies give patients:", opts: ["Access to clinician documentation in portals", "No record access ever", "Only billing access", "Only visitor logs"], c: 0, exp: "Transparency includes note access." },
-    { q: "Bundled payments pay:", opts: ["One price for an episode (e.g., joint replacement)", "Per unrelated visit only always", "Only parking", "Only meals"], c: 0, exp: "Bundles align incentives for episodes." },
-    { q: "Digital divide affects telehealth by limiting:", opts: ["Broadband, devices, and digital literacy", "Only hospital elevators", "Only surgical trays", "Only vaccines"], c: 0, exp: "Access inequity persists in virtual care." },
-    { q: "Ambient AI scribes draft notes from audio but:", opts: ["Require clinician verification before signing", "Replace physician license", "Are always 100% accurate without review", "Eliminate HIPAA"], c: 0, exp: "Humans must verify AI documentation." },
-    { q: "Bias in clinical AI may stem from:", opts: ["Non-representative training data", "Perfect universal data always", "Only hospital paint", "Only copay tiers"], c: 0, exp: "Data bias propagates to outputs." },
-    { q: "Medicare Advantage growth shifts seniors into:", opts: ["Managed plans with utilization management", "Only fee-for-service automatically", "Only cash pay", "Only foreign care"], c: 0, exp: "MA is privatized Medicare delivery." },
-    { q: "Price transparency rules push hospitals to publish:", opts: ["Machine-readable prices and estimates", "Secret chargemasters only in paper", "No data", "Only social posts"], c: 0, exp: "Transparency aids comparison attempts." },
-    { q: "Global aging demographics will:", opts: ["Increase demand for chronic and long-term care", "Eliminate healthcare jobs", "End all technology", "Remove nursing"], c: 0, exp: "Demography drives workforce needs." },
-    { q: "Clinical documentation improvement (CDI) aligns:", opts: ["Notes with coded data and quality metrics", "Only social media", "Only parking", "Only uniforms"], c: 0, exp: "CDI improves documentation specificity." },
-    { q: "Interoperability patient apps (21st Century Cures) aim to:", opts: ["Let consumers access and share their health data", "Block all portals", "Eliminate EHR vendors", "Only sell ads"], c: 0, exp: "Cures Act promotes API access." },
-    { q: "Workforce shortage responses include:", opts: ["Training pipelines, retention, and scope optimization", "Ignoring vacancies", "Eliminating all technology", "Only closing hospitals"], c: 0, exp: "Workforce crisis needs multi-prong fixes." },
-    { q: "Value-based care contrasts with pure fee-for-service by rewarding:", opts: ["Outcomes and efficiency over volume alone", "More procedures regardless of benefit", "Only length of stay always longer", "Only advertising"], c: 0, exp: "Value aligns payment with results." },
-  ],
-  11: [
     { q: "PHQ-9 is used primarily to screen for:", opts: ["Depression severity", "Broken bones", "Vision acuity only", "Dental caries only"], c: 0, exp: "PHQ-9 is a depression screen." },
     { q: "A positive depression screen should lead to:", opts: ["Clinical interview and safety assessment—not automatic diagnosis alone", "Immediate discharge", "Ignoring results", "Public social post"], c: 0, exp: "Screens trigger further evaluation." },
     { q: "988 in the U.S. connects to:", opts: ["Suicide and crisis lifeline (call/text)", "Pharmacy refills only", "MRI scheduling", "Food stamps only"], c: 0, exp: "988 is the crisis line." },
@@ -177,7 +154,7 @@ export const BY_CHAPTER_4_15 = {
     { q: "EAP (employee assistance program) offers:", opts: ["Confidential counseling benefits for staff", "Public patient charts", "Free opioids", "License revocation always"], c: 0, exp: "EAP supports workforce mental health." },
     { q: "Panic attack symptoms may mimic:", opts: ["Cardiac events—rule out emergency when appropriate", "Only skin rash", "Only toothache always", "Nothing physical"], c: 0, exp: "Chest symptoms need appropriate evaluation." },
   ],
-  12: [
+  11: [
     { q: "Hemoglobin A1c reflects:", opts: ["Average blood glucose over ~3 months", "Single lunch glucose only", "Blood pressure", "Lung volume only"], c: 0, exp: "A1c is a 3-month glucose marker." },
     { q: "Hypoglycemia (<70 mg/dL) first aid includes:", opts: ["Fast-acting carbs; follow rule of 15", "Only insulin more", "Ignore symptoms", "Only water if unconscious without sugar"], c: 0, exp: "Treat low sugar promptly." },
     { q: "Heart failure daily weight monitoring helps detect:", opts: ["Fluid retention early", "Hair growth", "Vision changes only", "Dental cavities"], c: 0, exp: "Sudden weight gain may mean fluid overload." },
@@ -199,7 +176,7 @@ export const BY_CHAPTER_4_15 = {
     { q: "Care manager outreach after discharge targets:", opts: ["Barriers like meds, appointments, food, transport", "Only marketing", "Only parking", "Only uniforms"], c: 0, exp: "Care managers remove practical barriers." },
     { q: "Personalizing A1c targets considers:", opts: ["Age, frailty, hypoglycemia risk, preferences", "One number for all", "Only insurance brand", "Only weather"], c: 0, exp: "Goals individualize to patient context." },
   ],
-  13: [
+  12: [
     { q: "High sensitivity test characteristic:", opts: ["Few false negatives—good screen", "Few false positives always", "No errors ever", "Only for billing"], c: 0, exp: "Sensitive tests catch disease." },
     { q: "High specificity test characteristic:", opts: ["Few false positives—good confirmation", "Misses all disease", "Only measures cost", "Only for parking"], c: 0, exp: "Specific tests rule in disease reliably." },
     { q: "Critical lab value protocol requires:", opts: ["Immediate clinician notification and documentation", "Posting on social media", "Waiting next week", "Only patient guess"], c: 0, exp: "Critical values need rapid response." },
@@ -221,7 +198,7 @@ export const BY_CHAPTER_4_15 = {
     { q: "Medical necessity for imaging requires:", opts: ["Clinical indication documented in order", "Patient preference only always", "Social media trend", "Random choice"], c: 0, exp: "Orders need indication for payment/safety." },
     { q: "Pretest probability means:", opts: ["Likelihood of disease before test based on context", "Test always 100% accurate", "Only lab error", "Only copay tier"], c: 0, exp: "Context changes result interpretation." },
   ],
-  14: [
+  13: [
     { q: "Fourth trimester refers to:", opts: ["Year after birth postpartum period", "Only labor hour", "Only NICU decade", "Only teen years"], c: 0, exp: "Fourth trimester is postpartum year." },
     { q: "Newborn safe sleep ABCs are:", opts: ["Alone, on the Back, in a Crib without soft bedding", "Bed-sharing always", "Stomach sleep always", "With pillows and blankets"], c: 0, exp: "ABCs reduce SUID risk." },
     { q: "Newborn metabolic heel stick screen detects:", opts: ["Treatable conditions like PKU/hypothyroidism early", "Only adult diabetes", "Only vision", "Only hearing always only"], c: 0, exp: "Heel stick is public health screening." },
@@ -243,7 +220,7 @@ export const BY_CHAPTER_4_15 = {
     { q: "Maternal mortality disparity research focuses on:", opts: ["Quality, access, and bias—not biology alone", "Only patient shoe size", "Only parking", "Ignoring data"], c: 0, exp: "Disparities are systemic." },
     { q: "Vitamin K injection at birth prevents:", opts: ["Hemorrhagic disease of newborn", "All infections forever", "Only jaundice always", "Only hearing loss"], c: 0, exp: "Vitamin K supports clotting." },
   ],
-  15: [
+  14: [
     { q: "Skilled nursing facility (SNF) after hospitalization offers:", opts: ["24-hour nursing plus therapy for subacute rehab", "Only hotel stay", "Only outpatient labs", "Only pharmacy drive-through"], c: 0, exp: "SNF supports transition from hospital." },
     { q: "Inpatient rehabilitation facility (IRF) requires roughly:", opts: ["Three hours therapy daily with physician oversight", "No therapy", "Only meals", "Only billing staff"], c: 0, exp: "IRF intensity distinguishes from SNF." },
     { q: "Home health 'homebound' criteria generally mean:", opts: ["Leaving home is considerable taxing effort", "Never leaving couch for life optional always", "Only wealthy patients", "Only pediatric"], c: 0, exp: "Medicare home health needs homebound status." },
@@ -264,5 +241,27 @@ export const BY_CHAPTER_4_15 = {
     { q: "Discharge to home without services when frail risks:", opts: ["Readmission and falls—assess support", "Perfect health always", "Lower cost always clinically", "No issues ever"], c: 0, exp: "Match discharge site to needs." },
     { q: "IDDSI diet textures apply after:", opts: ["Formal swallow study—not guessing", "Any nurse preference only", "Patient request only", "Social media poll"], c: 0, exp: "Texture mods follow aspiration assessment." },
     { q: "CMS Nursing Home Compare reports:", opts: ["Quality and staffing metrics publicly", "Only cafeteria menus secret", "Only CEO salaries only private always", "Nothing"], c: 0, exp: "Public reporting aids family choice." },
+  ],
+  15: [
+    { q: "HL7 FHIR standards primarily enable:", opts: ["Modern API-based health data exchange", "Only paper charts", "Elimination of EHRs", "Only fax machines"], c: 0, exp: "FHIR supports app and payer interoperability." },
+    { q: "Alert fatigue in EHRs risks:", opts: ["Clinicians overriding all alerts—including true warnings", "Perfect safety always", "No documentation", "Lower costs always"], c: 0, exp: "Too many alerts reduce attention." },
+    { q: "Telehealth synchronous visits are:", opts: ["Live video/audio clinical encounters", "Only store-and-forward always", "Only billing codes", "Only cafeteria orders"], c: 0, exp: "Synchronous = real-time." },
+    { q: "Remote patient monitoring (RPM) transmits:", opts: ["Home device data (e.g., BP, glucose) to care teams", "Only marketing emails", "Only X-rays without patient", "Only parking data"], c: 0, exp: "RPM supports chronic disease management." },
+    { q: "FDA-regulated AI as Software as a Medical Device (SaMD) requires:", opts: ["Evidence and regulatory pathways for clinical claims", "No oversight if branded 'AI'", "Only social media approval", "Only patient selfies"], c: 0, exp: "Clinical AI may be regulated medical devices." },
+    { q: "Pasting PHI into public ChatGPT is risky because:", opts: ["Data may leak outside HIPAA controls", "It always improves privacy", "Required by HIPAA", "Eliminates breaches"], c: 0, exp: "Unapproved AI tools aren't HIPAA business associates." },
+    { q: "Accountable care organizations (ACOs) aim to:", opts: ["Coordinate care and share savings/risk for populations", "Increase unnecessary procedures only", "Eliminate primary care", "Only sell devices"], c: 0, exp: "ACOs are value-based models." },
+    { q: "Hospital-at-home programs deliver:", opts: ["Acute-level care in the home for selected patients", "Only spa services", "Only coding classes", "Only parking"], c: 0, exp: "Hospital-at-home is structured acute home care." },
+    { q: "OpenNotes policies give patients:", opts: ["Access to clinician documentation in portals", "No record access ever", "Only billing access", "Only visitor logs"], c: 0, exp: "Transparency includes note access." },
+    { q: "Bundled payments pay:", opts: ["One price for an episode (e.g., joint replacement)", "Per unrelated visit only always", "Only parking", "Only meals"], c: 0, exp: "Bundles align incentives for episodes." },
+    { q: "Digital divide affects telehealth by limiting:", opts: ["Broadband, devices, and digital literacy", "Only hospital elevators", "Only surgical trays", "Only vaccines"], c: 0, exp: "Access inequity persists in virtual care." },
+    { q: "Ambient AI scribes draft notes from audio but:", opts: ["Require clinician verification before signing", "Replace physician license", "Are always 100% accurate without review", "Eliminate HIPAA"], c: 0, exp: "Humans must verify AI documentation." },
+    { q: "Bias in clinical AI may stem from:", opts: ["Non-representative training data", "Perfect universal data always", "Only hospital paint", "Only copay tiers"], c: 0, exp: "Data bias propagates to outputs." },
+    { q: "Medicare Advantage growth shifts seniors into:", opts: ["Managed plans with utilization management", "Only fee-for-service automatically", "Only cash pay", "Only foreign care"], c: 0, exp: "MA is privatized Medicare delivery." },
+    { q: "Price transparency rules push hospitals to publish:", opts: ["Machine-readable prices and estimates", "Secret chargemasters only in paper", "No data", "Only social posts"], c: 0, exp: "Transparency aids comparison attempts." },
+    { q: "Global aging demographics will:", opts: ["Increase demand for chronic and long-term care", "Eliminate healthcare jobs", "End all technology", "Remove nursing"], c: 0, exp: "Demography drives workforce needs." },
+    { q: "Clinical documentation improvement (CDI) aligns:", opts: ["Notes with coded data and quality metrics", "Only social media", "Only parking", "Only uniforms"], c: 0, exp: "CDI improves documentation specificity." },
+    { q: "Interoperability patient apps (21st Century Cures) aim to:", opts: ["Let consumers access and share their health data", "Block all portals", "Eliminate EHR vendors", "Only sell ads"], c: 0, exp: "Cures Act promotes API access." },
+    { q: "Workforce shortage responses include:", opts: ["Training pipelines, retention, and scope optimization", "Ignoring vacancies", "Eliminating all technology", "Only closing hospitals"], c: 0, exp: "Workforce crisis needs multi-prong fixes." },
+    { q: "Value-based care contrasts with pure fee-for-service by rewarding:", opts: ["Outcomes and efficiency over volume alone", "More procedures regardless of benefit", "Only length of stay always longer", "Only advertising"], c: 0, exp: "Value aligns payment with results." },
   ],
 };

@@ -1,13 +1,13 @@
 import { chapter, section } from "@/lib/courses/textbook/factory";
 
-export const HLTH_CH12 = chapter(
+export const HLTH_CH11 = chapter(
   "chronic-disease",
-  12,
+  11,
   "Chronic Disease Management",
   [
     section(
       "chronic-disease-s1",
-      "12.1 Chronic illness as a daily-life problem, not a one-time visit",
+      "11.1 Chronic illness as a daily-life problem, not a one-time visit",
       [
         "Chronic disease is any condition lasting a year or more that requires ongoing medical attention or limits activities of daily living. Diabetes, heart failure, COPD, hypertension, chronic kidney disease, and autoimmune disorders account for most U.S. healthcare spending—and most of what patients actually live with between appointments.",
         "Acute care culture trains us to \"fix and discharge.\" Chronic care trains us to partner for years: medication titration, flare prevention, self-monitoring, and realistic goals when cure is not possible. A patient with heart failure may be medically stable yet still unable to climb stairs without rest—that functional outcome matters.",
@@ -25,7 +25,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "chronic-disease-s2",
-      "12.2 Diabetes and cardiometabolic risk: numbers patients can use",
+      "11.2 Diabetes and cardiometabolic risk: numbers patients can use",
       [
         "Type 2 diabetes reflects insulin resistance and declining beta-cell function—often linked to genetics, weight, inactivity, and diet. Hemoglobin A1c averages glucose over ~3 months; targets are individualized (tighter for young, healthy; looser for frail elderly with hypoglycemia risk).",
         "Hypoglycemia (shaking, sweating, confusion) from insulin or sulfonylureas is an emergency—patients need fast carbs and glucagon education for caregivers. Hyperglycemia builds slowly but drives infection risk and dehydration.",
@@ -43,7 +43,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "chronic-disease-s3",
-      "12.3 Heart failure and COPD: breath as the patient’s headline",
+      "11.3 Heart failure and COPD: breath as the patient’s headline",
       [
         "Heart failure means the pump cannot meet perfusion needs—symptoms include short weight gain from fluid (edema), orthopnea (shortness of breath lying flat), and fatigue. Daily weights and sodium restriction are boring advice until they prevent a 3 a.m. ED visit.",
         "COPD from smoking or occupational exposure brings progressive dyspnea, cough, and exacerbations triggered by viruses or pollution. Inhaler technique errors are epidemic—watch a patient use a diskus or MDI before assuming nonadherence.",
@@ -61,7 +61,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "chronic-disease-s4",
-      "12.4 Care coordination, transitions, and the medical home",
+      "11.4 Care coordination, transitions, and the medical home",
       [
         "Care coordination closes gaps between primary care, specialists, hospitals, and home. Transitions of care—hospital to home—fail when medication lists disagree, follow-up appointments are missing, or durable equipment arrives late.",
         "Patient-centered medical home (PCMH) models emphasize access, comprehensive care, care management for high-risk patients, and quality reporting. Care managers call after discharge, reconcile meds, and surface social needs (food, transport) that block recovery.",
@@ -79,7 +79,7 @@ export const HLTH_CH12 = chapter(
     ),
     section(
       "chronic-disease-s5",
-      "12.5 Self-management support and measuring what matters",
+      "11.5 Self-management support and measuring what matters",
       [
         "Self-management is not dumping instructions—it is skills training: reading labels, using devices, problem-solving sick-day rules, and negotiating family roles. Diabetes self-management education (DSME) and cardiac rehab are evidence-based programs payers often cover when referred correctly.",
         "Quality metrics (HbA1c control, blood pressure control, hospital readmission rates) drive value-based contracts but can conflict with individual preferences. A hospice-eligible patient should not be penalized for choosing comfort over aggressive HbA1c lowering.",

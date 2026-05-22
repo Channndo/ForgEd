@@ -25,7 +25,7 @@ Signup emails go to `chandler.hill.24@gmail.com` and `chandler@forgedlearn.com` 
 6. Copy the Web App URL into ForgEd `.env.local`:
 
 ```bash
-FORGED_WEB_APP_URL=https://script.google.com/macros/s/AKfycbyMUFkHPuSN2ajb-09lXAZvxt1n7M59dZ4L2NlpLTy8H3l3Ay_Nyx3iIP19XhwA7x-Q/exec
+FORGED_WEB_APP_URL=https://script.google.com/macros/s/AKfycbwnRegzOFqnbEqPOZ5ir60QN-zqazz6E_Ck7hL63oyp-JfZUBSmOBw__g3oWLSzC0jX/exec
 FORGED_SERVER_SECRET=your-secret-matching-script-property
 ```
 
@@ -38,6 +38,9 @@ FORGED_SERVER_SECRET=your-secret-matching-script-property
 | PATH_PROGRESS | Learning path completion |
 | ACHIEVEMENTS | Unlocked badges |
 | LAB_PROGRESS | Path lab completions |
+| CERTIFICATES | Course completion certificates (auto-created on first issue) |
+| KODA_FACTS / KODA_CHAT_LOG | KODA memory (optional) |
+| EMAIL_LOG | Signup notification log |
 
 ## API actions (POST JSON)
 

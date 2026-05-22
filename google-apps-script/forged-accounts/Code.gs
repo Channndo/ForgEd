@@ -7,7 +7,7 @@
  * 3. If no sheet yet, run createForgEdDatabase() once instead of step 1.
  * 4. Deploy → Web app → Execute as: Me, Who has access: Anyone
  * 5. Web App URL (ForgEd + Netlify FORGED_WEB_APP_URL):
- *    https://script.google.com/macros/s/AKfycbyMUFkHPuSN2ajb-09lXAZvxt1n7M59dZ4L2NlpLTy8H3l3Ay_Nyx3iIP19XhwA7x-Q/exec
+ *    https://script.google.com/macros/s/AKfycbwnRegzOFqnbEqPOZ5ir60QN-zqazz6E_Ck7hL63oyp-JfZUBSmOBw__g3oWLSzC0jX/exec
  */
 
 var PROP_SPREADSHEET_ID = 'FORGED_SPREADSHEET_ID';

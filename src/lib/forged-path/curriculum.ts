@@ -1,3 +1,5 @@
+import type { ForgedPathPlatform } from "./platforms";
+
 export interface ForgedPathCourse {
   id: string;
   number: number;
@@ -5,6 +7,8 @@ export interface ForgedPathCourse {
   title: string;
   link: string;
   purposes: string[];
+  /** Hosting platform — used for cost and financial-aid guidance */
+  platform: ForgedPathPlatform;
 }
 
 export interface ForgedPathPhase {
@@ -35,6 +39,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Fundamentals of Neuroscience",
         link: "https://www.edx.org/learn/neuroscience/harvard-university-fundamentals-of-neuroscience-part-1-the-electrical-properties-of-the-neuron",
         purposes: ["Human behavior", "Decision making", "Cognitive systems"],
+        platform: "edx",
       },
       {
         id: "fp-02",
@@ -43,6 +48,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Principles of Economics",
         link: "https://online.stanford.edu/courses",
         purposes: ["Microeconomics", "Market incentives", "Competition", "Market structure"],
+        platform: "stanford-online",
       },
       {
         id: "fp-03",
@@ -51,6 +57,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Foundations of Finance",
         link: "https://www.coursera.org",
         purposes: ["Accounting mechanics", "Financial statements", "Cash flow"],
+        platform: "coursera",
       },
     ],
   },
@@ -66,6 +73,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Foundations of Corporate Finance",
         link: "https://www.coursera.org",
         purposes: ["Valuation", "Cost of capital", "Investment analysis", "Capital allocation"],
+        platform: "coursera",
       },
     ],
   },
@@ -81,6 +89,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Organizational Analysis",
         link: "https://online.stanford.edu/courses",
         purposes: ["Competitive advantage", "Positioning", "Organizational structure"],
+        platform: "stanford-online",
       },
       {
         id: "fp-06",
@@ -89,6 +98,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Strategic Leadership: Power and Influence",
         link: "https://www.edx.org",
         purposes: ["Leadership", "Influence", "Execution"],
+        platform: "edx",
       },
       {
         id: "fp-07",
@@ -97,6 +107,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Ethics",
         link: "https://www.coursera.org",
         purposes: ["Ethical decision-making", "Stakeholder analysis", "Leadership ethics"],
+        platform: "coursera",
       },
     ],
   },
@@ -112,6 +123,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Negotiation Strategies",
         link: "https://www.coursera.org/learn/negotiation",
         purposes: ["Negotiation", "Leverage", "Deal execution"],
+        platform: "coursera",
       },
       {
         id: "fp-09",
@@ -120,6 +132,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Structuring Business Agreements for Success",
         link: "https://www.coursera.org/learn/structuring-business-agreements",
         purposes: ["Transaction structure", "Partnerships", "Commercial agreements"],
+        platform: "coursera",
       },
     ],
   },
@@ -135,6 +148,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Contract Law: From Trust to Promise to Contract",
         link: "https://www.edx.org/learn/law/harvard-university-contract-law-from-trust-to-promise-to-contract",
         purposes: ["Contract analysis", "Liability", "Enforcement"],
+        platform: "edx",
       },
       {
         id: "fp-11",
@@ -143,6 +157,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Intellectual Property Law and Policy",
         link: "https://www.coursera.org/learn/intellectual-property",
         purposes: ["Patents", "Trademarks", "Licensing", "IP strategy"],
+        platform: "coursera",
       },
     ],
   },
@@ -158,6 +173,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Risk Management in the Global Economy",
         link: "https://www.edx.org",
         purposes: ["Enterprise risk", "Financial risk", "Operational risk"],
+        platform: "edx",
       },
       {
         id: "fp-13",
@@ -166,6 +182,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "Constitutional Interpretation",
         link: "https://online.princeton.edu",
         purposes: ["Governance", "Institutional reasoning", "Interpretation frameworks"],
+        platform: "princeton-online",
       },
     ],
   },
@@ -181,6 +198,7 @@ export const FORGED_PATH_PHASES: ForgedPathPhase[] = [
         title: "The Ethics of Memory",
         link: "https://www.coursera.org",
         purposes: ["Historical reasoning", "Ethical analysis", "Institutional memory"],
+        platform: "coursera",
       },
     ],
   },

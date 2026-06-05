@@ -19,6 +19,7 @@ import {
 } from "@/lib/forged-path/progress";
 import { resolveForgedPathStudentName } from "@/lib/forged-path/studentName";
 import { ForgedPathCertificateSection } from "./ForgedPathCertificateSection";
+import { ForgedPathExternalCostNotice } from "./ForgedPathExternalCostNotice";
 import { ForgedPathPhaseSection } from "./ForgedPathPhaseSection";
 
 export default function ForgedPathClient() {
@@ -89,6 +90,8 @@ export default function ForgedPathClient() {
           <p className="mt-2 text-xs text-[var(--muted)]">Overall program completion</p>
         </Card>
       </div>
+
+      <ForgedPathExternalCostNotice />
 
       {!isSignedIn && (
         <Card className="border-[var(--gold)]/20 bg-[var(--gold)]/5">

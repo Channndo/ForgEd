@@ -1,13 +1,17 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { useKodaPanel } from "./KodaProvider";
 import { KodaLogo } from "./KodaLogo";
 
 /** Sole entry point for KODA chat — fixed bottom-right (hidden while panel is open; use header X) */
 export function KodaFloatingButton() {
+  const pathname = usePathname();
+  const path = pathname?.replace(/\/$/, "") ?? "";
   const { toggle, open } = useKodaPanel();
 
+  if (path === "/realm" || path.startsWith("/realm/")) return null;
   if (open) return null;
 
   return (

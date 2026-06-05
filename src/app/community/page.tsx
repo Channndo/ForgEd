@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { Users } from "lucide-react";
+import { Swords, Users } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 export default function CommunityPage() {
   return (
@@ -12,20 +15,36 @@ export default function CommunityPage() {
         <div>
           <h1 className="font-serif text-3xl font-bold text-[var(--silver)]">Community</h1>
           <p className="mt-2 text-[var(--muted)]">
-            Study groups, cohorts, and peer accountability — launching as the platform scales.
+            Enter ForgEd Realm — a medieval world to team up or go against other players.
           </p>
         </div>
       </div>
 
+      <Card className="border-[var(--gold)]/20 bg-gradient-to-br from-[var(--gold)]/5 to-transparent" glow>
+        <div className="flex items-center gap-2 text-[var(--gold)]">
+          <Swords className="h-5 w-5" />
+          <span className="text-xs font-semibold uppercase tracking-[0.2em]">ForgEd Realm</span>
+        </div>
+        <h2 className="mt-3 font-serif text-xl font-bold text-[var(--silver)]">
+          Playable prototype — Ashford tutorial
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
+          Click or tap to walk. Talk to NPCs. Complete the starter quest in Ashford. Works on
+          desktop and mobile. KODA stays outside the realm.
+        </p>
+        <Link href="/realm" className="mt-5 inline-block">
+          <Button variant="forge">Enter ForgEd Realm</Button>
+        </Link>
+      </Card>
+
       <Card>
         <p className="text-sm text-[var(--muted)]">
-          For now, use your dashboard streak and course progress to stay accountable. Community
-          features will connect learners across all twelve domains without favoring any single
-          industry.
+          Study and verify courses on{" "}
+          <Link href="/forged-path" className="text-[var(--gold)] hover:underline">
+            ForgEd Path
+          </Link>{" "}
+          — progress will link to the full realm in future updates.
         </p>
-        <Link href="/dashboard" className="mt-4 inline-block text-sm text-[var(--gold)] hover:underline">
-          Back to dashboard →
-        </Link>
       </Card>
     </div>
   );

@@ -43,6 +43,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/profile": "Profile",
   "/profile/settings": "Settings",
   "/community": "Community",
+  "/realm": "ForgEd Realm",
   "/login": "Sign in",
   "/signup": "Sign up",
   "/signup/success": "Account created",
@@ -59,5 +60,6 @@ export function titleForPath(pathname: string): string {
   if (path.startsWith("/courses/") && path.endsWith("/quiz")) return "Course Quiz";
   if (path.startsWith("/courses/") && path.includes("/learn/")) return "Textbook";
   if (path.startsWith("/courses/")) return "Course";
+  if (path === "/realm" || path.startsWith("/realm/")) return "ForgEd Realm";
   return "ForgEd";
 }

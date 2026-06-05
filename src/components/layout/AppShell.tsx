@@ -14,9 +14,10 @@ export function AppShell({ children }: { children: ReactNode }) {
     path.endsWith("/login") ||
     path.includes("/signup") ||
     path.endsWith("/forgot-password");
+  const isRealm = path === "/realm" || path.startsWith("/realm/");
   const isTextbookReader = /\/courses\/[^/]+\/read\/?$/.test(pathname ?? "");
 
-  if (isAuthPage) {
+  if (isAuthPage || isRealm) {
     return <>{children}</>;
   }
 

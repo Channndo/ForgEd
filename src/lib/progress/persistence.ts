@@ -94,6 +94,15 @@ function mergeProgressRecords(remote: UserProgress, guest: UserProgress): UserPr
     chapterQuickChecks: { ...guest.chapterQuickChecks, ...remote.chapterQuickChecks },
     pathProgress: { ...guest.pathProgress, ...remote.pathProgress },
     activePathId: remote.activePathId ?? guest.activePathId,
+    forgedPathProgress: {
+      completedCourseIds: uniq(
+        remote.forgedPathProgress?.completedCourseIds ?? [],
+        guest.forgedPathProgress?.completedCourseIds ?? []
+      ),
+      certificateUnlockedAt:
+        remote.forgedPathProgress?.certificateUnlockedAt ??
+        guest.forgedPathProgress?.certificateUnlockedAt,
+    },
   });
 }
 

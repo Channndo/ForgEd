@@ -46,6 +46,7 @@ export const DEFAULT_PROGRESS: UserProgress = {
   dailyXpGoal: 150,
   dailyXpEarnedToday: 0,
   dailyXpDate: null,
+  forgedPathProgress: { completedCourseIds: [] },
 };
 
 function todayKey(): string {

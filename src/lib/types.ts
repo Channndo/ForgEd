@@ -115,4 +115,9 @@ export interface UserProgress {
       completedAt?: string;
     }
   >;
+  /** ForgEd Path Executive Mastery Program — self-directed external course tracking */
+  forgedPathProgress?: {
+    completedCourseIds: string[];
+    certificateUnlockedAt?: string;
+  };
 }

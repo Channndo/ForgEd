@@ -8,6 +8,7 @@ import {
   Trophy,
   Users,
   User,
+  GraduationCap,
 } from "lucide-react";
 
 export interface NavItem {
@@ -22,6 +23,7 @@ export const PLATFORM_NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/courses", label: "Course Library", icon: Library },
   { href: "/paths", label: "Learning Paths", icon: Route },
+  { href: "/forged-path", label: "ForgEd Path", icon: GraduationCap },
   { href: "/career", label: "Career Hub", icon: Briefcase },
   { href: "/progress", label: "Progress", icon: BarChart3 },
   { href: "/achievements", label: "Achievements", icon: Trophy },
@@ -34,6 +36,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/courses": "Course Library",
   "/paths": "Learning Paths",
+  "/forged-path": "ForgEd Path",
   "/career": "Career Hub",
   "/progress": "Progress",
   "/achievements": "Achievements",

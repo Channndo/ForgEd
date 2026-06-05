@@ -4,30 +4,43 @@ import {
   FORGED_PATH_TOTAL_COURSES,
   type ForgedPathPhase,
 } from "./curriculum";
+import type { ForgedPathCourseVerification } from "./verification";
 
 export interface ForgedPathProgressState {
-  completedCourseIds: string[];
+  verifications: Record<string, ForgedPathCourseVerification>;
   certificateUnlockedAt?: string;
 }
 
 export function getForgedPathProgress(
   progress: UserProgress
 ): ForgedPathProgressState {
+  const verifications = progress.forgedPathProgress?.verifications ?? {};
   return {
-    completedCourseIds: progress.forgedPathProgress?.completedCourseIds ?? [],
+    verifications,
     certificateUnlockedAt: progress.forgedPathProgress?.certificateUnlockedAt,
   };
+}
+
+export function getVerifiedCourseIds(progress: UserProgress): string[] {
+  return Object.keys(getForgedPathProgress(progress).verifications);
+}
+
+export function getCourseVerification(
+  progress: UserProgress,
+  courseId: string
+): ForgedPathCourseVerification | undefined {
+  return getForgedPathProgress(progress).verifications[courseId];
 }
 
 export function isForgedPathCourseComplete(
   progress: UserProgress,
   courseId: string
 ): boolean {
-  return getForgedPathProgress(progress).completedCourseIds.includes(courseId);
+  return Boolean(getCourseVerification(progress, courseId));
 }
 
 export function forgedPathCompletedCount(progress: UserProgress): number {
-  return getForgedPathProgress(progress).completedCourseIds.length;
+  return getVerifiedCourseIds(progress).length;
 }
 
 export function forgedPathCoursePercent(progress: UserProgress): number {
@@ -67,31 +80,47 @@ export function isForgedPathCertificateUnlocked(progress: UserProgress): boolean
   return forgedPathCompletedCount(progress) >= FORGED_PATH_TOTAL_COURSES;
 }
 
-export function toggleForgedPathCourse(
+export function submitForgedPathVerification(
   progress: UserProgress,
-  courseId: string
+  verification: ForgedPathCourseVerification
 ): UserProgress {
   const current = getForgedPathProgress(progress);
-  const completed = new Set(current.completedCourseIds);
-  if (completed.has(courseId)) {
-    completed.delete(courseId);
-  } else {
-    completed.add(courseId);
-  }
-
-  const completedCourseIds = [...completed];
-  const allComplete = completedCourseIds.length >= FORGED_PATH_TOTAL_COURSES;
+  const verifications = {
+    ...current.verifications,
+    [verification.courseId]: verification,
+  };
+  const verifiedIds = Object.keys(verifications);
+  const allComplete = verifiedIds.length >= FORGED_PATH_TOTAL_COURSES;
 
   return {
     ...progress,
     forgedPathProgress: {
-      completedCourseIds,
+      verifications,
+      completedCourseIds: verifiedIds,
       certificateUnlockedAt:
         allComplete && !current.certificateUnlockedAt
           ? new Date().toISOString()
           : allComplete
             ? current.certificateUnlockedAt
             : undefined,
+    },
+  };
+}
+
+export function removeForgedPathVerification(
+  progress: UserProgress,
+  courseId: string
+): UserProgress {
+  const current = getForgedPathProgress(progress);
+  const { [courseId]: _removed, ...verifications } = current.verifications;
+  const verifiedIds = Object.keys(verifications);
+
+  return {
+    ...progress,
+    forgedPathProgress: {
+      verifications,
+      completedCourseIds: verifiedIds,
+      certificateUnlockedAt: undefined,
     },
   };
 }

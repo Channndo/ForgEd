@@ -1,50 +1,34 @@
 "use client";
 
-import { CheckCircle2, Circle, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import type { ForgedPathCourse } from "@/lib/forged-path/curriculum";
 import { getInstitutionId } from "@/lib/forged-path/institutions";
 import { getPlatformInfo } from "@/lib/forged-path/platforms";
+import { getCourseVerification } from "@/lib/forged-path/progress";
+import type { UserProgress } from "@/lib/types";
 import { InstitutionLogo } from "./InstitutionLogo";
+import { ForgedPathVerificationForm } from "./ForgedPathVerificationForm";
 
 interface ForgedPathCourseCardProps {
   course: ForgedPathCourse;
-  completed: boolean;
-  onToggle: () => void;
-  disabled?: boolean;
+  progress: UserProgress;
+  onProgressChange: (data: UserProgress) => void;
+  canVerify: boolean;
 }
 
 export function ForgedPathCourseCard({
   course,
-  completed,
-  onToggle,
-  disabled,
+  progress,
+  onProgressChange,
+  canVerify,
 }: ForgedPathCourseCardProps) {
   const institutionId = getInstitutionId(course.institution) ?? "";
   const platform = getPlatformInfo(course.platform);
+  const verification = getCourseVerification(progress, course.id);
 
   return (
     <article className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-5">
       <div className="flex items-start gap-3">
-        <button
-          type="button"
-          onClick={onToggle}
-          disabled={disabled}
-          aria-label={
-            completed
-              ? `Mark ${course.title} as incomplete`
-              : `Mark ${course.title} as complete`
-          }
-          className={`mt-0.5 shrink-0 transition-colors ${
-            disabled ? "cursor-not-allowed opacity-50" : "hover:text-[var(--gold)]"
-          }`}
-        >
-          {completed ? (
-            <CheckCircle2 className="h-5 w-5 text-[var(--gold)]" />
-          ) : (
-            <Circle className="h-5 w-5 text-[var(--muted)]" />
-          )}
-        </button>
-
         {institutionId && (
           <InstitutionLogo
             institutionId={institutionId}
@@ -74,6 +58,14 @@ export function ForgedPathCourseCard({
             View course on {platform.name}
             <ExternalLink className="h-3.5 w-3.5" />
           </a>
+
+          <ForgedPathVerificationForm
+            course={course}
+            progress={progress}
+            verification={verification}
+            onProgressChange={onProgressChange}
+            canVerify={canVerify}
+          />
 
           <div className="mt-3 rounded-lg border border-[var(--gold)]/10 bg-[var(--gold)]/[0.03] px-3 py-2.5">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--gold)]">

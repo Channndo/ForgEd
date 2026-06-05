@@ -5,9 +5,7 @@ import type { ForgedPathPhase } from "@/lib/forged-path/curriculum";
 import { getPhaseReflection } from "@/lib/forged-path/phaseReflections";
 import {
   forgedPathPhasePercent,
-  isForgedPathCourseComplete,
   isForgedPathPhaseComplete,
-  toggleForgedPathCourse,
 } from "@/lib/forged-path/progress";
 import type { UserProgress } from "@/lib/types";
 import { ForgedPathCourseCard } from "./ForgedPathCourseCard";
@@ -17,14 +15,14 @@ interface ForgedPathPhaseSectionProps {
   phase: ForgedPathPhase;
   progress: UserProgress;
   onProgressChange: (data: UserProgress) => void;
-  canTrack: boolean;
+  canVerify: boolean;
 }
 
 export function ForgedPathPhaseSection({
   phase,
   progress,
   onProgressChange,
-  canTrack,
+  canVerify,
 }: ForgedPathPhaseSectionProps) {
   const phaseComplete = isForgedPathPhaseComplete(progress, phase);
   const phasePct = forgedPathPhasePercent(progress, phase);
@@ -62,12 +60,9 @@ export function ForgedPathPhaseSection({
           <ForgedPathCourseCard
             key={course.id}
             course={course}
-            completed={isForgedPathCourseComplete(progress, course.id)}
-            disabled={!canTrack}
-            onToggle={() => {
-              if (!canTrack) return;
-              onProgressChange(toggleForgedPathCourse(progress, course.id));
-            }}
+            progress={progress}
+            onProgressChange={onProgressChange}
+            canVerify={canVerify}
           />
         ))}
       </div>

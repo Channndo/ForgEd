@@ -99,7 +99,7 @@ export default function ForgedPathClient() {
             <Link href="/login" className="font-medium text-[var(--gold)] hover:underline">
               Sign in
             </Link>{" "}
-            to save your course completion progress across devices.
+            to verify and save your external certificate completions across devices.
           </p>
         </Card>
       )}
@@ -113,7 +113,7 @@ export default function ForgedPathClient() {
             phase={phase}
             progress={progress}
             onProgressChange={setProgress}
-            canTrack={isSignedIn}
+            canVerify={isSignedIn}
           />
         ))}
       </div>

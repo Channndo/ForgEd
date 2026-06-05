@@ -94,8 +94,8 @@ export function ForgedPathCertificateSection({
                 Certificate Locked – Complete all 14 courses.
               </h3>
               <p className="mt-2 text-sm text-[var(--muted)]">
-                Mark each external course complete as you finish it to unlock your
-                Executive Mastery certificate.
+                Verify all 14 official edX, Coursera, or university platform
+                certificates to unlock your Executive Mastery certificate.
               </p>
             </>
           )}

@@ -115,9 +115,19 @@ export interface UserProgress {
       completedAt?: string;
     }
   >;
-  /** ForgEd Path Executive Mastery Program — self-directed external course tracking */
+  /** ForgEd Path Executive Mastery Program — verified external course completions */
   forgedPathProgress?: {
-    completedCourseIds: string[];
+    /** @deprecated Derived from verifications — kept for backward-compatible reads */
+    completedCourseIds?: string[];
+    verifications?: Record<
+      string,
+      {
+        courseId: string;
+        platform: import("@/lib/forged-path/platforms").ForgedPathPlatform;
+        verificationUrl: string;
+        verifiedAt: string;
+      }
+    >;
     certificateUnlockedAt?: string;
   };
 }

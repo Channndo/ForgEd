@@ -30,6 +30,11 @@ export function ForgedPathExternalCostNotice() {
             many edX and Coursera courses. Apply from the course enrollment page before paying —
             you can often audit for free while your aid application is reviewed.
           </p>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
+            <span className="font-medium text-[var(--silver)]">Verification required:</span> ForgEd
+            only counts a course after you submit the official certificate verification link from
+            edX, Coursera, or the hosting university platform — not a self-reported checkbox.
+          </p>
 
           <div className="mt-4 space-y-3">
             {platforms.map((platform) => (

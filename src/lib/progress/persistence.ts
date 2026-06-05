@@ -11,6 +11,24 @@ import {
 const STORAGE_KEY = "forged_progress_v1";
 const GUEST_MIGRATED_KEY = "forged_guest_migrated";
 
+function mergeForgedPathProgress(
+  remote: UserProgress,
+  guest: UserProgress
+): NonNullable<UserProgress["forgedPathProgress"]> {
+  const verifications = {
+    ...(guest.forgedPathProgress?.verifications ?? {}),
+    ...(remote.forgedPathProgress?.verifications ?? {}),
+  };
+  const completedCourseIds = Object.keys(verifications);
+  const remoteUnlocked = remote.forgedPathProgress?.certificateUnlockedAt;
+  const guestUnlocked = guest.forgedPathProgress?.certificateUnlockedAt;
+  return {
+    verifications,
+    completedCourseIds,
+    certificateUnlockedAt: remoteUnlocked ?? guestUnlocked,
+  };
+}
+
 function hasMeaningfulProgress(data: UserProgress): boolean {
   return (
     data.xp > 0 ||
@@ -94,15 +112,7 @@ function mergeProgressRecords(remote: UserProgress, guest: UserProgress): UserPr
     chapterQuickChecks: { ...guest.chapterQuickChecks, ...remote.chapterQuickChecks },
     pathProgress: { ...guest.pathProgress, ...remote.pathProgress },
     activePathId: remote.activePathId ?? guest.activePathId,
-    forgedPathProgress: {
-      completedCourseIds: uniq(
-        remote.forgedPathProgress?.completedCourseIds ?? [],
-        guest.forgedPathProgress?.completedCourseIds ?? []
-      ),
-      certificateUnlockedAt:
-        remote.forgedPathProgress?.certificateUnlockedAt ??
-        guest.forgedPathProgress?.certificateUnlockedAt,
-    },
+    forgedPathProgress: mergeForgedPathProgress(remote, guest),
   });
 }
 

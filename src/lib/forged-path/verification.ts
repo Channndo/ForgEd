@@ -59,13 +59,13 @@ export const PLATFORM_CERTIFICATE_INSTRUCTIONS: Record<
   },
   "stanford-online": {
     howToFind:
-      "The listed Stanford course isn't open for enrollment, so ANY completed Stanford Online course counts — including free ones. Submit the certificate or statement-of-accomplishment verification URL from whichever Stanford course you finished (Stanford, edX, or Coursera link).",
-    urlHint: "https://online.stanford.edu/… , a Stanford credentials link, or your Coursera/edX certificate URL",
+      "The listed Stanford course isn't open for enrollment, so this counts if you complete ANY Stanford course OR any course from a verified institution on Coursera/edX covering the listed topics — free courses included. Submit the certificate or statement-of-accomplishment verification URL.",
+    urlHint: "A Stanford credentials link, or your Coursera/edX certificate URL",
   },
   "princeton-online": {
     howToFind:
-      "The listed Princeton course isn't open for enrollment, so ANY completed Princeton Online course counts — including free ones. Submit the certificate or statement-of-accomplishment verification URL from whichever Princeton course you finished (Princeton, edX, or Coursera link).",
-    urlHint: "https://online.princeton.edu/… , a Princeton credentials link, or your Coursera/edX certificate URL",
+      "The listed Princeton course isn't open for enrollment, so this counts if you complete ANY Princeton course OR any course from a verified institution on Coursera/edX covering the listed topics — free courses included. Submit the certificate or statement-of-accomplishment verification URL.",
+    urlHint: "A Princeton credentials link, or your Coursera/edX certificate URL",
   },
 };
 

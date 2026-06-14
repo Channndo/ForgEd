@@ -1,4 +1,5 @@
 import type { ForgedPathPlatform } from "./platforms";
+import { FORGED_PATH_PLATFORMS } from "./platforms";
 
 export interface ForgedPathCourseVerification {
   courseId: string;
@@ -20,13 +21,25 @@ const PLATFORM_URL_PATTERNS: Record<ForgedPathPlatform, RegExp[]> = {
     /^https?:\/\/(www\.)?coursera\.org\/account\/accomplishments\/certificate\//i,
     /^https?:\/\/(www\.)?coursera\.org\/verify\//i,
   ],
+  // Exception: the specific Stanford Online / Princeton Online courses are not
+  // currently enrollable, so ANY completed course from these schools counts —
+  // including free ones whose certificates live on Coursera, edX, or the
+  // schools' own credential/statement-of-accomplishment sites.
   "stanford-online": [
-    /^https?:\/\/(online\.)?stanford\.edu\//i,
-    /^https?:\/\/credentials\.stanford\.edu\//i,
-    /^https?:\/\/cpd\.stanford\.edu\//i,
+    /^https?:\/\/([a-z0-9-]+\.)*stanford\.edu\//i,
+    /^https?:\/\/courses\.edx\.org\/certificates\//i,
+    /^https?:\/\/(www\.)?credentials\.edx\.org\/credentials\//i,
+    /^https?:\/\/(www\.)?edx\.org\/(certificates|verify)\//i,
+    /^https?:\/\/(www\.)?coursera\.org\/account\/accomplishments\//i,
+    /^https?:\/\/(www\.)?coursera\.org\/verify\//i,
   ],
   "princeton-online": [
-    /^https?:\/\/(online\.)?princeton\.edu\//i,
+    /^https?:\/\/([a-z0-9-]+\.)*princeton\.edu\//i,
+    /^https?:\/\/courses\.edx\.org\/certificates\//i,
+    /^https?:\/\/(www\.)?credentials\.edx\.org\/credentials\//i,
+    /^https?:\/\/(www\.)?edx\.org\/(certificates|verify)\//i,
+    /^https?:\/\/(www\.)?coursera\.org\/account\/accomplishments\//i,
+    /^https?:\/\/(www\.)?coursera\.org\/verify\//i,
   ],
 };
 
@@ -46,13 +59,13 @@ export const PLATFORM_CERTIFICATE_INSTRUCTIONS: Record<
   },
   "stanford-online": {
     howToFind:
-      "Submit the official Stanford Online certificate or credential verification URL from your completed course.",
-    urlHint: "https://online.stanford.edu/… or Stanford credentials link",
+      "The listed Stanford course isn't open for enrollment, so ANY completed Stanford Online course counts — including free ones. Submit the certificate or statement-of-accomplishment verification URL from whichever Stanford course you finished (Stanford, edX, or Coursera link).",
+    urlHint: "https://online.stanford.edu/… , a Stanford credentials link, or your Coursera/edX certificate URL",
   },
   "princeton-online": {
     howToFind:
-      "Submit the official Princeton Online certificate or credential verification URL from your completed course.",
-    urlHint: "https://online.princeton.edu/…",
+      "The listed Princeton course isn't open for enrollment, so ANY completed Princeton Online course counts — including free ones. Submit the certificate or statement-of-accomplishment verification URL from whichever Princeton course you finished (Princeton, edX, or Coursera link).",
+    urlHint: "https://online.princeton.edu/… , a Princeton credentials link, or your Coursera/edX certificate URL",
   },
 };
 
@@ -89,7 +102,7 @@ export function validateVerificationUrl(
     const hint = PLATFORM_CERTIFICATE_INSTRUCTIONS[platform].urlHint;
     return {
       ok: false,
-      error: `URL must be an official ${platform === "edx" ? "edX" : platform === "coursera" ? "Coursera" : platform} certificate link. Expected format: ${hint}`,
+      error: `URL must be an official ${FORGED_PATH_PLATFORMS[platform].name} certificate link. Expected format: ${hint}`,
     };
   }
 

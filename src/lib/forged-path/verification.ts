@@ -9,6 +9,7 @@ export interface ForgedPathCourseVerification {
 
 const PLATFORM_URL_PATTERNS: Record<ForgedPathPlatform, RegExp[]> = {
   edx: [
+    /^https?:\/\/courses\.edx\.org\/certificates\//i,
     /^https?:\/\/(www\.)?credentials\.edx\.org\/credentials\//i,
     /^https?:\/\/(www\.)?edx\.org\/certificates\//i,
     /^https?:\/\/(learning\.)?edx\.org\/certificate/i,
@@ -35,8 +36,8 @@ export const PLATFORM_CERTIFICATE_INSTRUCTIONS: Record<
 > = {
   edx: {
     howToFind:
-      "After earning your edX verified certificate, open it from your edX profile and copy the public verification or credentials link.",
-    urlHint: "https://credentials.edx.org/credentials/… or https://www.edx.org/certificates/…",
+      "After earning your edX verified certificate, open it from your edX dashboard and copy the certificate URL from your browser address bar.",
+    urlHint: "https://courses.edx.org/certificates/…",
   },
   coursera: {
     howToFind:
@@ -57,10 +58,15 @@ export const PLATFORM_CERTIFICATE_INSTRUCTIONS: Record<
 
 export function normalizeVerificationUrl(raw: string): string {
   const trimmed = raw.trim();
-  if (!/^https?:\/\//i.test(trimmed)) {
-    return `https://${trimmed}`;
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    const parsed = new URL(withProtocol);
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return withProtocol;
   }
-  return trimmed;
 }
 
 export function validateVerificationUrl(

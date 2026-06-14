@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import type { RealmCharacter } from "@/lib/realm/types";
+import { RealmAvatar } from "./RealmAvatar";
 
 const HAIR = ["#1a1a1a", "#5c4033", "#d4af37", "#8b4513", "#4a5568", "#7c2d12"];
 const TUNICS = ["#d4af37", "#6b7280", "#1e40af", "#166534", "#7f1d1d", "#c0c0c0"];
+const SKIN = ["#f1c9a5", "#e8b88a", "#c68642", "#8d5524", "#5c3a21"];
 
 export function RealmCharacterCreator({
   onComplete,
@@ -15,6 +17,7 @@ export function RealmCharacterCreator({
   const [body, setBody] = useState<RealmCharacter["body"]>("standard");
   const [hair, setHair] = useState(HAIR[0]);
   const [tunic, setTunic] = useState(TUNICS[0]);
+  const [skin, setSkin] = useState(SKIN[1]);
 
   return (
     <div className="flex h-full flex-col overflow-y-auto bg-[#0a0a0a] p-4 sm:p-8">
@@ -29,16 +32,8 @@ export function RealmCharacterCreator({
       </p>
 
       <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <div className="flex items-center justify-center rounded-xl border border-[var(--gold)]/20 bg-black/40 p-8">
-          <div
-            className="rounded-lg shadow-lg"
-            style={{
-              width: body === "slim" ? 48 : body === "broad" ? 72 : 60,
-              height: 80,
-              backgroundColor: tunic,
-              boxShadow: `0 0 0 8px ${hair}`,
-            }}
-          />
+        <div className="flex items-center justify-center rounded-xl border border-[var(--gold)]/20 bg-gradient-to-b from-[#14110a] to-black/60 p-6">
+          <RealmAvatar character={{ body, hair, tunic, skin }} size={150} />
         </div>
         <div className="space-y-4">
           <label className="block">
@@ -66,6 +61,22 @@ export function RealmCharacterCreator({
                 >
                   {b}
                 </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="text-xs uppercase tracking-wider text-[var(--muted)]">Skin</span>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {SKIN.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSkin(s)}
+                  className={`h-8 w-8 rounded-full border-2 ${
+                    skin === s ? "border-[var(--gold)]" : "border-transparent"
+                  }`}
+                  style={{ backgroundColor: s }}
+                />
               ))}
             </div>
           </div>
@@ -112,6 +123,7 @@ export function RealmCharacterCreator({
             body,
             hair,
             tunic,
+            skin,
           })
         }
         className="mt-8 w-full rounded-xl border border-[var(--gold)]/40 bg-[var(--gold)]/10 py-3 text-sm font-semibold text-[var(--gold)] sm:w-auto sm:px-8"

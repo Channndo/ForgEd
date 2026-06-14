@@ -11,6 +11,7 @@ export interface RealmCharacter {
   body: "slim" | "standard" | "broad";
   hair: string;
   tunic: string;
+  skin?: string;
 }
 
 export interface RealmSave {

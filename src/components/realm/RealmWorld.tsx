@@ -12,6 +12,7 @@ import {
 } from "@/lib/realm/ashfordMap";
 import type { RealmNpc, RealmSave } from "@/lib/realm/types";
 import { writeRealmSave } from "@/lib/realm/storage";
+import { drawAvatar } from "@/lib/realm/drawAvatar";
 
 const TILE_COLORS: Record<number, string> = {
   0: "#2d4a2d",
@@ -97,8 +98,11 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     }
 
     for (const npc of ASHFORD_NPCS) {
-      ctx.fillStyle = npc.color;
-      ctx.fillRect(ox + npc.x * ts + ts * 0.15, oy + npc.y * ts + ts * 0.15, ts * 0.7, ts * 0.7);
+      drawAvatar(ctx, ox + npc.x * ts, oy + npc.y * ts, ts, {
+        tunic: npc.color,
+        hair: "#3b2f25",
+        skin: "#e8b88a",
+      });
       ctx.fillStyle = "#e5e5e5";
       ctx.font = `${Math.max(8, ts * 0.22)}px sans-serif`;
       ctx.textAlign = "center";
@@ -106,13 +110,12 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     }
 
     const char = save.character;
-    ctx.fillStyle = char?.tunic ?? "#d4af37";
-    ctx.fillRect(
-      ox + playerRef.current.x * ts + ts * 0.1,
-      oy + playerRef.current.y * ts + ts * 0.1,
-      ts * 0.8,
-      ts * 0.8
-    );
+    drawAvatar(ctx, ox + playerRef.current.x * ts, oy + playerRef.current.y * ts, ts, {
+      tunic: char?.tunic ?? "#d4af37",
+      hair: char?.hair ?? "#1a1a1a",
+      skin: char?.skin ?? "#e8b88a",
+      body: char?.body,
+    });
     ctx.fillStyle = "#f5f5f5";
     ctx.font = `bold ${Math.max(9, ts * 0.28)}px serif`;
     ctx.textAlign = "center";

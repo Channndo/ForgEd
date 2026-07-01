@@ -36,6 +36,8 @@ export interface RealmSave {
   tomesCollected: string[];
   /** Remaining HP for combat interactables (dummy, goblins) */
   interactableHp: Record<string, number>;
+  /** Timestamp of last random wilderness mob spawn */
+  lastWildernessSpawnAt?: number;
 }
 
 export interface RealmNpc {

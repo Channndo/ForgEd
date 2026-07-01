@@ -20,7 +20,7 @@ function questText(save: RealmSave): string {
     return `Study tomes (${save.tomesCollected.length}/3) · Portal south → Ashford`;
   }
   if (save.currentArea === "marches") {
-    return "Wilderness — defeat goblins · Portal west → Ashford";
+    return "Wilderness — wanderers & random spawns · Flee by clicking away";
   }
   if (save.tomesCollected.length < 3) {
     return "Explore — north portal: Mindspire · east: The Marches";

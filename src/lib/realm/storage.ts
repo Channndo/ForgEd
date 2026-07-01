@@ -14,6 +14,7 @@ function migrateSave(raw: Partial<RealmSave>): RealmSave {
   if (!raw.tomesCollected) base.tomesCollected = [];
   if (!raw.interactableHp) base.interactableHp = {};
   if (!raw.areasDiscovered?.length) base.areasDiscovered = [base.currentArea];
+  if (raw.lastWildernessSpawnAt === undefined) base.lastWildernessSpawnAt = 0;
 
   return base;
 }

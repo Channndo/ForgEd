@@ -6,6 +6,8 @@ export type RealmTutorialStage =
   | "duel"
   | "play";
 
+export type RealmAreaId = "ashford" | "mindspire" | "marches";
+
 export interface RealmCharacter {
   name: string;
   body: "slim" | "standard" | "broad";
@@ -24,6 +26,18 @@ export interface RealmSave {
   playerHp: number;
   playerMaxHp: number;
   combatLevel: number;
+  /** Current world area */
+  currentArea: RealmAreaId;
+  /** Tile position within current area */
+  playerPosition: { x: number; y: number };
+  /** Areas the player has entered at least once */
+  areasDiscovered: RealmAreaId[];
+  /** Tome interactable IDs collected in Mindspire */
+  tomesCollected: string[];
+  /** Remaining HP for combat interactables (dummy, goblins) */
+  interactableHp: Record<string, number>;
+  /** Timestamp of last random wilderness mob spawn */
+  lastWildernessSpawnAt?: number;
 }
 
 export interface RealmNpc {
@@ -45,4 +59,9 @@ export const DEFAULT_REALM_SAVE: RealmSave = {
   playerHp: 10,
   playerMaxHp: 10,
   combatLevel: 3,
+  currentArea: "ashford",
+  playerPosition: { x: 6, y: 9 },
+  areasDiscovered: ["ashford"],
+  tomesCollected: [],
+  interactableHp: {},
 };

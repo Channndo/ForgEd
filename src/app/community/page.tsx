@@ -26,11 +26,12 @@ export default function CommunityPage() {
           <span className="text-xs font-semibold uppercase tracking-[0.2em]">ForgEd Realm</span>
         </div>
         <h2 className="mt-3 font-serif text-xl font-bold text-[var(--silver)]">
-          Playable prototype — Ashford tutorial
+          Ashford, Mindspire & The Marches
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-          Click or tap to walk. Talk to NPCs. Complete the starter quest in Ashford. Works on
-          desktop and mobile. KODA stays outside the realm.
+          Click or tap to walk RuneScape-style. Complete the Ashford tutorial, then travel via
+          golden portals to Mindspire (academy tomes) or The Marches (wilderness goblins). Works on
+          desktop and mobile.
         </p>
         <Link href="/realm" className="mt-5 inline-block">
           <Button variant="forge">Enter ForgEd Realm</Button>

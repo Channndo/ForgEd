@@ -8,6 +8,7 @@ import { RealmCharacterCreator } from "./RealmCharacterCreator";
 import { RealmDialogue, RealmHUD } from "./RealmHUD";
 import { RealmWorld, useRealmCombat } from "./RealmWorld";
 import { readRealmSave, resetRealmSave, writeRealmSave } from "@/lib/realm/storage";
+import { ASHFORD_MAP } from "@/lib/realm/maps/ashford";
 import type { RealmCharacter, RealmNpc, RealmSave } from "@/lib/realm/types";
 
 export default function RealmGame() {
@@ -59,6 +60,9 @@ export default function RealmGame() {
               ...save,
               character,
               tutorialStage: "move",
+              currentArea: "ashford",
+              playerPosition: { ...ASHFORD_MAP.playerSpawn },
+              areasDiscovered: ["ashford"],
             });
             showToast("Walk to the five lanterns. Sir Reginald is in the square.");
           }}

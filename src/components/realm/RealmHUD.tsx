@@ -1,7 +1,32 @@
 "use client";
 
 import { Swords, X } from "lucide-react";
+import { getRealmMap } from "@/lib/realm/maps/registry";
 import type { RealmNpc, RealmSave } from "@/lib/realm/types";
+
+function questText(save: RealmSave): string {
+  if (save.tutorialStage === "move") {
+    return `Walk the lanterns (${save.lanternsVisited.length}/5)`;
+  }
+  if (save.tutorialStage === "food") {
+    return "Fight dummy, then eat bread";
+  }
+  if (save.tutorialStage === "duel") {
+    return "Talk to Duel Master Crisp";
+  }
+
+  const map = getRealmMap(save.currentArea);
+  if (save.currentArea === "mindspire") {
+    return `Study tomes (${save.tomesCollected.length}/3) · Portal south → Ashford`;
+  }
+  if (save.currentArea === "marches") {
+    return "Wilderness — wanderers & random spawns · Flee by clicking away";
+  }
+  if (save.tomesCollected.length < 3) {
+    return "Explore — north portal: Mindspire · east: The Marches";
+  }
+  return `Explore ${map.name} and beyond — more realms coming`;
+}
 
 export function RealmHUD({
   save,
@@ -17,16 +42,8 @@ export function RealmHUD({
   onReset: () => void;
 }) {
   const hpPct = (save.playerHp / save.playerMaxHp) * 100;
-  const questText =
-    save.tutorialStage === "move"
-      ? `Walk the lanterns (${save.lanternsVisited.length}/5)`
-      : save.tutorialStage === "food"
-        ? "Fight dummy, then eat bread"
-        : save.tutorialStage === "duel"
-          ? "Talk to Duel Master Crisp"
-          : save.tutorialStage === "play"
-            ? "Explore Ashford — Mindspire coming soon"
-            : "Tutorial";
+  const map = getRealmMap(save.currentArea);
+  const quest = questText(save);
 
   return (
     <>
@@ -48,10 +65,20 @@ export function RealmHUD({
             <p className="text-[9px] uppercase tracking-wider text-[var(--muted)]">Combat</p>
             <p className="text-sm font-semibold text-[var(--gold)]">Lvl {save.combatLevel}</p>
           </div>
+          <div className="hidden rounded-lg border border-white/10 bg-black/80 px-3 py-2 md:block">
+            <p className="text-[9px] uppercase tracking-wider text-[var(--muted)]">World</p>
+            <p className="text-xs font-medium text-[var(--silver)]">
+              {map.name}
+              {map.isWilderness ? " ☠" : ""}
+            </p>
+            <p className="text-[10px] text-[var(--muted)]">
+              {save.areasDiscovered.length}/3 areas
+            </p>
+          </div>
         </div>
         <div className="pointer-events-auto rounded-lg border border-white/10 bg-black/80 px-3 py-2 text-right">
           <p className="text-[9px] uppercase tracking-wider text-[var(--muted)]">Quest</p>
-          <p className="max-w-[140px] text-xs text-[var(--silver)] sm:max-w-none">{questText}</p>
+          <p className="max-w-[160px] text-xs text-[var(--silver)] sm:max-w-none">{quest}</p>
         </div>
       </div>
 
@@ -82,7 +109,7 @@ export function RealmHUD({
           type="button"
           onClick={onReset}
           className="flex min-h-[44px] items-center justify-center rounded-xl border border-white/10 px-3 text-[10px] text-[var(--muted)] sm:text-xs"
-          title="Reset prototype save"
+          title="Reset realm save"
         >
           Reset
         </button>

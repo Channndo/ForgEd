@@ -1,0 +1,77 @@
+import type { RealmMapConfig } from "../mapTypes";
+import { TILE } from "../tiles";
+
+const { GRASS, PATH, WALL, WATER, TREE, ROCK, SAND, BRIDGE } = TILE;
+
+export const MARCHES_MAP: RealmMapConfig = {
+  id: "marches",
+  name: "The Marches",
+  subtitle: "Wilderness — goblins, sand, and caution",
+  mapW: 30,
+  mapH: 22,
+  playerSpawn: { x: 2, y: 10 },
+  isWilderness: true,
+  tiles: [
+    [WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, ROCK, SAND, SAND, SAND, TREE, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, TREE, SAND, SAND, SAND, ROCK, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, BRIDGE, PATH, PATH, PATH, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, SAND, WALL],
+    [WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL],
+  ],
+  npcs: [
+    {
+      id: "scout-vex",
+      name: "Scout Vex",
+      x: 5,
+      y: 10,
+      color: "#78716c",
+      lines: [
+        "Welcome to The Marches. Level three combat recommended. Level three hubris mandatory.",
+        "Goblins roam the dunes. Defeat one and feel briefly superior.",
+        "The portal west returns to Ashford. Nobby will say he told you so.",
+      ],
+    },
+    {
+      id: "hermit",
+      name: "Hermit Old Tusk",
+      x: 22,
+      y: 6,
+      color: "#84cc16",
+      lines: [
+        "I came here for peace. The goblins disagree.",
+        "Someday this wilderness will have real PvP and item loss. Today it has sand.",
+      ],
+    },
+  ],
+  portals: [
+    {
+      id: "marches-to-ashford",
+      x: 1,
+      y: 10,
+      targetArea: "ashford",
+      targetSpawn: { x: 22, y: 8 },
+      label: "Ashford",
+    },
+  ],
+  interactables: [
+    { id: "goblin-1", kind: "goblin", x: 15, y: 8, label: "Goblin", maxHp: 4 },
+    { id: "goblin-2", kind: "goblin", x: 24, y: 12, label: "Goblin", maxHp: 4 },
+  ],
+};

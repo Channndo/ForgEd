@@ -1,0 +1,88 @@
+import type { RealmMapConfig } from "../mapTypes";
+import { TILE } from "../tiles";
+
+const { GRASS, PATH, WALL, WATER, TREE, ROCK, FLOOR, BRIDGE } = TILE;
+
+export const MINDSPIRE_MAP: RealmMapConfig = {
+  id: "mindspire",
+  name: "Mindspire",
+  subtitle: "Academy of runes and reason",
+  mapW: 28,
+  mapH: 22,
+  playerSpawn: { x: 12, y: 17 },
+  tiles: [
+    [WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL],
+    [WALL, TREE, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, TREE, TREE, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, PATH, PATH, PATH, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, PATH, PATH, PATH, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, PATH, PATH, PATH, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, PATH, PATH, PATH, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, PATH, PATH, PATH, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, PATH, PATH, PATH, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, FLOOR, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, PATH, PATH, PATH, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, GRASS, WALL],
+    [WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL],
+  ],
+  npcs: [
+    {
+      id: "elara",
+      name: "Archmage Elara",
+      x: 7,
+      y: 4,
+      color: "#6366f1",
+      lines: [
+        "Mindspire teaches what Ashford merely hints at — runes, reason, and regrettable experiments.",
+        "Collect the three tomes in the Grand Library. Scholars love paperwork.",
+        "The portal south returns you to Ashford. Try not to track mud on the runes.",
+      ],
+    },
+    {
+      id: "finn",
+      name: "Scribe Finn",
+      x: 17,
+      y: 4,
+      color: "#a8a29e",
+      lines: [
+        "Each tome you study grants a sliver of wisdom. Or a headache. Often both.",
+        "Tap a glowing tome when you're adjacent. RuneScape players call this 'grinding.' We call it Tuesday.",
+      ],
+    },
+    {
+      id: "rune-merchant",
+      name: "Rune Merchant Zed",
+      x: 13,
+      y: 8,
+      color: "#dc2626",
+      lines: [
+        "Air runes, mind runes, and the eternal rune of 'one more quest before bed.'",
+        "Shop inventory arrives in a future update. For now I sell wisdom: bring bread.",
+      ],
+    },
+  ],
+  portals: [
+    {
+      id: "mindspire-to-ashford",
+      x: 12,
+      y: 19,
+      targetArea: "ashford",
+      targetSpawn: { x: 12, y: 3 },
+      label: "Ashford",
+    },
+  ],
+  interactables: [
+    { id: "tome-1", kind: "tome", x: 5, y: 3, label: "Tome of Logic" },
+    { id: "tome-2", kind: "tome", x: 10, y: 2, label: "Tome of Memory" },
+    { id: "tome-3", kind: "tome", x: 20, y: 3, label: "Tome of Ethics" },
+  ],
+};

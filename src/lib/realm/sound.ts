@@ -61,4 +61,19 @@ export const RealmSound = {
   levelUp() {
     [523, 659, 784, 1047].forEach((f, i) => tone(f, 180, "triangle", 0.06, i * 110));
   },
+  chop() {
+    tone(140, 90, "square", 0.05);
+    tone(90, 110, "triangle", 0.04, 30);
+  },
+  splash() {
+    tone(500, 60, "sine", 0.04);
+    tone(380, 90, "sine", 0.035, 50);
+  },
+  cook() {
+    tone(240, 70, "sawtooth", 0.03);
+    tone(300, 70, "sawtooth", 0.025, 60);
+  },
+  questDone() {
+    [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, 160, "triangle", 0.06, i * 100));
+  },
 };

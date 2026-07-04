@@ -1,10 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Backpack, Swords, Volume2, VolumeX, X } from "lucide-react";
+import { Backpack, ScrollText, Swords, Volume2, VolumeX, X } from "lucide-react";
 import type { RealmAttackStyle, RealmNpc, RealmSave } from "@/lib/realm/types";
 import { combatLevel, levelForXp, levelProgress } from "@/lib/realm/skills";
-import { itemDef } from "@/lib/realm/combat";
+import { inventoryCount, itemDef, FOOD_PRIORITY } from "@/lib/realm/combat";
+import {
+  canCompleteQuest,
+  describeQuestRewards,
+  questProgressCount,
+  questState,
+  REALM_QUESTS,
+} from "@/lib/realm/quests";
+import { getZone } from "@/lib/realm/zones";
 import { RealmSound } from "@/lib/realm/sound";
 
 const SKILL_META: { id: keyof RealmSave["skills"]; label: string; color: string }[] = [
@@ -12,6 +20,9 @@ const SKILL_META: { id: keyof RealmSave["skills"]; label: string; color: string 
   { id: "strength", label: "Strength", color: "#22c55e" },
   { id: "defence", label: "Defence", color: "#3b82f6" },
   { id: "hitpoints", label: "Hitpoints", color: "#f97316" },
+  { id: "woodcutting", label: "Woodcutting", color: "#ca8a04" },
+  { id: "fishing", label: "Fishing", color: "#0ea5e9" },
+  { id: "cooking", label: "Cooking", color: "#a855f7" },
 ];
 
 const STYLES: { id: RealmAttackStyle; label: string; trains: string }[] = [
@@ -36,21 +47,28 @@ export function RealmHUD({
   onUpdate: (patch: Partial<RealmSave>) => void;
 }) {
   const [statsOpen, setStatsOpen] = useState(false);
+  const [questsOpen, setQuestsOpen] = useState(false);
   const [muted, setMuted] = useState(false);
   const hpPct = (save.playerHp / Math.max(1, save.playerMaxHp)) * 100;
-  const breadCount = save.inventory.find((i) => i.id === "bread")?.qty ?? 0;
-  const coins = save.inventory.find((i) => i.id === "coins")?.qty ?? 0;
+  const foodCount = FOOD_PRIORITY.reduce((n, id) => n + inventoryCount(save.inventory, id), 0);
+  const coins = inventoryCount(save.inventory, "coins");
+  const zone = getZone(save.currentZone);
+
+  const activeQuests = REALM_QUESTS.filter((q) => {
+    const st = questState(save, q.id);
+    return st.accepted && !st.done;
+  });
 
   const questText =
     save.tutorialStage === "move"
       ? `Walk the lanterns (${save.lanternsVisited.length}/5)`
       : save.tutorialStage === "food"
-        ? "Fight enemies in the south field, then eat bread"
+        ? "Fight enemies in the south field, then eat"
         : save.tutorialStage === "duel"
           ? "Talk to Duel Master Crisp"
-          : save.tutorialStage === "play"
-            ? "Train your skills — hunt rats & goblins"
-            : "Tutorial";
+          : activeQuests.length > 0
+            ? `${activeQuests[0].name}: ${questProgressCount(save, activeQuests[0])}/${activeQuests[0].count}`
+            : "Talk to townsfolk for quests";
 
   return (
     <>
@@ -78,8 +96,15 @@ export function RealmHUD({
             <p className="text-sm font-semibold text-[var(--gold)]">{coins}</p>
           </div>
         </div>
+
+        <div className="pointer-events-none rounded-full border border-[var(--gold)]/25 bg-black/80 px-4 py-1.5">
+          <p className="font-serif text-xs font-semibold tracking-wide text-[var(--gold)] sm:text-sm">
+            {zone.name}
+          </p>
+        </div>
+
         <div className="pointer-events-auto rounded-lg border border-white/10 bg-black/80 px-3 py-2 text-right">
-          <p className="text-[9px] uppercase tracking-wider text-[var(--muted)]">Quest</p>
+          <p className="text-[9px] uppercase tracking-wider text-[var(--muted)]">Objective</p>
           <p className="max-w-[140px] text-xs text-[var(--silver)] sm:max-w-none">{questText}</p>
         </div>
       </div>
@@ -96,7 +121,7 @@ export function RealmHUD({
           onClick={onEat}
           className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center rounded-xl border border-white/10 bg-white/5 px-2 py-2 text-[10px] text-[var(--silver)] sm:flex-none sm:px-4 sm:text-xs"
         >
-          🍞 Eat ({breadCount})
+          🍞 Eat ({foodCount})
         </button>
         <button
           type="button"
@@ -105,6 +130,14 @@ export function RealmHUD({
         >
           <Backpack className="h-4 w-4" />
           Stats
+        </button>
+        <button
+          type="button"
+          onClick={() => setQuestsOpen(true)}
+          className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl border border-white/10 bg-white/5 px-2 py-2 text-[10px] text-[var(--silver)] sm:flex-none sm:px-4 sm:text-xs"
+        >
+          <ScrollText className="h-4 w-4" />
+          Quests
         </button>
         <button
           type="button"
@@ -192,7 +225,7 @@ export function RealmHUD({
             </div>
 
             <p className="mt-4 text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)]">
-              Inventory ({save.inventory.reduce((n, i) => n + (i.id === "coins" ? 0 : i.qty), 0)} items)
+              Inventory
             </p>
             <div className="mt-2 grid grid-cols-6 gap-1.5">
               {save.inventory.map((it) => {
@@ -210,8 +243,61 @@ export function RealmHUD({
               })}
             </div>
             <p className="mt-3 text-[10px] text-[var(--muted)]">
-              Best weapon equips automatically. Kills: {save.kills.toLocaleString()}.
+              Best weapon and shield equip automatically. Kills: {save.kills.toLocaleString()}.
             </p>
+          </div>
+        </div>
+      )}
+
+      {questsOpen && (
+        <div className="absolute inset-0 z-30 flex items-end justify-center bg-black/50 p-2 sm:items-center sm:p-4">
+          <div className="max-h-[80vh] w-full max-w-md overflow-y-auto rounded-xl border border-[var(--gold)]/25 bg-[#121214] p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <p className="font-serif text-lg font-semibold text-[var(--gold)]">Quest Log</p>
+              <button type="button" onClick={() => setQuestsOpen(false)} aria-label="Close">
+                <X className="h-5 w-5 text-[var(--muted)]" />
+              </button>
+            </div>
+            <div className="mt-3 space-y-3">
+              {REALM_QUESTS.map((q) => {
+                const st = questState(save, q.id);
+                const prog = questProgressCount(save, q);
+                const status = st.done
+                  ? "Complete"
+                  : canCompleteQuest(save, q)
+                    ? "Ready to turn in!"
+                    : st.accepted
+                      ? `${prog}/${q.count} ${q.targetLabel}`
+                      : "Not started";
+                return (
+                  <div
+                    key={q.id}
+                    className={`rounded-lg border px-3 py-3 ${
+                      st.done
+                        ? "border-[var(--gold)]/30 bg-[var(--gold)]/5"
+                        : canCompleteQuest(save, q)
+                          ? "border-emerald-500/40 bg-emerald-500/5"
+                          : "border-white/10 bg-black/30"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold text-[var(--silver)]">{q.name}</p>
+                      <span
+                        className={`text-[10px] font-semibold uppercase tracking-wider ${
+                          st.done ? "text-[var(--gold)]" : canCompleteQuest(save, q) ? "text-emerald-400" : "text-[var(--muted)]"
+                        }`}
+                      >
+                        {status}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed text-[var(--muted)]">{q.blurb}</p>
+                    <p className="mt-1.5 text-[10px] text-[var(--gold)]/80">
+                      Reward: {describeQuestRewards(q)}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -219,16 +305,21 @@ export function RealmHUD({
   );
 }
 
+export interface DialogueAction {
+  id: string;
+  label: string;
+  disabled?: boolean;
+  onClick: () => void;
+}
+
 export function RealmDialogue({
   npc,
   onClose,
-  onDuel,
-  showDuel,
+  actions,
 }: {
   npc: RealmNpc;
   onClose: () => void;
-  onDuel?: () => void;
-  showDuel?: boolean;
+  actions?: DialogueAction[];
 }) {
   return (
     <div className="absolute inset-0 z-30 flex items-end justify-center bg-black/50 p-2 sm:items-center sm:p-4">
@@ -246,18 +337,20 @@ export function RealmDialogue({
             </p>
           ))}
         </div>
-        {showDuel && onDuel && (
+        {(actions ?? []).map((action) => (
           <button
+            key={action.id}
             type="button"
+            disabled={action.disabled}
             onClick={() => {
-              onDuel();
+              action.onClick();
               onClose();
             }}
-            className="mt-4 w-full rounded-lg border border-[var(--gold)]/40 bg-[var(--gold)]/10 py-2.5 text-sm font-semibold text-[var(--gold)]"
+            className="mt-3 w-full rounded-lg border border-[var(--gold)]/40 bg-[var(--gold)]/10 py-2.5 text-sm font-semibold text-[var(--gold)] disabled:opacity-50"
           >
-            Accept duel (no loot lost)
+            {action.label}
           </button>
-        )}
+        ))}
         <button
           type="button"
           onClick={onClose}

@@ -5,14 +5,26 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { RealmCharter } from "./RealmCharter";
 import { RealmCharacterCreator } from "./RealmCharacterCreator";
-import { RealmDialogue, RealmHUD } from "./RealmHUD";
+import { RealmDialogue, RealmHUD, type DialogueAction } from "./RealmHUD";
+import { RealmShop } from "./RealmShop";
 import { RealmWorld, useRealmCombat } from "./RealmWorld";
 import { readRealmSave, resetRealmSave, writeRealmSave } from "@/lib/realm/storage";
 import type { RealmCharacter, RealmNpc, RealmSave } from "@/lib/realm/types";
+import {
+  acceptQuest,
+  canCompleteQuest,
+  completeQuest,
+  describeQuestRewards,
+  questProgressCount,
+  questState,
+  questsForGiver,
+} from "@/lib/realm/quests";
+import { RealmSound } from "@/lib/realm/sound";
 
 export default function RealmGame() {
   const [save, setSave] = useState<RealmSave | null>(null);
   const [dialogueNpc, setDialogueNpc] = useState<RealmNpc | null>(null);
+  const [shopOpen, setShopOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const { eatBread, doDuel } = useRealmCombat(save ?? readRealmSave(), setSave);
 
@@ -67,6 +79,63 @@ export default function RealmGame() {
     );
   }
 
+  const buildActions = (npc: RealmNpc): DialogueAction[] => {
+    const actions: DialogueAction[] = [];
+
+    for (const quest of questsForGiver(npc.id)) {
+      const st = questState(save, quest.id);
+      if (st.done) continue;
+      if (!st.accepted) {
+        actions.push({
+          id: `accept-${quest.id}`,
+          label: `Accept quest: ${quest.name}`,
+          onClick: () => {
+            persist(acceptQuest(save, quest));
+            showToast(quest.acceptLine);
+          },
+        });
+      } else if (canCompleteQuest(save, quest)) {
+        actions.push({
+          id: `complete-${quest.id}`,
+          label: `Complete: ${quest.name} (${describeQuestRewards(quest)})`,
+          onClick: () => {
+            persist(completeQuest(save, quest));
+            RealmSound.questDone();
+            showToast(quest.completeLine);
+          },
+        });
+      } else {
+        actions.push({
+          id: `progress-${quest.id}`,
+          label: `${quest.name}: ${questProgressCount(save, quest)}/${quest.count} ${quest.targetLabel}`,
+          disabled: true,
+          onClick: () => {},
+        });
+      }
+    }
+
+    if (npc.id === "pete") {
+      actions.push({
+        id: "shop",
+        label: "Browse wares",
+        onClick: () => setShopOpen(true),
+      });
+    }
+
+    if (npc.id === "crisp" && save.tutorialStage === "duel") {
+      actions.push({
+        id: "duel",
+        label: "Accept duel (no loot lost)",
+        onClick: () => {
+          doDuel();
+          showToast("You duel Crisp. Nobody dies. Everyone judges you.");
+        },
+      });
+    }
+
+    return actions;
+  };
+
   return (
     <div className="relative h-[100dvh] w-full overflow-hidden bg-[#0a0a0a]">
       <Link
@@ -79,7 +148,7 @@ export default function RealmGame() {
 
       <RealmWorld
         save={save}
-        onSave={persist}
+        onSave={setSave}
         onDialogue={setDialogueNpc}
         onToast={showToast}
       />
@@ -89,8 +158,8 @@ export default function RealmGame() {
         toast={toast}
         onUpdate={(patch) => persist({ ...save, ...patch })}
         onEat={() => {
-          if (eatBread()) showToast("You eat bread. Betty would be proud. Maybe.");
-          else showToast("No bread, or you're already full.");
+          if (eatBread()) showToast("You eat. You feel marginally less doomed.");
+          else showToast("No food, or you're already full.");
         }}
         onDuel={() => {
           if (save.tutorialStage === "duel") {
@@ -117,11 +186,16 @@ export default function RealmGame() {
         <RealmDialogue
           npc={dialogueNpc}
           onClose={() => setDialogueNpc(null)}
-          showDuel={dialogueNpc.id === "crisp" && save.tutorialStage === "duel"}
-          onDuel={() => {
-            doDuel();
-            showToast("You duel Crisp. Nobody dies. Everyone judges you.");
-          }}
+          actions={buildActions(dialogueNpc)}
+        />
+      )}
+
+      {shopOpen && (
+        <RealmShop
+          save={save}
+          onUpdate={(patch) => persist({ ...save, ...patch })}
+          onClose={() => setShopOpen(false)}
+          onToast={showToast}
         />
       )}
     </div>

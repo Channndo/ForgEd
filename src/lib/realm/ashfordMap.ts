@@ -20,7 +20,7 @@ export const ASHFORD_TILES: number[][] = [
   [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
   [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 ];
 
 export const PLAYER_SPAWN = { x: 5, y: 7 };
@@ -44,6 +44,7 @@ export const ASHFORD_NPCS: RealmNpc[] = [
       "Ah! A fresh victim—I mean adventurer.",
       "Click or tap the ground to walk. If you click a wall, you will stand there thoughtfully.",
       "Walk the five lantern posts. Betty has bread. Bread saves lives.",
+      "Also — goblins have been keeping a ledger of everything they've stolen. I want those pages. For legal reasons.",
     ],
   },
   {
@@ -55,6 +56,7 @@ export const ASHFORD_NPCS: RealmNpc[] = [
     lines: [
       "You look underfed. Everyone does.",
       "Hit the training dummy near the arena. Then eat bread. Right-click food on desktop—or tap Eat on mobile.",
+      "And if you fancy earning your crust: the rats south of town are ruining my stew. Deal with them.",
     ],
   },
   {
@@ -75,8 +77,19 @@ export const ASHFORD_NPCS: RealmNpc[] = [
     y: 12,
     color: "#6b7280",
     lines: [
-      "Beyond the east path: players, pointy sticks, item loss.",
-      "The Marches take valuables. I warned you. I always warn you.",
+      "Through the south gate: wolves, bandits, and worse. Die out there and the Marches take half your coins.",
+      "Word is the Goblin King squats in Grimheart Cave, southeast of the Marches. Someone should do something about that. Someone else, ideally.",
+    ],
+  },
+  {
+    id: "pete",
+    name: "Grubby Pete",
+    x: 5,
+    y: 9,
+    color: "#a16207",
+    lines: [
+      "Finest wares in Ashford! Also the only wares in Ashford.",
+      "I buy anything. Bones, logs, fish — one man's rubbish is my entire business model.",
     ],
   },
 ];

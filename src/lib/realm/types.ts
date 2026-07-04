@@ -20,6 +20,15 @@ export interface RealmSkills {
   strength: number;
   defence: number;
   hitpoints: number;
+  woodcutting: number;
+  fishing: number;
+  cooking: number;
+}
+
+export interface RealmQuestState {
+  accepted: boolean;
+  count: number;
+  done: boolean;
 }
 
 export type RealmAttackStyle = "accurate" | "aggressive" | "defensive";
@@ -43,6 +52,8 @@ export interface RealmSave {
   attackStyle: RealmAttackStyle;
   inventory: RealmItem[];
   kills: number;
+  currentZone: string;
+  questProgress: Record<string, RealmQuestState>;
 }
 
 export interface RealmNpc {
@@ -65,11 +76,21 @@ export const DEFAULT_REALM_SAVE: RealmSave = {
   playerMaxHp: 10,
   combatLevel: 3,
   // Hitpoints starts at level 10 (1154 XP), RuneScape-style; others at level 1.
-  skills: { attack: 0, strength: 0, defence: 0, hitpoints: 1154 },
+  skills: {
+    attack: 0,
+    strength: 0,
+    defence: 0,
+    hitpoints: 1154,
+    woodcutting: 0,
+    fishing: 0,
+    cooking: 0,
+  },
   attackStyle: "aggressive",
   inventory: [
     { id: "coins", qty: 25 },
     { id: "bread", qty: 5 },
   ],
   kills: 0,
+  currentZone: "ashford",
+  questProgress: {},
 };

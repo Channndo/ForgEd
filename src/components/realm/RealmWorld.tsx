@@ -1,44 +1,35 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import {
-  ASHFORD_NPCS,
-  ASHFORD_TILES,
-  findPath,
-  isWalkable,
-  LANTERNS,
-  MAP_H,
-  MAP_W,
-  PLAYER_SPAWN,
-} from "@/lib/realm/ashfordMap";
-import type { RealmItem, RealmNpc, RealmSave, RealmSkills } from "@/lib/realm/types";
+import { LANTERNS } from "@/lib/realm/ashfordMap";
+import type { RealmNpc, RealmSave, RealmSkills } from "@/lib/realm/types";
 import { writeRealmSave } from "@/lib/realm/storage";
 import { drawAvatar } from "@/lib/realm/drawAvatar";
 import {
+  addItemToInventory,
   ENEMIES,
-  ENEMY_SPAWNS,
+  FOOD_PRIORITY,
   itemDef,
   rollDrops,
 } from "@/lib/realm/combat";
 import {
+  getZone,
+  zoneAdjacentTo,
+  zoneFindPath,
+  type Zone,
+} from "@/lib/realm/zones";
+import { REALM_QUESTS, questState } from "@/lib/realm/quests";
+import {
   combatLevel,
   levelForXp,
-  maxHit as calcMaxHit,
   maxHp as calcMaxHp,
   rollAttack,
 } from "@/lib/realm/skills";
 import { RealmSound } from "@/lib/realm/sound";
 
-const TILE_COLORS: Record<number, string> = {
-  0: "#2d4a2d",
-  1: "#5c4a32",
-  2: "#1a1a1e",
-  3: "#1e3a5f",
-  4: "#4a3a2a",
-};
-
 const MOVE_MS = 150; // ms per tile
 const ATTACK_TICK_MS = 650;
+const GATHER_TICK_MS = 1200;
 const DUMMY_TILE = { x: 18, y: 3 };
 
 interface RtEnemy {
@@ -70,6 +61,8 @@ interface Effect {
   vy: number;
 }
 
+type GatherKind = "tree" | "fish" | "fire";
+
 interface RealmWorldProps {
   save: RealmSave;
   onSave: (save: RealmSave) => void;
@@ -77,19 +70,27 @@ interface RealmWorldProps {
   onToast: (msg: string) => void;
 }
 
-function addItem(inv: RealmItem[], id: string, qty: number): RealmItem[] {
-  const next = inv.map((i) => ({ ...i }));
-  const existing = next.find((i) => i.id === id);
-  if (existing) existing.qty += qty;
-  else next.push({ id, qty });
-  return next;
+function initEnemies(zone: Zone): RtEnemy[] {
+  return zone.spawns.map((s) => {
+    const def = ENEMIES[s.type];
+    return {
+      id: s.id,
+      type: s.type,
+      x: s.x,
+      y: s.y,
+      hp: def.maxHp,
+      maxHp: def.maxHp,
+      alive: true,
+      respawnAt: 0,
+      lunge: 0,
+    };
+  });
 }
 
 export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Synced-from-props refs so the game loop never tears down.
   const saveRef = useRef(save);
   const onSaveRef = useRef(onSave);
   const onToastRef = useRef(onToast);
@@ -103,33 +104,21 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     onDialogueRef.current = onDialogue;
   }, [onSave, onToast, onDialogue]);
 
-  // Runtime (non-persisted) state.
-  const playerTileRef = useRef({ ...PLAYER_SPAWN });
-  const playerPixRef = useRef({ x: PLAYER_SPAWN.x, y: PLAYER_SPAWN.y });
+  const zoneRef = useRef<Zone>(getZone(save.currentZone));
+  const playerTileRef = useRef({ ...zoneRef.current.spawn });
+  const playerPixRef = useRef({ ...zoneRef.current.spawn });
   const pathRef = useRef<{ x: number; y: number }[]>([]);
   const targetRef = useRef<{ x: number; y: number } | null>(null);
   const lastTileRef = useRef("");
   const combatTargetRef = useRef<string | null>(null);
   const attackAccRef = useRef(0);
+  const gatherRef = useRef<{ kind: GatherKind; x: number; y: number } | null>(null);
+  const gatherAccRef = useRef(0);
   const playerLungeRef = useRef(0);
-  const enemiesRef = useRef<RtEnemy[]>(
-    ENEMY_SPAWNS.map((s) => {
-      const def = ENEMIES[s.type];
-      return {
-        id: s.id,
-        type: s.type,
-        x: s.x,
-        y: s.y,
-        hp: def.maxHp,
-        maxHp: def.maxHp,
-        alive: true,
-        respawnAt: 0,
-        lunge: 0,
-      };
-    })
-  );
+  const enemiesRef = useRef<RtEnemy[]>(initEnemies(zoneRef.current));
   const groundRef = useRef<Ground[]>([]);
   const effectsRef = useRef<Effect[]>([]);
+  const treeDepletedRef = useRef<Map<string, number>>(new Map());
   const dummyHpRef = useRef(5);
 
   const tileSizeRef = useRef(32);
@@ -148,58 +137,106 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     onSaveRef.current(next);
   }, []);
 
-  const awardXp = (baseXp: number) => {
+  const awardSkillXp = (skill: keyof RealmSkills, amount: number, extraHpXp = 0) => {
     const s = saveRef.current;
     const skills: RealmSkills = { ...s.skills };
-    const styled =
-      s.attackStyle === "accurate" ? "attack" : s.attackStyle === "defensive" ? "defence" : "strength";
-    const beforeStyled = levelForXp(skills[styled]);
+    const before = levelForXp(skills[skill]);
     const beforeHp = levelForXp(skills.hitpoints);
-    skills[styled] += baseXp;
-    skills.hitpoints += Math.round(baseXp / 3);
-    const afterStyled = levelForXp(skills[styled]);
+    skills[skill] += amount;
+    if (extraHpXp > 0) skills.hitpoints += extraHpXp;
+    const after = levelForXp(skills[skill]);
     const afterHp = levelForXp(skills.hitpoints);
 
     const newMaxHp = calcMaxHp(skills);
-    let hp = s.playerHp;
     const patch: Partial<RealmSave> = {
       skills,
       playerMaxHp: newMaxHp,
       combatLevel: combatLevel(skills),
     };
 
-    spawnEffect(playerPixRef.current.x, playerPixRef.current.y - 0.3, `+${baseXp} xp`, "#fbbf24", 1000, 1.3);
+    spawnEffect(playerPixRef.current.x + 0.5, playerPixRef.current.y - 0.3, `+${amount} xp`, "#fbbf24", 1000, 1.3);
 
-    if (afterStyled > beforeStyled || afterHp > beforeHp) {
+    if (after > before || afterHp > beforeHp) {
       RealmSound.levelUp();
       if (afterHp > beforeHp) {
-        hp = Math.min(newMaxHp, hp + (afterHp - beforeHp));
-        patch.playerHp = hp;
+        patch.playerHp = Math.min(newMaxHp, s.playerHp + (afterHp - beforeHp));
       }
-      const which = afterStyled > beforeStyled ? styled : "hitpoints";
-      const lvl = which === "hitpoints" ? afterHp : afterStyled;
-      onToastRef.current(`Level up! ${which[0].toUpperCase()}${which.slice(1)} is now ${lvl}.`);
-      spawnEffect(playerPixRef.current.x, playerPixRef.current.y - 1, "LEVEL UP", "#34d399", 1600, 0.8);
+      const which = after > before ? skill : "hitpoints";
+      const lvl = which === skill ? after : afterHp;
+      onToastRef.current(`Level up! ${String(which)[0].toUpperCase()}${String(which).slice(1)} is now ${lvl}.`);
+      spawnEffect(playerPixRef.current.x + 0.5, playerPixRef.current.y - 1, "LEVEL UP", "#34d399", 1600, 0.8);
     }
     persist(patch);
   };
 
-  const playerAttackBonus = () => {
+  const awardCombatXp = (baseXp: number) => {
+    const s = saveRef.current;
+    const styled: keyof RealmSkills =
+      s.attackStyle === "accurate" ? "attack" : s.attackStyle === "defensive" ? "defence" : "strength";
+    awardSkillXp(styled, baseXp, Math.round(baseXp / 3));
+  };
+
+  const equipmentBonus = () => {
     const s = saveRef.current;
     let atk = 0;
     let str = 0;
+    let shield = 0;
     for (const it of s.inventory) {
       const def = itemDef(it.id);
-      if (def.weaponAttack) atk = Math.max(atk, def.weaponAttack);
-      if (def.weaponStrength) str = Math.max(str, def.weaponStrength);
+      if ((def.weaponAttack ?? 0) + (def.weaponStrength ?? 0) > atk + str) {
+        atk = def.weaponAttack ?? 0;
+        str = def.weaponStrength ?? 0;
+      }
+      if ((def.shieldDefence ?? 0) > shield) shield = def.shieldDefence ?? 0;
     }
-    return { atk, str };
+    return { atk, str, shield };
+  };
+
+  const recordQuestKill = (enemyType: string) => {
+    const s = saveRef.current;
+    let questProgress = s.questProgress;
+    let changed = false;
+    for (const q of REALM_QUESTS) {
+      if (q.kind !== "kill" || q.targetId !== enemyType) continue;
+      const st = questState(s, q.id);
+      if (!st.accepted || st.done || st.count >= q.count) continue;
+      const count = st.count + 1;
+      questProgress = { ...questProgress, [q.id]: { ...st, count } };
+      changed = true;
+      if (count >= q.count) {
+        onToastRef.current(`${q.name}: done! Return to ${q.giver === "betty" ? "Betty" : q.giver === "nobby" ? "Nobby" : "Sir Reginald"}.`);
+      } else {
+        spawnEffect(playerPixRef.current.x + 0.5, playerPixRef.current.y - 0.7, `${q.name}: ${count}/${q.count}`, "#a5b4fc", 1200, 0.9);
+      }
+    }
+    if (changed) persist({ questProgress });
+  };
+
+  const changeZone = (toId: string, tx: number, ty: number) => {
+    const zone = getZone(toId);
+    zoneRef.current = zone;
+    enemiesRef.current = initEnemies(zone);
+    groundRef.current = [];
+    effectsRef.current = [];
+    combatTargetRef.current = null;
+    gatherRef.current = null;
+    pathRef.current = [];
+    targetRef.current = null;
+    playerTileRef.current = { x: tx, y: ty };
+    playerPixRef.current = { x: tx, y: ty };
+    lastTileRef.current = `${tx},${ty}`;
+    treeDepletedRef.current.clear();
+    persist({ currentZone: toId });
+    if (zone.dangerous) {
+      onToastRef.current(`Entering ${zone.name}. Dying here costs half your coins.`);
+    } else {
+      onToastRef.current(`Welcome to ${zone.name}.`);
+    }
   };
 
   const dropLoot = (e: RtEnemy) => {
     const def = ENEMIES[e.type];
-    const drops = rollDrops(def);
-    for (const d of drops) {
+    for (const d of rollDrops(def)) {
       groundRef.current.push({ id: d.id, qty: d.qty, x: e.x, y: e.y });
     }
   };
@@ -208,57 +245,148 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     const remaining: Ground[] = [];
     let inv = saveRef.current.inventory;
     let picked = false;
+    let pickedCoins = false;
     for (const g of groundRef.current) {
       if (g.x === tileX && g.y === tileY) {
-        inv = addItem(inv, g.id, g.qty);
+        inv = addItemToInventory(inv, g.id, g.qty);
         const def = itemDef(g.id);
         spawnEffect(tileX + 0.5, tileY, `+${g.qty} ${def.name}`, def.color, 900, 1.2);
         picked = true;
+        if (g.id === "coins") pickedCoins = true;
       } else {
         remaining.push(g);
       }
     }
     if (picked) {
       groundRef.current = remaining;
-      if (remaining.every((g) => g.id !== "coins")) RealmSound.coin();
-      RealmSound.pickup();
+      if (pickedCoins) RealmSound.coin();
+      else RealmSound.pickup();
       persist({ inventory: inv });
     }
   };
 
   const onStepTile = (tile: { x: number; y: number }) => {
+    const zone = zoneRef.current;
     const s = saveRef.current;
-    // lantern tutorial
-    const lantern = LANTERNS.find((l) => l.x === tile.x && l.y === tile.y);
-    if (lantern && s.tutorialStage === "move" && !s.lanternsVisited.includes(lantern.id)) {
-      const visited = [...s.lanternsVisited, lantern.id];
-      RealmSound.pickup();
-      if (visited.length >= 5) {
-        onToastRef.current("Lantern path complete. Fight rats and goblins in the south field!");
-        persist({ lanternsVisited: visited, tutorialStage: "food" });
-      } else {
-        persist({ lanternsVisited: visited });
+
+    // portals
+    const portal = zone.portals.find((p) => p.x === tile.x && p.y === tile.y);
+    if (portal) {
+      changeZone(portal.to, portal.toX, portal.toY);
+      return;
+    }
+
+    // lantern tutorial (Ashford only)
+    if (zone.id === "ashford") {
+      const lantern = LANTERNS.find((l) => l.x === tile.x && l.y === tile.y);
+      if (lantern && s.tutorialStage === "move" && !s.lanternsVisited.includes(lantern.id)) {
+        const visited = [...s.lanternsVisited, lantern.id];
+        RealmSound.pickup();
+        if (visited.length >= 5) {
+          onToastRef.current("Lantern path complete. Fight rats and goblins in the south field!");
+          persist({ lanternsVisited: visited, tutorialStage: "food" });
+        } else {
+          persist({ lanternsVisited: visited });
+        }
       }
     }
-    // auto pick-up
+
     if (groundRef.current.some((g) => g.x === tile.x && g.y === tile.y)) {
       pickUp(tile.x, tile.y);
     }
   };
 
-  const adjacentTo = (tx: number, ty: number) => {
-    const p = playerTileRef.current;
-    const cands = [
-      { x: tx + 1, y: ty },
-      { x: tx - 1, y: ty },
-      { x: tx, y: ty + 1 },
-      { x: tx, y: ty - 1 },
-    ].filter((c) => isWalkable(c.x, c.y));
-    cands.sort(
-      (a, b) =>
-        Math.abs(a.x - p.x) + Math.abs(a.y - p.y) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y))
-    );
-    return cands[0] ?? null;
+  const handleDeath = () => {
+    const zone = zoneRef.current;
+    const s = saveRef.current;
+    combatTargetRef.current = null;
+    let inventory = s.inventory;
+    let msg = "You were defeated! You wake up in Ashford.";
+    if (zone.dangerous) {
+      const coins = inventory.find((i) => i.id === "coins")?.qty ?? 0;
+      const lost = Math.floor(coins / 2);
+      if (lost > 0) {
+        inventory = inventory
+          .map((i) => (i.id === "coins" ? { ...i, qty: i.qty - lost } : i))
+          .filter((i) => i.qty > 0);
+        msg = `You were defeated! The ${zone.name} claimed ${lost} coins. You wake up in Ashford.`;
+      }
+    }
+    persist({
+      inventory,
+      playerHp: Math.max(3, Math.floor(s.playerMaxHp / 2)),
+    });
+    onToastRef.current(msg);
+    changeZone("ashford", getZone("ashford").spawn.x, getZone("ashford").spawn.y);
+  };
+
+  const doGatherTick = () => {
+    const g = gatherRef.current;
+    if (!g) return;
+    const s = saveRef.current;
+    const key = `${g.x},${g.y}`;
+
+    if (g.kind === "tree") {
+      const until = treeDepletedRef.current.get(key) ?? 0;
+      if (until > performance.now()) {
+        gatherRef.current = null;
+        return;
+      }
+      const lvl = levelForXp(s.skills.woodcutting);
+      if (Math.random() < Math.min(0.9, 0.5 + lvl * 0.01)) {
+        RealmSound.chop();
+        persist({ inventory: addItemToInventory(s.inventory, "logs", 1) });
+        spawnEffect(g.x + 0.5, g.y + 0.2, "+1 Logs", "#926a3e", 900, 1.1);
+        awardSkillXp("woodcutting", 25);
+        if (Math.random() < 0.3) {
+          treeDepletedRef.current.set(key, performance.now() + 8000);
+          gatherRef.current = null;
+          onToastRef.current("The tree falls over. It'll grow back. Trees are resilient like that.");
+        }
+      } else {
+        spawnEffect(g.x + 0.5, g.y + 0.2, "swing…", "#9ca3af", 700, 0.8);
+      }
+      return;
+    }
+
+    if (g.kind === "fish") {
+      const lvl = levelForXp(s.skills.fishing);
+      if (Math.random() < Math.min(0.9, 0.45 + lvl * 0.012)) {
+        RealmSound.splash();
+        persist({ inventory: addItemToInventory(s.inventory, "raw_fish", 1) });
+        spawnEffect(g.x + 0.5, g.y + 0.2, "+1 Raw Trout", "#7dd3fc", 900, 1.1);
+        awardSkillXp("fishing", 30);
+      } else {
+        spawnEffect(g.x + 0.5, g.y + 0.2, "splash…", "#60a5fa", 700, 0.8);
+      }
+      return;
+    }
+
+    // fire: cook one raw item per tick
+    const raw = s.inventory.find((i) => (i.id === "raw_meat" || i.id === "raw_fish") && i.qty > 0);
+    if (!raw) {
+      gatherRef.current = null;
+      onToastRef.current("Nothing raw left to cook.");
+      return;
+    }
+    const lvl = levelForXp(s.skills.cooking);
+    const burnChance = Math.max(0.05, 0.45 - lvl * 0.015);
+    let inv = saveRef.current.inventory;
+    inv = inv
+      .map((i) => (i.id === raw.id ? { ...i, qty: i.qty - 1 } : i))
+      .filter((i) => i.qty > 0);
+    if (Math.random() < burnChance) {
+      inv = addItemToInventory(inv, "burnt_food", 1);
+      spawnEffect(g.x + 0.5, g.y + 0.2, "Burnt!", "#78716c", 900, 1);
+      persist({ inventory: inv });
+    } else {
+      const cooked = raw.id === "raw_fish" ? "cooked_fish" : "cooked_meat";
+      inv = addItemToInventory(inv, cooked, 1);
+      RealmSound.cook();
+      spawnEffect(g.x + 0.5, g.y + 0.2, `+1 ${itemDef(cooked).name}`, itemDef(cooked).color, 900, 1.1);
+      persist({ inventory: inv });
+      awardSkillXp("cooking", 30);
+    }
   };
 
   const draw = useCallback(() => {
@@ -267,6 +395,10 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     if (!canvas || !container) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const zone = zoneRef.current;
+    const mapH = zone.tiles.length;
+    const mapW = zone.tiles[0].length;
 
     const dpr = window.devicePixelRatio || 1;
     const w = container.clientWidth;
@@ -279,32 +411,52 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const tile = Math.floor(Math.min(w / MAP_W, h / MAP_H));
+    const tile = Math.floor(Math.min(w / mapW, h / mapH));
     const ts = Math.max(tile, 16);
     tileSizeRef.current = ts;
-    const mapPxW = ts * MAP_W;
-    const mapPxH = ts * MAP_H;
-    offsetRef.current = { x: (w - mapPxW) / 2, y: (h - mapPxH) / 2 };
+    offsetRef.current = { x: (w - ts * mapW) / 2, y: (h - ts * mapH) / 2 };
     const { x: ox, y: oy } = offsetRef.current;
     const s = saveRef.current;
+    const now = performance.now();
 
     ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(0, 0, w, h);
 
-    for (let y = 0; y < MAP_H; y++) {
-      for (let x = 0; x < MAP_W; x++) {
-        const t = ASHFORD_TILES[y][x];
-        ctx.fillStyle = TILE_COLORS[t] ?? "#333";
+    for (let y = 0; y < mapH; y++) {
+      for (let x = 0; x < mapW; x++) {
+        const t = zone.tiles[y][x];
+        ctx.fillStyle = zone.palette[t] ?? "#333";
         ctx.fillRect(ox + x * ts, oy + y * ts, ts - 1, ts - 1);
+        if ((x + y) % 2 === 0 && t !== 2) {
+          ctx.fillStyle = "rgba(0,0,0,0.07)";
+          ctx.fillRect(ox + x * ts, oy + y * ts, ts - 1, ts - 1);
+        }
       }
     }
 
-    for (const lantern of LANTERNS) {
-      const visited = s.lanternsVisited.includes(lantern.id);
-      ctx.fillStyle = visited ? "#fbbf24" : "#92400e";
+    // portals — pulsing gold rings
+    const pulse = 0.5 + 0.5 * Math.sin(now / 300);
+    for (const p of zone.portals) {
+      ctx.strokeStyle = `rgba(212,175,55,${0.35 + pulse * 0.45})`;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.arc(ox + lantern.x * ts + ts / 2, oy + lantern.y * ts + ts / 2, ts * 0.25, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.arc(ox + p.x * ts + ts / 2, oy + p.y * ts + ts / 2, ts * (0.3 + pulse * 0.06), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(212,175,55,0.9)";
+      ctx.font = `${Math.max(8, ts * 0.22)}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(p.label, ox + p.x * ts + ts / 2, oy + p.y * ts - 3);
+    }
+
+    // lanterns (Ashford)
+    if (zone.id === "ashford") {
+      for (const lantern of LANTERNS) {
+        const visited = s.lanternsVisited.includes(lantern.id);
+        ctx.fillStyle = visited ? "#fbbf24" : "#92400e";
+        ctx.beginPath();
+        ctx.arc(ox + lantern.x * ts + ts / 2, oy + lantern.y * ts + ts / 2, ts * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     // ground items
@@ -316,16 +468,67 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
       ctx.fill();
     }
 
-    // tutorial dummy
-    if (s.tutorialStage === "food" || s.tutorialStage === "duel" || s.tutorialStage === "play") {
-      if (dummyHpRef.current > 0) {
-        ctx.fillStyle = "#78716c";
-        ctx.fillRect(ox + DUMMY_TILE.x * ts + ts * 0.2, oy + DUMMY_TILE.y * ts + ts * 0.15, ts * 0.6, ts * 0.7);
-        ctx.fillStyle = "#ef4444";
-        ctx.font = `${Math.max(9, ts * 0.3)}px sans-serif`;
-        ctx.textAlign = "center";
-        ctx.fillText(`Dummy ${dummyHpRef.current}`, ox + DUMMY_TILE.x * ts + ts / 2, oy + DUMMY_TILE.y * ts - 3);
+    // trees
+    for (const t of zone.trees) {
+      const key = `${t.x},${t.y}`;
+      const depleted = (treeDepletedRef.current.get(key) ?? 0) > now;
+      const cx = ox + t.x * ts + ts / 2;
+      if (depleted) {
+        ctx.fillStyle = "#5c4a32";
+        ctx.fillRect(cx - ts * 0.12, oy + t.y * ts + ts * 0.5, ts * 0.24, ts * 0.3);
+      } else {
+        ctx.fillStyle = "#4a3520";
+        ctx.fillRect(cx - ts * 0.08, oy + t.y * ts + ts * 0.45, ts * 0.16, ts * 0.4);
+        ctx.fillStyle = zone.id === "marches" ? "#1d3a1a" : "#2f5d2a";
+        ctx.beginPath();
+        ctx.arc(cx, oy + t.y * ts + ts * 0.35, ts * 0.38, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.06)";
+        ctx.beginPath();
+        ctx.arc(cx - ts * 0.1, oy + t.y * ts + ts * 0.27, ts * 0.18, 0, Math.PI * 2);
+        ctx.fill();
       }
+    }
+
+    // fires
+    for (const f of zone.fires) {
+      const flicker = 0.2 + 0.05 * Math.sin(now / 110 + f.x);
+      const cx = ox + f.x * ts + ts / 2;
+      const cy = oy + f.y * ts + ts * 0.6;
+      ctx.fillStyle = "#7c2d12";
+      ctx.fillRect(cx - ts * 0.2, cy, ts * 0.4, ts * 0.12);
+      ctx.fillStyle = "#f97316";
+      ctx.beginPath();
+      ctx.arc(cx, cy - ts * 0.08, ts * flicker, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fde047";
+      ctx.beginPath();
+      ctx.arc(cx, cy - ts * 0.05, ts * flicker * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // fishing spots
+    for (const f of zone.fishing) {
+      const ripple = ((now / 600) % 1) * ts * 0.3;
+      ctx.strokeStyle = "rgba(125,211,252,0.7)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(ox + f.x * ts + ts / 2, oy + f.y * ts + ts / 2, ts * 0.12 + ripple, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // tutorial dummy (Ashford)
+    if (
+      zone.id === "ashford" &&
+      dummyHpRef.current > 0 &&
+      (s.tutorialStage === "food" || s.tutorialStage === "duel" || s.tutorialStage === "play")
+    ) {
+      ctx.fillStyle = "#78716c";
+      ctx.fillRect(ox + DUMMY_TILE.x * ts + ts * 0.2, oy + DUMMY_TILE.y * ts + ts * 0.15, ts * 0.6, ts * 0.7);
+      ctx.fillStyle = "#ef4444";
+      ctx.font = `${Math.max(9, ts * 0.3)}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(`Dummy ${dummyHpRef.current}`, ox + DUMMY_TILE.x * ts + ts / 2, oy + DUMMY_TILE.y * ts - 3);
     }
 
     // enemies
@@ -335,22 +538,41 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
       const lx = e.lunge * 0.18;
       const px = ox + (e.x + lx * Math.sign(playerTileRef.current.x - e.x)) * ts;
       const py = oy + e.y * ts;
-      drawAvatar(ctx, px, py, ts, { tunic: def.color, hair: "#2f2a22", skin: "#8a9a5b", body: "slim" });
-      // hp bar
+      drawAvatar(ctx, px, py, ts, {
+        tunic: def.color,
+        hair: def.boss ? "#365314" : "#2f2a22",
+        skin: e.type === "skeleton" ? "#e7e5e4" : "#8a9a5b",
+        body: def.boss ? "broad" : "slim",
+      });
+      if (def.boss) {
+        // crown
+        ctx.fillStyle = "#d4af37";
+        const crownY = py + ts * 0.05;
+        ctx.beginPath();
+        ctx.moveTo(px + ts * 0.32, crownY + ts * 0.1);
+        ctx.lineTo(px + ts * 0.38, crownY);
+        ctx.lineTo(px + ts * 0.44, crownY + ts * 0.08);
+        ctx.lineTo(px + ts * 0.5, crownY - ts * 0.02);
+        ctx.lineTo(px + ts * 0.56, crownY + ts * 0.08);
+        ctx.lineTo(px + ts * 0.62, crownY);
+        ctx.lineTo(px + ts * 0.68, crownY + ts * 0.1);
+        ctx.closePath();
+        ctx.fill();
+      }
       if (e.hp < e.maxHp) {
         ctx.fillStyle = "#3b0a0a";
         ctx.fillRect(px + ts * 0.15, py + ts * 0.02, ts * 0.7, 4);
         ctx.fillStyle = "#22c55e";
         ctx.fillRect(px + ts * 0.15, py + ts * 0.02, ts * 0.7 * (e.hp / e.maxHp), 4);
       }
-      ctx.fillStyle = combatTargetRef.current === e.id ? "#fca5a5" : "#cbd5e1";
-      ctx.font = `${Math.max(8, ts * 0.22)}px sans-serif`;
+      ctx.fillStyle = combatTargetRef.current === e.id ? "#fca5a5" : def.boss ? "#fbbf24" : "#cbd5e1";
+      ctx.font = `${def.boss ? "bold " : ""}${Math.max(8, ts * 0.22)}px sans-serif`;
       ctx.textAlign = "center";
       ctx.fillText(`${def.name} (${def.level})`, px + ts / 2, py - 2);
     }
 
     // npcs
-    for (const npc of ASHFORD_NPCS) {
+    for (const npc of zone.npcs) {
       drawAvatar(ctx, ox + npc.x * ts, oy + npc.y * ts, ts, {
         tunic: npc.color,
         hair: "#3b2f25",
@@ -378,7 +600,6 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     ctx.textAlign = "center";
     ctx.fillText(char?.name?.slice(0, 12) ?? "You", ppx + ts / 2, ppy - 4);
 
-    // move target
     const target = targetRef.current;
     if (target) {
       ctx.strokeStyle = "rgba(212,175,55,0.6)";
@@ -405,6 +626,7 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
       const dt = lastTsRef.current ? Math.min(64, ts - lastTsRef.current) : 16;
       lastTsRef.current = ts;
       const now = ts;
+      const zone = zoneRef.current;
 
       // movement
       const tileRef = playerTileRef.current;
@@ -428,6 +650,21 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
         if (next) playerTileRef.current = next;
       }
 
+      const idle = dist < 0.001 && pathRef.current.length === 0;
+
+      // gathering
+      if (gatherRef.current && idle) {
+        const g = gatherRef.current;
+        const md = Math.abs(g.x - tileRef.x) + Math.abs(g.y - tileRef.y);
+        if (md <= 1) {
+          gatherAccRef.current += dt;
+          if (gatherAccRef.current >= GATHER_TICK_MS) {
+            gatherAccRef.current = 0;
+            doGatherTick();
+          }
+        }
+      }
+
       // combat
       const ctId = combatTargetRef.current;
       if (ctId) {
@@ -441,7 +678,7 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
             if (attackAccRef.current >= ATTACK_TICK_MS) {
               attackAccRef.current = 0;
               const def = ENEMIES[e.type];
-              const { atk, str } = playerAttackBonus();
+              const { atk, str, shield } = equipmentBonus();
               const dmg = rollAttack(saveRef.current.skills, def.defence, atk, str);
               playerLungeRef.current = 1;
               if (dmg > 0) {
@@ -457,35 +694,33 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
                 e.respawnAt = now + def.respawnMs;
                 RealmSound.enemyDie();
                 dropLoot(e);
-                awardXp(def.xp);
+                awardCombatXp(def.xp);
                 persist({ kills: saveRef.current.kills + 1 });
+                recordQuestKill(e.type);
+                if (def.boss) {
+                  spawnEffect(e.x + 0.5, e.y - 0.5, "BOSS SLAIN", "#fbbf24", 2000, 0.6);
+                }
                 combatTargetRef.current = null;
               } else {
                 // retaliation
                 e.lunge = 1;
-                const eHit = Math.random() < 0.6 ? Math.floor(Math.random() * (def.maxHit + 1)) : 0;
+                const defLvl = levelForXp(saveRef.current.skills.defence);
+                const enemyChance = Math.max(0.2, Math.min(0.9, 0.65 - shield * 0.04 - defLvl * 0.004));
+                const eHit = Math.random() < enemyChance ? Math.floor(Math.random() * (def.maxHit + 1)) : 0;
                 if (eHit > 0) {
                   const newHp = Math.max(0, saveRef.current.playerHp - eHit);
                   spawnEffect(pix.x + 0.5, pix.y + 0.4, `${eHit}`, "#f97316");
                   persist({ playerHp: newHp });
-                  if (newHp <= 0) {
-                    combatTargetRef.current = null;
-                    onToastRef.current("You were defeated! You wake up in Ashford. Eat and try again.");
-                    playerTileRef.current = { ...PLAYER_SPAWN };
-                    pix.x = PLAYER_SPAWN.x;
-                    pix.y = PLAYER_SPAWN.y;
-                    pathRef.current = [];
-                    persist({ playerHp: Math.max(3, Math.floor(saveRef.current.playerMaxHp / 2)) });
-                  }
+                  if (newHp <= 0) handleDeath();
                 } else {
                   spawnEffect(pix.x + 0.5, pix.y + 0.4, "0", "#93c5fd");
                 }
               }
             }
           } else if (pathRef.current.length === 0 && dist < 0.001) {
-            const adj = adjacentTo(e.x, e.y);
+            const adj = zoneAdjacentTo(zone, e.x, e.y, tileRef);
             if (adj) {
-              pathRef.current = findPath(tileRef, adj);
+              pathRef.current = zoneFindPath(zone, tileRef, adj);
               targetRef.current = adj;
             }
           }
@@ -494,12 +729,14 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
 
       // respawns
       for (const e of enemiesRef.current) {
-        if (!e.alive && now >= e.respawnAt) {
-          const spawn = ENEMY_SPAWNS.find((s) => s.id === e.id)!;
-          e.alive = true;
-          e.hp = e.maxHp;
-          e.x = spawn.x;
-          e.y = spawn.y;
+        if (!e.alive && e.respawnAt > 0 && now >= e.respawnAt) {
+          const spawn = zone.spawns.find((sp) => sp.id === e.id);
+          if (spawn) {
+            e.alive = true;
+            e.hp = e.maxHp;
+            e.x = spawn.x;
+            e.y = spawn.y;
+          }
         }
       }
 
@@ -530,53 +767,81 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
     const rect = canvas.getBoundingClientRect();
     const { x: ox, y: oy } = offsetRef.current;
     const ts = tileSizeRef.current;
+    const zone = zoneRef.current;
     const x = Math.floor((clientX - rect.left - ox) / ts);
     const y = Math.floor((clientY - rect.top - oy) / ts);
-    if (x < 0 || y < 0 || x >= MAP_W || y >= MAP_H) return null;
+    if (x < 0 || y < 0 || x >= zone.tiles[0].length || y >= zone.tiles.length) return null;
     return { x, y };
   };
 
+  const walkToward = (tx: number, ty: number, exact: boolean) => {
+    const zone = zoneRef.current;
+    const p = playerTileRef.current;
+    if (exact) {
+      pathRef.current = zoneFindPath(zone, p, { x: tx, y: ty });
+      targetRef.current = { x: tx, y: ty };
+    } else {
+      const adj = zoneAdjacentTo(zone, tx, ty, p);
+      if (adj) {
+        pathRef.current = zoneFindPath(zone, p, adj);
+        targetRef.current = { x: tx, y: ty };
+      }
+    }
+  };
+
   const handlePointer = (clientX: number, clientY: number) => {
-    RealmSound.setMuted(RealmSound.isMuted()); // ensures audio context resumes on gesture
     const tile = screenToTile(clientX, clientY);
     if (!tile) return;
+    const zone = zoneRef.current;
     const p = playerTileRef.current;
+    gatherRef.current = null;
 
     // enemy?
     const enemy = enemiesRef.current.find((e) => e.alive && e.x === tile.x && e.y === tile.y);
     if (enemy) {
       combatTargetRef.current = enemy.id;
       const md = Math.abs(enemy.x - p.x) + Math.abs(enemy.y - p.y);
-      if (md > 1) {
-        const adj = adjacentTo(enemy.x, enemy.y);
-        if (adj) {
-          pathRef.current = findPath(p, adj);
-          targetRef.current = adj;
-        }
-      }
+      if (md > 1) walkToward(enemy.x, enemy.y, false);
       return;
     }
 
     // npc?
-    const npc = ASHFORD_NPCS.find((n) => n.x === tile.x && n.y === tile.y);
+    const npc = zone.npcs.find((n) => n.x === tile.x && n.y === tile.y);
     if (npc) {
       combatTargetRef.current = null;
       const md = Math.abs(npc.x - p.x) + Math.abs(npc.y - p.y);
       if (md <= 2) onDialogueRef.current(npc);
       else {
         onToastRef.current("Move closer to talk.");
-        const adj = adjacentTo(npc.x, npc.y);
-        if (adj) {
-          pathRef.current = findPath(p, adj);
-          targetRef.current = { x: npc.x, y: npc.y };
-        }
+        walkToward(npc.x, npc.y, false);
       }
       return;
     }
 
-    // tutorial dummy?
+    // tree / fire / fishing spot?
+    const isTree = zone.trees.some((t) => t.x === tile.x && t.y === tile.y);
+    const isFire = zone.fires.some((f) => f.x === tile.x && f.y === tile.y);
+    const isFish = zone.fishing.some((f) => f.x === tile.x && f.y === tile.y);
+    if (isTree || isFire || isFish) {
+      combatTargetRef.current = null;
+      gatherRef.current = {
+        kind: isTree ? "tree" : isFire ? "fire" : "fish",
+        x: tile.x,
+        y: tile.y,
+      };
+      gatherAccRef.current = 0;
+      const md = Math.abs(tile.x - p.x) + Math.abs(tile.y - p.y);
+      if (md > 1) walkToward(tile.x, tile.y, false);
+      onToastRef.current(
+        isTree ? "You swing at the tree." : isFire ? "You start cooking." : "You cast your line."
+      );
+      return;
+    }
+
+    // tutorial dummy (Ashford)?
     const s = saveRef.current;
     if (
+      zone.id === "ashford" &&
       tile.x === DUMMY_TILE.x &&
       tile.y === DUMMY_TILE.y &&
       dummyHpRef.current > 0 &&
@@ -589,18 +854,14 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
         spawnEffect(DUMMY_TILE.x + 0.5, DUMMY_TILE.y + 0.4, "1", "#ef4444");
         if (dummyHpRef.current <= 0) onToastRef.current("Dummy defeated. Now try real enemies in the south field!");
       } else {
-        const adj = adjacentTo(DUMMY_TILE.x, DUMMY_TILE.y);
-        if (adj) {
-          pathRef.current = findPath(p, adj);
-          targetRef.current = adj;
-        }
+        walkToward(DUMMY_TILE.x, DUMMY_TILE.y, false);
       }
       return;
     }
 
     // walk
     combatTargetRef.current = null;
-    pathRef.current = findPath(p, tile);
+    pathRef.current = zoneFindPath(zone, p, tile);
     targetRef.current = tile;
   };
 
@@ -618,8 +879,8 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
       />
       <p className="pointer-events-none absolute left-2 top-16 rounded bg-black/60 px-2 py-1 text-[10px] text-[var(--muted)] sm:text-xs">
         {typeof window !== "undefined" && "ontouchstart" in window
-          ? "Tap ground to walk · Tap enemies to fight"
-          : "Click ground to walk · Click enemies to fight"}
+          ? "Tap: walk · fight · chop · fish · cook"
+          : "Click: walk · fight · chop · fish · cook"}
       </p>
     </div>
   );
@@ -628,17 +889,19 @@ export function RealmWorld({ save, onSave, onDialogue, onToast }: RealmWorldProp
 export function useRealmCombat(save: RealmSave, onSave: (s: RealmSave) => void) {
   return {
     eatBread: () => {
-      const idx = save.inventory.findIndex((i) => i.id === "bread" && i.qty > 0);
       const max = calcMaxHp(save.skills);
-      if (idx < 0) return false;
       if (save.playerHp >= max) return false;
+      const foodId = FOOD_PRIORITY.find((id) =>
+        save.inventory.some((i) => i.id === id && i.qty > 0)
+      );
+      if (!foodId) return false;
       const inventory = save.inventory
-        .map((i, n) => (n === idx ? { ...i, qty: i.qty - 1 } : i))
+        .map((i) => (i.id === foodId ? { ...i, qty: i.qty - 1 } : i))
         .filter((i) => i.qty > 0);
       const updated: RealmSave = {
         ...save,
         inventory,
-        playerHp: Math.min(max, save.playerHp + (itemDef("bread").heal ?? 5)),
+        playerHp: Math.min(max, save.playerHp + (itemDef(foodId).heal ?? 4)),
         playerMaxHp: max,
         ateBread: true,
         tutorialStage: save.tutorialStage === "food" ? "duel" : save.tutorialStage,
@@ -656,5 +919,3 @@ export function useRealmCombat(save: RealmSave, onSave: (s: RealmSave) => void) 
     },
   };
 }
-
-export { calcMaxHit };

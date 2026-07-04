@@ -29,6 +29,10 @@ function mergeForgedPathProgress(
   };
 }
 
+function forgedPathVerificationCount(data: UserProgress): number {
+  return Object.keys(data.forgedPathProgress?.verifications ?? {}).length;
+}
+
 function hasMeaningfulProgress(data: UserProgress): boolean {
   return (
     data.xp > 0 ||
@@ -36,7 +40,8 @@ function hasMeaningfulProgress(data: UserProgress): boolean {
     data.completedCourses.length > 0 ||
     data.completedModules.length > 0 ||
     Object.keys(data.quizScores ?? {}).length > 0 ||
-    Object.keys(data.courseProgress ?? {}).length > 0
+    Object.keys(data.courseProgress ?? {}).length > 0 ||
+    forgedPathVerificationCount(data) > 0
   );
 }
 
@@ -121,7 +126,18 @@ export async function migrateGuestProgress(userId: string): Promise<UserProgress
   if (typeof window !== "undefined" && localStorage.getItem(flag)) {
     const remote = await fetchRemoteProgress();
     const local = readLocalProgress();
-    if (remote && hasMeaningfulProgress(remote)) return remote;
+    if (remote && hasMeaningfulProgress(remote)) {
+      // Always preserve locally-verified ForgEd Path completions — the account
+      // backend may not round-trip forgedPathProgress, so union it back in and
+      // re-sync if the merge added anything the remote was missing.
+      const forgedPathProgress = mergeForgedPathProgress(remote, local);
+      const merged = normalizeProgress({ ...remote, forgedPathProgress });
+      writeLocalProgress(merged);
+      if (forgedPathVerificationCount(merged) > forgedPathVerificationCount(remote)) {
+        await saveRemoteProgress(merged);
+      }
+      return merged;
+    }
     if (hasMeaningfulProgress(local)) {
       await saveRemoteProgress(local);
       return local;

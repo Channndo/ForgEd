@@ -87,9 +87,10 @@ export default function RealmGame() {
       <RealmHUD
         save={save}
         toast={toast}
+        onUpdate={(patch) => persist({ ...save, ...patch })}
         onEat={() => {
           if (eatBread()) showToast("You eat bread. Betty would be proud. Maybe.");
-          else showToast("You're full, or not hurt enough to bother.");
+          else showToast("No bread, or you're already full.");
         }}
         onDuel={() => {
           if (save.tutorialStage === "duel") {
